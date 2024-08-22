@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {}
+
+@layer base {
+    :root {
+        background-color: hsl(var(--layer-0-surface));
+    }
+
+    p {
+        @apply select-none cursor-none;
+    }
+}
