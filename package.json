@@ -27,6 +27,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@radroots/client": "workspace:*",
 		"@radroots/theme": "workspace:*",
 		"@radroots/svelte-lib": "workspace:*"
 	}

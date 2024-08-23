@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { cl } from "$lib/client";
     import { t } from "@radroots/svelte-lib";
 </script>
 
@@ -10,4 +11,12 @@
             {$t(`app.name`)}
         </p>
     </div>
+    <button
+        class={`flex flex-row justify-center items-center`}
+        onclick={async () => {
+            alert(`Hi! You're platform is ${cl.platform}`);
+        }}
+    >
+        {`platform`}
+    </button>
 </div>
