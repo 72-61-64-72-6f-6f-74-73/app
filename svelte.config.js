@@ -6,6 +6,11 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
+	},
+	compilerOptions: {
+		compatibility: {
+			componentApi: 5
+		}
 	}
 };
 

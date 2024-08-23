@@ -5,16 +5,21 @@
 	"license": "GPLv3",
 	"scripts": {
 		"build": "just build && vite build",
+		"build:native": "npm run build",
+		"build:web": "npm run build",
 		"dev": "",
-		"dev:hmr": "vite dev --debug hmr",
+		"dev:web": "vite dev --debug hmr",
+		"dev:native": "vite dev --debug hmr",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
+		"@capacitor/cli": "^6.0.0",
 		"@sveltejs/adapter-static": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/node": "^20.12.7",
 		"autoprefixer": "^10.4.19",
 		"daisyui": "^4.10.0",
 		"postcss": "^8.4.38",
@@ -27,8 +32,12 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@capacitor/android": "^6.0.0",
+		"@capacitor/core": "^6.1.2",
+		"@capacitor/dialog": "^6.0.0",
+		"@capacitor/ios": "^6.0.0",
 		"@radroots/client": "workspace:*",
-		"@radroots/theme": "workspace:*",
-		"@radroots/svelte-lib": "workspace:*"
+		"@radroots/svelte-lib": "workspace:*",
+		"@radroots/theme": "workspace:*"
 	}
 }

@@ -1,0 +1,18 @@
+import type { CapacitorConfig } from '@capacitor/cli';
+
+const dev = process.env.NODE_ENV === `dev`;
+const port = process.env.RADROOTS_APP_PORT ? Number(process.env.RADROOTS_APP_PORT) : 3000;
+
+const config: CapacitorConfig = {
+  appId: process.env.RADROOTS_APP_ID,
+  appName: 'Radroots',
+  webDir: 'build',
+  server: {
+    url: dev ? `http://localhost:${port}` : undefined,
+    cleartext: dev ? true : false,
+    iosScheme: `radroots`,
+    androidScheme: `radroots`,
+  },
+};
+
+export default config;
