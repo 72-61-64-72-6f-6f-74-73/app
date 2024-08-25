@@ -5,6 +5,9 @@ project(':capacitor-android').projectDir = new File('../../../node_modules/.pnpm
 include ':capacitor-dialog'
 project(':capacitor-dialog').projectDir = new File('../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog/android')
 
+include ':capacitor-preferences'
+project(':capacitor-preferences').projectDir = new File('../../../node_modules/.pnpm/@capacitor+preferences@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/preferences/android')
+
 include ':radroots-capacitor-sqlite'
 project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/capacitor-sqlite/android')
 

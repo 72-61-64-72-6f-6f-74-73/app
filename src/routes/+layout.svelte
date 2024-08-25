@@ -67,9 +67,11 @@
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
 
-            const nostr_key = await cl.keystore.get(`nostr:key`);
-            if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
+            const key_active = await cl.preferences.get("nostr:key:active");
+            console.log(`key_active `, key_active)
+            const nostr_key = await cl.keystore.get(`nostr:key:${key_active}`);
             console.log(`nostr_key `, nostr_key);
+            if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
