@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { PropChildren } from "$lib/types";
+    import type { PropChildren } from "@radroots/svelte-lib";
 
     let { children }: PropChildren = $props();
 </script>

@@ -2,6 +2,8 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const dev = process.env.NODE_ENV === `dev`;
 const port = process.env.RADROOTS_APP_PORT ? Number(process.env.RADROOTS_APP_PORT) : 3000;
+const iosKeychainPrefix = process.env.RADROOTS_APP_SQLITE_KEYCHAIN_PREFIX;
+if (!iosKeychainPrefix) throw new Error('Error: iosKeychainPrefix is required');
 
 const config: CapacitorConfig = {
   appId: process.env.RADROOTS_APP_ID,
@@ -13,6 +15,14 @@ const config: CapacitorConfig = {
     iosScheme: `radroots`,
     androidScheme: `radroots`,
   },
+  plugins: {
+    CapacitorSQLite: {
+      iosDatabaseLocation: 'Library/radroots',
+      iosIsEncryption: true,
+      iosKeychainPrefix,
+      androidIsEncryption: true,
+    }
+  }
 };
 
 export default config;

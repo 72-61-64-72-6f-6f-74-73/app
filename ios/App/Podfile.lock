@@ -4,11 +4,27 @@ PODS:
   - CapacitorCordova (6.1.2)
   - CapacitorDialog (6.0.1):
     - Capacitor
+  - RadrootsCapacitorSqlite (6.0.1):
+    - Capacitor
+    - SQLCipher
+    - ZIPFoundation
+  - SQLCipher (4.6.1):
+    - SQLCipher/standard (= 4.6.1)
+  - SQLCipher/common (4.6.1)
+  - SQLCipher/standard (4.6.1):
+    - SQLCipher/common
+  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog`)"
+  - RadrootsCapacitorSqlite (from `../../../../packages/capacitor-sqlite`)
+
+SPEC REPOS:
+  trunk:
+    - SQLCipher
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -17,12 +33,17 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
   CapacitorDialog:
     :path: "../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog"
+  RadrootsCapacitorSqlite:
+    :path: "../../../../packages/capacitor-sqlite"
 
 SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorDialog: ad752191fdb22a8d0ac199b0754b8a021d86dbf9
+  RadrootsCapacitorSqlite: 11b1be8786af151612ee8e058d16f4979c2e3b1c
+  SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
+  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 3dfc16dbcb91ff826c375572d57a276890f42bf1
+PODFILE CHECKSUM: dd63ec13f036d53db3e3d0a7f2163fe002556b23
 
 COCOAPODS: 1.15.2
