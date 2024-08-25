@@ -72,6 +72,10 @@
             const nostr_key = await cl.keystore.get(`nostr:key:${key_active}`);
             console.log(`nostr_key `, nostr_key);
             if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
+            else {
+                await goto(`/conf/nostr`);
+                return;
+            }
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {

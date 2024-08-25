@@ -1,24 +1,58 @@
 <script lang="ts">
     import { cl } from "$lib/client";
+    import { _cf } from "$lib/conf";
     import { t } from "@radroots/svelte-lib";
 </script>
 
-<div class={`flex flex-col w-full pt-16 justify-center items-center`}>
+<div class={`flex flex-col w-full pt-16 gap-8 justify-center items-center`}>
     <button
-        class={`flex flex-row justify-center items-center text-white`}
+        class={`button-simple`}
         onclick={async () => {
-            const res = await cl.dialog.alert(
-                `Hi! You're platform is ${cl.platform}`,
-            );
-            console.log(`res `, res);
+            await cl.dialog.alert(`Hi! You're platform is ${cl.platform}`);
         }}
     >
-        <div
-            class={`flex flex-col h-line w-line justify-center items-center bg-layer-1-surface`}
-        >
-            <p class={`font-mono text-sm lowercase text-layer-2-glyph`}>
-                {$t(`app.name`)}
-            </p>
-        </div>
+        {$t(`app.name`)}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
+            const public_key = await cl.preferences.get(_cf.pref_key_active);
+            await cl.dialog.alert(
+                `Hi! This is your nostr public key ${public_key}`,
+            );
+        }}
+    >
+        {"test #1"}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
+            const public_key = await cl.preferences.get(_cf.pref_key_active);
+            const secret_key = await cl.keystore.get(`nostr:key:${public_key}`);
+            await cl.dialog.alert(
+                `Hi! This is your nostr secret key ${secret_key}`,
+            );
+        }}
+    >
+        {"test #2"}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
+            const confirm = await cl.dialog.confirm(
+                `Hi! This will delete your nostr key.`,
+            );
+            if (confirm) {
+                const public_key = await cl.preferences.get(
+                    _cf.pref_key_active,
+                );
+                const key_removed = await cl.keystore.remove(
+                    `nostr:key:${public_key}`,
+                );
+                if (key_removed) location.reload();
+            }
+        }}
+    >
+        {"test #3"}
     </button>
 </div>

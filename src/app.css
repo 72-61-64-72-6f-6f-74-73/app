@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {}
+@layer components {
+    .button-simple {
+        @apply flex flex-row h-line w-line justify-center items-center bg-layer-1-surface font-mono text-sm lowercase text-layer-2-glyph;
+    }
+}
 
 @layer base {
     :root {
