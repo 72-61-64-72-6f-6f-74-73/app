@@ -7,3 +7,6 @@ project(':capacitor-dialog').projectDir = new File('../../../node_modules/.pnpm/
 
 include ':radroots-capacitor-sqlite'
 project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/capacitor-sqlite/android')
+
+include ':radroots-capacitor-secure-storage'
+project(':radroots-capacitor-secure-storage').projectDir = new File('../../../packages/capacitor-secure-storage/android')

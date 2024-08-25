@@ -6,6 +6,7 @@
     import LayoutWindow from "$lib/components/layout-window.svelte";
     import {
         app_config,
+        app_key,
         app_lo,
         app_pwa_polyfills,
         app_render,
@@ -64,7 +65,11 @@
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
-            $app_sqlite = !!(await cl.db.connect(PUBLIC_DATABASE_NAME));
+            app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
+
+            const nostr_key = await cl.keystore.get(`nostr:key`);
+            if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
+            console.log(`nostr_key `, nostr_key);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
