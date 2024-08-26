@@ -4,25 +4,17 @@
     import { PUBLIC_DATABASE_NAME } from "$env/static/public";
     import { cl } from "$lib/client";
     import LayoutWindow from "$lib/components/layout-window.svelte";
+    import { _cf } from "$lib/conf";
+    import { app_config, app_key, app_lo, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
     import {
-        app_config,
-        app_key,
-        app_lo,
-        app_pwa_polyfills,
-        app_render,
-        app_sqlite,
-        app_thc,
-        app_thm,
-        app_win,
         css_static as CssStatic,
         theme_set,
         type PropChildren,
     } from "@radroots/svelte-lib";
+    import { parse_color_mode, parse_theme_key } from "@radroots/theme/src/utils";
     import "../app.css";
 
     let { children }: PropChildren = $props();
-
-    let app_visible = $state(false);
 
     let render_pwa = browser && cl.platform === `web`;
     if (render_pwa) {
@@ -55,11 +47,11 @@
     });
 
     app_thc.subscribe((color_mode) => {
-        theme_set($app_thm, color_mode);
+        theme_set(parse_theme_key($app_thm), parse_color_mode(color_mode));
     });
 
     app_thm.subscribe((theme_key) => {
-        theme_set(theme_key, $app_thc);
+        theme_set(parse_theme_key(theme_key), parse_color_mode($app_thc));
     });
 
     app_config.subscribe(async (app_config) => {
@@ -67,12 +59,13 @@
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
 
-            const key_active = await cl.preferences.get("nostr:key:active");
+            const key_active = await cl.preferences.get(_cf.pref_key_active);
             console.log(`key_active `, key_active)
             const nostr_key = await cl.keystore.get(`nostr:key:${key_active}`);
-            console.log(`nostr_key `, nostr_key);
+            console.log(`nostr_key `, nostr_key)
             if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
             else {
+                await cl.preferences.remove(_cf.pref_key_active);
                 await goto(`/conf/nostr`);
                 return;
             }
@@ -85,11 +78,7 @@
 
     app_render.subscribe(async (app_render) => {
         try {
-            if (!app_render) {
-                app_visible = false;
-                return;
-            }
-
+            if (!app_render) return;
             let dev_routes = false;
             let route = "/";
             if (dev_routes) route = `/`;
@@ -97,31 +86,12 @@
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
-            app_visible = true;
+            await cl.window.splash_hide();
         }
     });
 </script>
 
-{#if app_visible}
-    <LayoutWindow>
-        {@render children()}
-    </LayoutWindow>
-{:else}
-    <div class={`flex flex-col w-full justify-center items-center`}>
-        <button
-            class={`flex flex-row justify-center items-center`}
-            onclick={async () => {
-                location.reload();
-            }}
-        >
-            <div
-                class={`flex flex-col h-line w-line justify-center items-center bg-layer-1-surface`}
-            >
-                <p class={`font-mono text-sm lowercase text-layer-2-glyph`}>
-                    {`There was an error loading the app. Click to reload.`}
-                </p>
-            </div>
-        </button>
-    </div>
-{/if}
+<LayoutWindow>
+    {@render children()}
+</LayoutWindow>
 <CssStatic />

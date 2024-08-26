@@ -16,6 +16,9 @@ const config: CapacitorConfig = {
     androidScheme: `radroots`,
   },
   plugins: {
+    SplashScreen: {
+      launchAutoHide: false,
+    },
     CapacitorSQLite: {
       iosDatabaseLocation: 'Library/radroots',
       iosIsEncryption: true,

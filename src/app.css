@@ -6,6 +6,12 @@
     .button-simple {
         @apply flex flex-row h-line w-line justify-center items-center bg-layer-1-surface font-mono text-sm lowercase text-layer-2-glyph;
     }
+
+    .flex-fill {
+        width: 100%;
+        height: 100%;
+        flex: 1 0 100%;
+    }
 }
 
 @layer base {
