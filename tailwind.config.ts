@@ -29,6 +29,7 @@ const config: Config = {
       },
       fontSize: {
         line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
+        trellisTitle: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
       },
       height: {
         ...heights,

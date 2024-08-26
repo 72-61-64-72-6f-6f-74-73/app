@@ -22,4 +22,85 @@
     p {
         @apply select-none cursor-none;
     }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-BlackItalic.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-BlackItalic.woff') format('woff');
+        font-weight: 900;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-Black.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-Black.woff') format('woff');
+        font-weight: 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-Bold.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-Bold.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-BoldItalic.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-BoldItalic.woff') format('woff');
+        font-weight: bold;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-Heavy.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-Heavy.woff') format('woff');
+        font-weight: 900;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-HeavyItalic.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-HeavyItalic.woff') format('woff');
+        font-weight: 900;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-Light.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-Light.woff') format('woff');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-LightItalic.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-LightItalic.woff') format('woff');
+        font-weight: 300;
+        font-style: italic;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'SFProDisplay';
+        src: url('/webfonts/sf-pro-display/SFProDisplay-Medium.woff2') format('woff2'),
+            url('/webfonts/sf-pro-display/SFProDisplay-Medium.woff') format('woff');
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+    }
 }

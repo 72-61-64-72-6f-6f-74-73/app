@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
     import { _cf } from "$lib/conf";
     import { t } from "@radroots/svelte-lib";
@@ -54,5 +55,13 @@
         }}
     >
         {"test #3"}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
+            await goto(`/settings`);
+        }}
+    >
+        {"settings"}
     </button>
 </div>
