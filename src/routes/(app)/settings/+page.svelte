@@ -1,10 +1,11 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import { app_thc } from "$lib/stores";
     import { toggle_color_mode, trellis } from "@radroots/svelte-lib";
 </script>
 
-<div class={`flex flex-col w-full p-6 justify-center items-center`}>
+<LayoutTrellis>
     <svelte:component
         this={trellis}
         basis={{
@@ -53,4 +54,4 @@
             },
         }}
     />
-</div>
+</LayoutTrellis>
