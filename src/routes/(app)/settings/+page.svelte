@@ -177,6 +177,35 @@
             args: {
                 layer: 1,
                 title: {
+                    value: `Share`,
+                },
+                list: [
+                    {
+                        touch: {
+                            label: {
+                                left: [
+                                    {
+                                        value: `Geolocation Current`,
+                                        classes: `capitalize`,
+                                    },
+                                ],
+                            },
+                            callback: async () => {
+                                const pos = await cl.geo.current();
+                                await cl.dialog.alert(JSON.stringify(pos));
+                            },
+                        },
+                    },
+                ],
+            },
+        }}
+    />
+    <svelte:component
+        this={trellis}
+        basis={{
+            args: {
+                layer: 1,
+                title: {
                     value: `Haptics`,
                 },
                 list: [
