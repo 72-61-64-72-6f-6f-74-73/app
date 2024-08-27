@@ -19,7 +19,9 @@
                     _cf.pref_key_active,
                     pk_hex,
                 );
-                if (key_pref_added) await goto("/");
+                if (key_pref_added) {
+                    await goto(`/`);
+                }
             }
         }}
     >

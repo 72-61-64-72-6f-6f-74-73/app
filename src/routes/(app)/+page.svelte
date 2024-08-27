@@ -1,7 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
-    import { _cf } from "$lib/conf";
     import { t } from "@radroots/svelte-lib";
 </script>
 
@@ -17,51 +16,17 @@
     <button
         class={`button-simple`}
         onclick={async () => {
-            const public_key = await cl.preferences.get(_cf.pref_key_active);
-            await cl.dialog.alert(
-                `Hi! This is your nostr public key ${public_key}`,
-            );
-        }}
-    >
-        {"test #1"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            const public_key = await cl.preferences.get(_cf.pref_key_active);
-            const secret_key = await cl.keystore.get(`nostr:key:${public_key}`);
-            await cl.dialog.alert(
-                `Hi! This is your nostr secret key ${secret_key}`,
-            );
-        }}
-    >
-        {"test #2"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            const confirm = await cl.dialog.confirm(
-                `Hi! This will delete your nostr key.`,
-            );
-            if (confirm) {
-                const public_key = await cl.preferences.get(
-                    _cf.pref_key_active,
-                );
-                const key_removed = await cl.keystore.remove(
-                    `nostr:key:${public_key}`,
-                );
-                if (key_removed) location.reload();
-            }
-        }}
-    >
-        {"test #3"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
             await goto(`/settings`);
         }}
     >
         {"settings"}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
+            //
+        }}
+    >
+        {"test #1"}
     </button>
 </div>

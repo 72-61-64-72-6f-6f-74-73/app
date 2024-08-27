@@ -5,6 +5,6 @@
 </script>
 
 
-<div class={`flex flex-col w-full pt-4 px-4 gap-4 justify-start items-start`}>
+<div class={`flex flex-col w-full pt-20 pb-12 px-4 gap-4 justify-start items-start overflow-y-scroll`}>
     {@render children()}
 </div>

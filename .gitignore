@@ -50,3 +50,4 @@ dist
 static/assets/sql-wasm.wasm
 static/phosphor-icons
 static/webfonts
+git-diff.txt

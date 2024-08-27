@@ -11,9 +11,11 @@ export const load: LayoutLoad = async ({ url }: LayoutLoadEvent) => {
             const active_nostr_key = ks_keys?.find(
                 (i) => i === `nostr:key:${key_active}`,
             );
-            if (active_nostr_key) return await goto(`/`);
+            if (active_nostr_key) {
+                await goto(`/`);
+                return
+            }
         }
-
     } catch (e) { } finally {
         return {};
     };

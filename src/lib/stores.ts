@@ -5,8 +5,8 @@ import { writable } from "svelte/store";
 export const app_thc = writable<ColorMode>(`light`);
 export const app_thm = writable<ThemeKey>(`os`);
 
-export const app_config = writable<boolean>(true);
-export const app_render = writable<boolean>(true);
+export const app_config = writable<boolean>(false);
+export const app_render = writable<boolean>(false);
 export const app_lo = writable<AppLayoutKey>(`base`);
 export const app_win = writable<[number, number]>([0, 0]);
 

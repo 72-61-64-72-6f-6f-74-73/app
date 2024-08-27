@@ -8,6 +8,7 @@
     import { app_config, app_key, app_lo, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
     import {
         css_static as CssStatic,
+        sleep,
         theme_set,
         type PropChildren,
     } from "@radroots/svelte-lib";
@@ -58,7 +59,6 @@
         try {
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
-
             const key_active = await cl.preferences.get(_cf.pref_key_active);
             console.log(`key_active `, key_active)
             const nostr_key = await cl.keystore.get(`nostr:key:${key_active}`);
@@ -67,7 +67,6 @@
             else {
                 await cl.preferences.remove(_cf.pref_key_active);
                 await goto(`/conf/nostr`);
-                return;
             }
         } catch (e) {
             console.log(`(app_config) error `, e);
@@ -79,10 +78,7 @@
     app_render.subscribe(async (app_render) => {
         try {
             if (!app_render) return;
-            let dev_routes = false;
-            let route = "/";
-            if (dev_routes) route = `/`;
-            await goto(route);
+            await sleep(321);
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
@@ -90,8 +86,9 @@
         }
     });
 </script>
-
-<LayoutWindow>
-    {@render children()}
-</LayoutWindow>
+{#if $app_render}
+    <LayoutWindow>
+        {@render children()}
+    </LayoutWindow>
+{/if}
 <CssStatic />
