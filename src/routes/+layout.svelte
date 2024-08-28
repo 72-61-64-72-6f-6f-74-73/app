@@ -47,12 +47,16 @@
         if (win_h > 800) app_lo.set("lg");
     });
 
-    app_thc.subscribe((color_mode) => {
-        theme_set(parse_theme_key($app_thm), parse_color_mode(color_mode));
+    app_thc.subscribe((app_thc) => {
+        const color_mode = parse_color_mode(app_thc);
+        theme_set(parse_theme_key($app_thm), color_mode);
+        cl.window.status_style(color_mode);
     });
 
-    app_thm.subscribe((theme_key) => {
-        theme_set(parse_theme_key(theme_key), parse_color_mode($app_thc));
+    app_thm.subscribe((app_thm) => {
+        const color_mode = parse_color_mode($app_thc);
+        theme_set(parse_theme_key(app_thm), color_mode);
+        cl.window.status_style(color_mode);
     });
 
     app_config.subscribe(async (app_config) => {

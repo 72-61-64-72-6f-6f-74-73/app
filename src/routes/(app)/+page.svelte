@@ -24,37 +24,11 @@
     <button
         class={`button-simple`}
         onclick={async () => {
-            const res = await cl.wifi.check_permissions();
+            const url = `https://radroots.org`;
+            const res = await cl.browser.open(url);
             await cl.dialog.alert(JSON.stringify(res));
         }}
     >
         {"test #1"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            const res = await cl.wifi.request_permissions();
-            await cl.dialog.alert(JSON.stringify(res));
-        }}
-    >
-        {"test #2"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            const res = await cl.wifi.scan();
-            await cl.dialog.alert(JSON.stringify(res));
-        }}
-    >
-        {"test #3"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            const res = await cl.wifi.current();
-            await cl.dialog.alert(JSON.stringify(res));
-        }}
-    >
-        {"test #3"}
     </button>
 </div>

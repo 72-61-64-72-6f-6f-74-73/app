@@ -1,6 +1,8 @@
 PODS:
   - Capacitor (6.1.2):
     - CapacitorCordova
+  - CapacitorBrowser (6.0.2):
+    - Capacitor
   - CapacitorCordova (6.1.2)
   - CapacitorDialog (6.0.1):
     - Capacitor
@@ -13,6 +15,8 @@ PODS:
   - CapacitorShare (6.0.2):
     - Capacitor
   - CapacitorSplashScreen (6.0.2):
+    - Capacitor
+  - CapacitorStatusBar (6.0.1):
     - Capacitor
   - KeychainSwift (21.0.0)
   - RadrootsCapacitorSecureStorage (6.0.1):
@@ -33,6 +37,7 @@ PODS:
 
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
+  - "CapacitorBrowser (from `../../../../node_modules/.pnpm/@capacitor+browser@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/browser`)"
   - "CapacitorCordova (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog`)"
   - "CapacitorGeolocation (from `../../../../node_modules/.pnpm/@capacitor+geolocation@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/geolocation`)"
@@ -40,6 +45,7 @@ DEPENDENCIES:
   - "CapacitorPreferences (from `../../../../node_modules/.pnpm/@capacitor+preferences@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/preferences`)"
   - "CapacitorShare (from `../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen`)"
+  - "CapacitorStatusBar (from `../../../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar`)"
   - RadrootsCapacitorSecureStorage (from `../../../../packages/capacitor-secure-storage`)
   - RadrootsCapacitorSqlite (from `../../../../packages/capacitor-sqlite`)
   - RadrootsCapacitorWifi (from `../../../../packages/capacitor-wifi`)
@@ -53,6 +59,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
+  CapacitorBrowser:
+    :path: "../../../../node_modules/.pnpm/@capacitor+browser@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/browser"
   CapacitorCordova:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
   CapacitorDialog:
@@ -67,6 +75,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share"
   CapacitorSplashScreen:
     :path: "../../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen"
+  CapacitorStatusBar:
+    :path: "../../../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar"
   RadrootsCapacitorSecureStorage:
     :path: "../../../../packages/capacitor-secure-storage"
   RadrootsCapacitorSqlite:
@@ -76,6 +86,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
+  CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorDialog: ad752191fdb22a8d0ac199b0754b8a021d86dbf9
   CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
@@ -83,6 +94,7 @@ SPEC CHECKSUMS:
   CapacitorPreferences: e8284bf740cf8c6d3f25409af3c01df87dfeb5a1
   CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
   CapacitorSplashScreen: 250df9ef8014fac5c7c1fd231f0f8b1d8f0b5624
+  CapacitorStatusBar: b81d4fb5d4e0064c712018071b3ab4b810b39a63
   KeychainSwift: 4a71a45c802fd9e73906457c2dcbdbdc06c9419d
   RadrootsCapacitorSecureStorage: d95a1648c105ddf18a1b0612528e0ce1f77b789e
   RadrootsCapacitorSqlite: 11b1be8786af151612ee8e058d16f4979c2e3b1c
@@ -90,6 +102,6 @@ SPEC CHECKSUMS:
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 62474c3d8b4ec1596b1e107cd10b48333aefe54d
+PODFILE CHECKSUM: e77f3eee0f3fe0258bffb67c5384108a83230f66
 
 COCOAPODS: 1.15.2
