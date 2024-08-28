@@ -59,6 +59,11 @@
         cl.window.status_style(color_mode);
     });
 
+    app_sqlite.subscribe((app_sqlite) => {
+        if(!app_sqlite) return;
+        console.log(`(app_sqlite) connected`);
+    });
+
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;

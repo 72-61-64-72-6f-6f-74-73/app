@@ -24,6 +24,14 @@
     <button
         class={`button-simple`}
         onclick={async () => {
+            await goto(`/models/location-gcs`);
+        }}
+    >
+        {"models location_gcs"}
+    </button>
+    <button
+        class={`button-simple`}
+        onclick={async () => {
             const url = `https://radroots.org`;
             const res = await cl.browser.open(url);
             await cl.dialog.alert(JSON.stringify(res));

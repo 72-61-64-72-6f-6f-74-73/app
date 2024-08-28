@@ -53,6 +53,7 @@
 		"@radroots/jeep-sqlite": "workspace:*",
 		"@radroots/svelte-lib": "workspace:*",
 		"@radroots/theme": "workspace:*",
+		"@radroots/utils": "workspace:*",
 		"sql.js": "^1.11.0"
 	}
 }

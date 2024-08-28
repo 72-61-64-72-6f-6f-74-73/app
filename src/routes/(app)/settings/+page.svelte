@@ -7,7 +7,7 @@
     import { toggle_color_mode, trellis } from "@radroots/svelte-lib";
 </script>
 
-<LayoutTrellis>
+<svelte:component this={LayoutTrellis}>
     <svelte:component
         this={trellis}
         basis={{
@@ -370,4 +370,4 @@
             },
         }}
     />
-</LayoutTrellis>
+</svelte:component>
