@@ -6,7 +6,11 @@ PODS:
     - Capacitor
   - CapacitorGeolocation (6.0.1):
     - Capacitor
+  - CapacitorHaptics (6.0.1):
+    - Capacitor
   - CapacitorPreferences (6.0.2):
+    - Capacitor
+  - CapacitorShare (6.0.2):
     - Capacitor
   - CapacitorSplashScreen (6.0.2):
     - Capacitor
@@ -30,7 +34,9 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorDialog (from `../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog`)"
   - "CapacitorGeolocation (from `../../../../node_modules/.pnpm/@capacitor+geolocation@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/geolocation`)"
+  - "CapacitorHaptics (from `../../../../node_modules/.pnpm/@capacitor+haptics@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/haptics`)"
   - "CapacitorPreferences (from `../../../../node_modules/.pnpm/@capacitor+preferences@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/preferences`)"
+  - "CapacitorShare (from `../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen`)"
   - RadrootsCapacitorSecureStorage (from `../../../../packages/capacitor-secure-storage`)
   - RadrootsCapacitorSqlite (from `../../../../packages/capacitor-sqlite`)
@@ -50,8 +56,12 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog"
   CapacitorGeolocation:
     :path: "../../../../node_modules/.pnpm/@capacitor+geolocation@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/geolocation"
+  CapacitorHaptics:
+    :path: "../../../../node_modules/.pnpm/@capacitor+haptics@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/haptics"
   CapacitorPreferences:
     :path: "../../../../node_modules/.pnpm/@capacitor+preferences@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/preferences"
+  CapacitorShare:
+    :path: "../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share"
   CapacitorSplashScreen:
     :path: "../../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen"
   RadrootsCapacitorSecureStorage:
@@ -64,7 +74,9 @@ SPEC CHECKSUMS:
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorDialog: ad752191fdb22a8d0ac199b0754b8a021d86dbf9
   CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
+  CapacitorHaptics: fe689ade56ef20ec9b041a753c6da70c5d8ec9a9
   CapacitorPreferences: e8284bf740cf8c6d3f25409af3c01df87dfeb5a1
+  CapacitorShare: 591ae4693d85686ceb590db8e8b44aa014ec6490
   CapacitorSplashScreen: 250df9ef8014fac5c7c1fd231f0f8b1d8f0b5624
   KeychainSwift: 4a71a45c802fd9e73906457c2dcbdbdc06c9419d
   RadrootsCapacitorSecureStorage: d95a1648c105ddf18a1b0612528e0ce1f77b789e
@@ -72,6 +84,6 @@ SPEC CHECKSUMS:
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: adef25b71a81718ce98042fd56c02057b582e57f
+PODFILE CHECKSUM: a829fb2b902c48695cd16120dd26106d2580cd4f
 
 COCOAPODS: 1.15.2

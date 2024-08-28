@@ -4,6 +4,8 @@ const dev = process.env.NODE_ENV === `dev`;
 const port = process.env.RADROOTS_APP_PORT ? Number(process.env.RADROOTS_APP_PORT) : 3000;
 const iosKeychainPrefix = process.env.RADROOTS_APP_SQLITE_KEYCHAIN_PREFIX;
 if (!iosKeychainPrefix) throw new Error('Error: iosKeychainPrefix is required');
+const iosDatabaseLocation = process.env.RADROOTS_APP_SQLITE_DATABASE_LOCATION;
+if (!iosDatabaseLocation) throw new Error('Error: iosDatabaseLocation is required');
 
 const config: CapacitorConfig = {
   appId: process.env.RADROOTS_APP_ID,
@@ -20,7 +22,7 @@ const config: CapacitorConfig = {
       launchAutoHide: false,
     },
     CapacitorSQLite: {
-      iosDatabaseLocation: 'Library/radroots',
+      iosDatabaseLocation,
       iosIsEncryption: true,
       iosKeychainPrefix,
       androidIsEncryption: true,
