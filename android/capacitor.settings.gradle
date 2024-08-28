@@ -25,3 +25,6 @@ project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/c
 
 include ':radroots-capacitor-secure-storage'
 project(':radroots-capacitor-secure-storage').projectDir = new File('../../../packages/capacitor-secure-storage/android')
+
+include ':radroots-capacitor-wifi'
+project(':radroots-capacitor-wifi').projectDir = new File('../../../packages/capacitor-wifi/android')

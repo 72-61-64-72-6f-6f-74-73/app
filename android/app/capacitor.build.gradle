@@ -17,6 +17,7 @@ dependencies {
     implementation project(':capacitor-share')
     implementation project(':radroots-capacitor-sqlite')
     implementation project(':radroots-capacitor-secure-storage')
+    implementation project(':radroots-capacitor-wifi')
 
 }
 

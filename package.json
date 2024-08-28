@@ -46,6 +46,7 @@
 		"@ionic/pwa-elements": "^3.3.0",
 		"@radroots/capacitor-sqlite": "workspace:*",
 		"@radroots/capacitor-secure-storage": "workspace:*",
+		"@radroots/capacitor-wifi": "workspace:*",
 		"@radroots/client": "workspace:*",
 		"@radroots/jeep-sqlite": "workspace:*",
 		"@radroots/svelte-lib": "workspace:*",

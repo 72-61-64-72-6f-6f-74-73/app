@@ -17,6 +17,7 @@ export const load: LayoutLoad = async ({ url }: LayoutLoadEvent) => {
             }
         }
     } catch (e) { } finally {
+        await cl.window.splash_hide();
         return {};
     };
 };

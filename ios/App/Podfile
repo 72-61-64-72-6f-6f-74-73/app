@@ -19,6 +19,7 @@ def capacitor_pods
   pod 'CapacitorShare', :path => '../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share'
   pod 'RadrootsCapacitorSqlite', :path => '../../../../packages/capacitor-sqlite'
   pod 'RadrootsCapacitorSecureStorage', :path => '../../../../packages/capacitor-secure-storage'
+  pod 'RadrootsCapacitorWifi', :path => '../../../../packages/capacitor-wifi'
 end
 
 target 'App' do
