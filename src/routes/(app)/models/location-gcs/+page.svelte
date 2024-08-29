@@ -124,7 +124,7 @@
             {#each locations_all as location}
                 <div class={`flex flex-col justify-center items-center`}>
                     <pre
-                        class={`glyph font-sans font-[400] text-layer-0-glyph`}>{JSON.stringify(
+                        class={`font-sans font-[400] text-layer-0-glyph`}>{JSON.stringify(
                             location,
                             null,
                             4,
@@ -132,7 +132,7 @@
                 </div>
             {/each}
         {:else}
-            <p class={`glyph font-sans font-[400] text-layer-0-glyph`}>
+            <p class={`font-sans font-[400] text-layer-0-glyph`}>
                 {"No locations saved"}
             </p>
         {/if}

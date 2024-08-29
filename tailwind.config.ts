@@ -8,6 +8,8 @@ const heights = {
   line: `46px`,
   tabs_base: `64px`,
   tabs_lg: `88px`,
+  nav_base: `64px`,
+  nav_lg: `100px`,
 };
 
 const widths = {
@@ -32,6 +34,10 @@ const config: Config = {
       fontSize: {
         line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
         trellisTitle: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
+        trellisLine: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
+        trellisLabel: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
+        navPrevious: ["1.09rem", { lineHeight: "1.33rem", fontWeight: 400 }],
+        navCurrent: ["1.09rem", { lineHeight: "1.33rem", fontWeight: 500 }],
       },
       height: {
         ...heights,

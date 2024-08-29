@@ -1,7 +1,13 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
+    import { app_nav_visible, app_tabs_visible } from "$lib/stores";
     import { t } from "@radroots/svelte-lib";
+
+    $effect(() => {
+        app_nav_visible.set(false);
+        app_tabs_visible.set(true);
+    });
 </script>
 
 <div class={`flex flex-col w-full pt-16 gap-8 justify-center items-center`}>
