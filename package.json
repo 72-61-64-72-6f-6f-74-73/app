@@ -46,6 +46,7 @@
 		"@capacitor/status-bar": "^6.0.0",
 		"@capacitor/ios": "^6.0.0",
 		"@ionic/pwa-elements": "^3.3.0",
+		"@radroots/capacitor-native-settings": "workspace:*",
 		"@radroots/capacitor-sqlite": "workspace:*",
 		"@radroots/capacitor-secure-storage": "workspace:*",
 		"@radroots/capacitor-wifi": "workspace:*",

@@ -26,6 +26,9 @@ project(':capacitor-share').projectDir = new File('../../../node_modules/.pnpm/@
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar/android')
 
+include ':radroots-capacitor-native-settings'
+project(':radroots-capacitor-native-settings').projectDir = new File('../../../packages/capacitor-native-settings/android')
+
 include ':radroots-capacitor-sqlite'
 project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/capacitor-sqlite/android')
 

@@ -19,6 +19,7 @@ def capacitor_pods
   pod 'CapacitorSplashScreen', :path => '../../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen'
   pod 'CapacitorShare', :path => '../../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share'
   pod 'CapacitorStatusBar', :path => '../../../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar'
+  pod 'RadrootsCapacitorNativeSettings', :path => '../../../../packages/capacitor-native-settings'
   pod 'RadrootsCapacitorSqlite', :path => '../../../../packages/capacitor-sqlite'
   pod 'RadrootsCapacitorSecureStorage', :path => '../../../../packages/capacitor-secure-storage'
   pod 'RadrootsCapacitorWifi', :path => '../../../../packages/capacitor-wifi'

@@ -19,6 +19,15 @@
         background-color: hsl(var(--layer-0-surface));
     }
 
+    body {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
     p {
         @apply select-none cursor-none;
     }
