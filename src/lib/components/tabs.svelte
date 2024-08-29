@@ -1,6 +1,6 @@
 <script lang="ts">
     import { app_layout, app_tab_active, app_tabs_blur } from "$lib/stores";
-    import { glyph, type ITabsBasis } from "@radroots/svelte-lib";
+    import { glyph as Glyph, type ITabsBasis } from "@radroots/svelte-lib";
 
     let {
         basis,
@@ -33,13 +33,12 @@
                         await tab.callback(tab_i);
                     }}
                 >
-                    <svelte:component
-                        this={glyph}
+                    <Glyph
                         basis={{
                             classes:
                                 $app_tab_active === tab_i
-                                    ? `text-layer-0-glyph text-lineActiveBlue`
-                                    : `text-layer-0-glyph text-lineMd`,
+                                    ? `text-layer-2-glyph text-lineActiveBlue`
+                                    : `text-layer-2-glyph text-lineMd`,
                             key: tab.icon,
                             dim: `md`,
                             weight:
