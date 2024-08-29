@@ -6,6 +6,8 @@ const { fontFamily: tw_font } = tailwind_default;
 
 const heights = {
   line: `46px`,
+  tabs_base: `64px`,
+  tabs_lg: `88px`,
 };
 
 const widths = {

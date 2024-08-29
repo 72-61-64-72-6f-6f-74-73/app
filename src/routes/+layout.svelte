@@ -5,7 +5,7 @@
     import { cl } from "$lib/client";
     import LayoutWindow from "$lib/components/layout-window.svelte";
     import { _cf } from "$lib/conf";
-    import { app_config, app_key, app_lo, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
+    import { app_config, app_key, app_layout, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
     import {
         css_static as CssStatic,
         sleep,
@@ -44,7 +44,7 @@
     });
 
     app_win.subscribe(([win_h, win_w]) => {
-        if (win_h > 800) app_lo.set("lg");
+        if (win_h > 800) app_layout.set("lg");
     });
 
     app_thc.subscribe((app_thc) => {
@@ -101,3 +101,4 @@
     </LayoutWindow>
 {/if}
 <CssStatic />
+<div class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg"></div>
