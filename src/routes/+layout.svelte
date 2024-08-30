@@ -1,16 +1,19 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
-    import { PUBLIC_DATABASE_NAME } from "$env/static/public";
+    import { PUBLIC_DATABASE_NAME, PUBLIC_NOSTR_RELAY_DEFAULTS } from "$env/static/public";
     import { cl } from "$lib/client";
     import LayoutWindow from "$lib/components/layout-window.svelte";
     import { _cf } from "$lib/conf";
-    import { app_config, app_key, app_layout, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
+    import { app_config, app_layout, app_nostr_key, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
     import {
         css_static as CssStatic,
+        ndk,
+        ndk_setup_privkey,
+        ndk_user,
         sleep,
         theme_set,
-        type PropChildren,
+        type PropChildren
     } from "@radroots/svelte-lib";
     import { parse_color_mode, parse_theme_key } from "@radroots/theme/src/utils";
     import "../app.css";
@@ -64,15 +67,35 @@
         console.log(`(app_sqlite) connected`);
     });
 
+    app_nostr_key.subscribe(async (app_nostr_key) => {
+        try {
+            if(!app_nostr_key) return;
+            const private_key = await cl.keystore.get(`nostr:key:${app_nostr_key}`);
+            if (private_key) {
+                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(',')) $ndk.addExplicitRelay(url);
+                await $ndk.connect().then(() => {
+                    console.log(`(ndk) connected`);
+                });
+                const setup_user = await ndk_setup_privkey({
+                    $ndk,
+                    private_key,
+                });
+                if (setup_user) {
+                    $ndk_user = setup_user;
+                    $ndk_user.ndk = $ndk;
+                    console.log(`(ndk_user) connected`);
+                }
+            }
+        } catch(e) {};
+    })
+
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
-            const key_active = await cl.preferences.get(_cf.pref_key_active);
-            console.log(`key_active `, key_active)
-            const nostr_key = await cl.keystore.get(`nostr:key:${key_active}`);
-            console.log(`nostr_key `, nostr_key)
-            if(typeof nostr_key === `string` && nostr_key) app_key.set(nostr_key);
+            const active_nostr_pk = await cl.preferences.get(_cf.pref_key_active);
+            const active_nostr_sk = await cl.keystore.get(`nostr:key:${active_nostr_pk}`);
+            if(typeof active_nostr_sk === `string` && active_nostr_sk && active_nostr_pk) app_nostr_key.set(active_nostr_pk);
             else {
                 await cl.preferences.remove(_cf.pref_key_active);
                 await goto(`/conf/nostr`);

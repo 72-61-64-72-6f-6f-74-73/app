@@ -17,7 +17,7 @@ export const app_tabs_visible = writable<boolean>(false);
 export const app_tabs_blur = writable<boolean>(false);
 export const app_tab_active = writable<number>(0);
 
-export const app_key = writable<string>(``);
+export const app_nostr_key = writable<string>(``);
 export const app_pwa_polyfills = writable<boolean>(false);
 export const app_sqlite = writable<boolean>(false);
 
