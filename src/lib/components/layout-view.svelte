@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { app_layout, app_nav, app_nav_blur, app_tabs_blur, app_tabs_visible } from "$lib/stores";
+    import { app_layout, app_nav_blur, app_nav_visible, app_tabs_blur, app_tabs_visible } from "$lib/stores";
     import { type AppLayoutKey, type PropChildren } from "@radroots/svelte-lib";
 
     const styles: Record<AppLayoutKey, string> = {
@@ -11,7 +11,7 @@
 
     let el: HTMLElement | null;
 
-    let classes_nav = $derived($app_nav ? `pt-h_nav_${$app_layout}` : `${styles[$app_layout]}`)
+    let classes_nav = $derived($app_nav_visible ? `pt-h_nav_${$app_layout}` : `${styles[$app_layout]}`)
     let classes_tabs = $derived($app_tabs_visible ? `pb-h_tabs_${$app_layout}` : ``)
 
     const scrollChange = (): void => {

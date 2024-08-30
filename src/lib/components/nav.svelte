@@ -1,6 +1,11 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { app_layout, app_nav, app_nav_blur } from "$lib/stores";
+    import {
+        app_layout,
+        app_nav_blur,
+        app_nav_prev,
+        app_nav_title,
+    } from "$lib/stores";
     import {
         encode_qp,
         fill as Fill,
@@ -16,10 +21,10 @@
 
     let title_label = $state(``);
 
-    app_nav.subscribe((app_nav) => {
-        if (!app_nav) return;
-        if (app_nav.prev && app_nav.prev.length) {
-            const previous = app_nav.prev[app_nav.prev.length - 1];
+    app_nav_prev.subscribe((app_nav_prev) => {
+        console.log(JSON.stringify(app_nav_prev, null, 4), `app_nav_prev`);
+        if (app_nav_prev.length) {
+            const previous = app_nav_prev[app_nav_prev.length - 1];
             if (previous) {
                 previous_route = previous.route;
                 if (previous.label) previous_label = previous.label;
@@ -27,15 +32,17 @@
                     previous_param = encode_qp(previous.params);
             }
         }
+    });
 
-        if (app_nav.title) {
-            title_label = app_nav.title.label;
-        }
+    app_nav_title.subscribe((app_nav_title) => {
+        if (!app_nav_title) return;
+        title_label = app_nav_title.label;
     });
 
     const handle_previous = async (): Promise<void> => {
         try {
             const url = `${previous_route || `/`}${previous_param || ``}`;
+            app_nav_prev.set($app_nav_prev.slice(0, -1));
             await goto(url);
         } catch (e) {
             console.log(`(error) handle_previous `, e);

@@ -1,35 +1,38 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
-    import { _cf } from "$lib/conf";
-    import { app_nav, app_tab_active, app_tabs_visible } from "$lib/stores";
+    import {
+        app_nav_prev,
+        app_nav_title,
+        app_nav_visible,
+        app_tab_active,
+        app_tabs_visible,
+    } from "$lib/stores";
+    import { NDKKind } from "@nostr-dev-kit/ndk";
     import { ndk, ndk_event, ndk_user, t } from "@radroots/svelte-lib";
 
     $effect(() => {
-        app_nav.set(false);
+        app_nav_visible.set(false);
         app_tabs_visible.set(true);
         app_tab_active.set(0);
     });
 
-    const save_nostr_metadata = async (): Promise<void> => {
+    const nostr_note_pub = async (): Promise<void> => {
         try {
-            const metadata = {
-                name: `radroots!`,
-                display_name: _cf.root_symbol,
-            };
+            const content = `hello from radroots`;
             const ev = await ndk_event({
                 $ndk,
                 $ndk_user,
                 basis: {
-                    kind: 0,
-                    content: JSON.stringify(metadata),
+                    kind: NDKKind.Text,
+                    content: JSON.stringify(content),
                 },
             });
-
+            console.log(JSON.stringify(ev, null, 4), `ev`);
             if (ev) await ev.publish();
-            cl.dialog.alert(`Published metadata ${JSON.stringify(metadata)}`);
+            cl.dialog.alert(`Published content ${JSON.stringify(content)}`);
         } catch (e) {
-            console.log(`(error) `, e);
+            console.log(`(error) nostr_note_pub `, e);
         }
     };
 </script>
@@ -46,16 +49,12 @@
     <button
         class={`button-simple`}
         onclick={async () => {
-            app_nav.set({
-                prev: [
-                    {
-                        label: `Home`,
-                        route: `/`,
-                    },
-                ],
-                title: {
-                    label: `Models`,
-                },
+            $app_nav_prev.push({
+                label: `Home`,
+                route: `/`,
+            });
+            app_nav_title.set({
+                label: `Models`,
             });
             await goto(`/models/location-gcs`);
         }}
@@ -65,9 +64,9 @@
     <button
         class={`button-simple`}
         onclick={async () => {
-            await save_nostr_metadata();
+            await nostr_note_pub();
         }}
     >
-        {"publish metadata"}
+        {"publish test note"}
     </button>
 </div>

@@ -17,11 +17,11 @@ project(':capacitor-haptics').projectDir = new File('../../../node_modules/.pnpm
 include ':capacitor-preferences'
 project(':capacitor-preferences').projectDir = new File('../../../node_modules/.pnpm/@capacitor+preferences@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/preferences/android')
 
-include ':capacitor-splash-screen'
-project(':capacitor-splash-screen').projectDir = new File('../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen/android')
-
 include ':capacitor-share'
 project(':capacitor-share').projectDir = new File('../../../node_modules/.pnpm/@capacitor+share@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/share/android')
+
+include ':capacitor-splash-screen'
+project(':capacitor-splash-screen').projectDir = new File('../../../node_modules/.pnpm/@capacitor+splash-screen@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/splash-screen/android')
 
 include ':capacitor-status-bar'
 project(':capacitor-status-bar').projectDir = new File('../../../node_modules/.pnpm/@capacitor+status-bar@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/status-bar/android')
@@ -29,11 +29,11 @@ project(':capacitor-status-bar').projectDir = new File('../../../node_modules/.p
 include ':radroots-capacitor-native-settings'
 project(':radroots-capacitor-native-settings').projectDir = new File('../../../packages/capacitor-native-settings/android')
 
-include ':radroots-capacitor-sqlite'
-project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/capacitor-sqlite/android')
-
 include ':radroots-capacitor-secure-storage'
 project(':radroots-capacitor-secure-storage').projectDir = new File('../../../packages/capacitor-secure-storage/android')
+
+include ':radroots-capacitor-sqlite'
+project(':radroots-capacitor-sqlite').projectDir = new File('../../../packages/capacitor-sqlite/android')
 
 include ':radroots-capacitor-wifi'
 project(':radroots-capacitor-wifi').projectDir = new File('../../../packages/capacitor-wifi/android')
