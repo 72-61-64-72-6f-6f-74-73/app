@@ -1,17 +1,15 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import { _cf } from "$lib/conf";
-    import { app_nav_visible, app_tabs_visible, app_thc } from "$lib/stores";
+    import { app_tabs_visible, app_thc } from "$lib/stores";
     import {
         toggle_color_mode,
         trellis as Trellis,
     } from "@radroots/svelte-lib";
 
     $effect(() => {
-        app_nav_visible.set(true);
         app_tabs_visible.set(false);
     });
 </script>
@@ -26,25 +24,6 @@
                         value: `Appearance`,
                     },
                     list: [
-                        {
-                            offset: {
-                                mod: {
-                                    key: `caret-left`,
-                                },
-                            },
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: "Back",
-                                        },
-                                    ],
-                                },
-                                callback: async () => {
-                                    await goto(`/`);
-                                },
-                            },
-                        },
                         {
                             hide_active: true,
                             touch: {
@@ -184,7 +163,7 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Share`,
+                        value: `Location`,
                     },
                     list: [
                         {
@@ -212,9 +191,43 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Haptics`,
+                        value: `Tests`,
                     },
                     list: [
+                        {
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `Open Radroots Homepage`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    const url = `https://radroots.org`;
+                                    await cl.browser.open(url);
+                                },
+                            },
+                        },
+                        {
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `Share Radroots Homepage`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    await cl.share.open({
+                                        title: `Radroots Home Page`,
+                                        text: `Find farmers around the world.`,
+                                        url: `https://radroots.org`,
+                                        dialog_title: `This is the dialog title`,
+                                    });
+                                },
+                            },
+                        },
                         {
                             touch: {
                                 label: {
@@ -272,102 +285,6 @@
                                 },
                                 callback: async () => {
                                     await cl.haptics.vibrate(500);
-                                },
-                            },
-                        },
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Haptics Selection Start`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                end: {
-                                    icon: {
-                                        key: `caret-right`,
-                                    },
-                                },
-                                callback: async () => {
-                                    await cl.haptics.selection_start();
-                                },
-                            },
-                        },
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Haptics Selection End`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                end: {
-                                    icon: {
-                                        key: `caret-right`,
-                                    },
-                                },
-                                callback: async () => {
-                                    await cl.haptics.selection_end();
-                                },
-                            },
-                        },
-                    ],
-                },
-            }}
-        />
-        <Trellis
-            basis={{
-                args: {
-                    layer: 1,
-                    title: {
-                        value: `Share`,
-                    },
-                    list: [
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Share Test #1`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                callback: async () => {
-                                    const res = await cl.share.open({
-                                        title: `Radroots Home Page`,
-                                        text: `Find farmers around the world.`,
-                                        url: `https://radroots.org`,
-                                        dialog_title: `This is the dialog title`,
-                                    });
-
-                                    console.log(`res `, res);
-                                },
-                            },
-                        },
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Share Test #2`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                callback: async () => {
-                                    const res = await cl.share.open({
-                                        title: `Radroots Home Page`,
-                                        url: `https://radroots.org`,
-                                        dialog_title: `This is the dialog title`,
-                                        files: [`file-1.png`, `file-2.png`],
-                                    });
-
-                                    console.log(`res `, res);
                                 },
                             },
                         },

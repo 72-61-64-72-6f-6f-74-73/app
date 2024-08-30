@@ -7,8 +7,8 @@ const { fontFamily: tw_font } = tailwind_default;
 const heights = {
   line: `46px`,
   tabs_base: `64px`,
-  tabs_lg: `88px`,
-  nav_base: `64px`,
+  tabs_lg: `86px`,
+  nav_base: `67px`,
   nav_lg: `100px`,
 };
 

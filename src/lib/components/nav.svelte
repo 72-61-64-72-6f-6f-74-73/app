@@ -17,14 +17,19 @@
     let title_label = $state(``);
 
     app_nav.subscribe((app_nav) => {
-        if (app_nav.length) {
-            const previous = app_nav[app_nav.length - 1];
+        if (!app_nav) return;
+        if (app_nav.prev && app_nav.prev.length) {
+            const previous = app_nav.prev[app_nav.prev.length - 1];
             if (previous) {
                 previous_route = previous.route;
                 if (previous.label) previous_label = previous.label;
                 if (previous.params)
                     previous_param = encode_qp(previous.params);
             }
+        }
+
+        if (app_nav.title) {
+            title_label = app_nav.title.label;
         }
     });
 
