@@ -1,7 +1,6 @@
 import type { AppLayoutKey } from "@radroots/svelte-lib";
 import { type ColorMode, type ThemeKey } from "@radroots/theme";
 import { writable } from "svelte/store";
-import type { NavParamPrev, NavParamTitle } from "./types";
 
 export const app_thc = writable<ColorMode>(`light`);
 export const app_thm = writable<ThemeKey>(`os`);
@@ -22,5 +21,5 @@ export const app_pwa_polyfills = writable<boolean>(false);
 export const app_sqlite = writable<boolean>(false);
 
 export const app_nav_visible = writable<boolean>(false);
-export const app_nav_prev = writable<NavParamPrev>([]);
-export const app_nav_title = writable<NavParamTitle | false>(false);
+//export const app_nav_prev = writable<NavParamPrev>([]);
+//export const app_nav_title = writable<NavParamTitle | false>(false);

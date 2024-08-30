@@ -1,53 +1,25 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import {
-        app_layout,
-        app_nav_blur,
-        app_nav_prev,
-        app_nav_title,
-    } from "$lib/stores";
-    import {
-        encode_qp,
-        fill as Fill,
-        glyph as Glyph,
-    } from "@radroots/svelte-lib";
+    import { app_layout, app_nav_blur, app_nav_visible } from "$lib/stores";
+    import type { INavBasis } from "$lib/types";
+    import { restart } from "$lib/utils";
+    import { fill as Fill, glyph as Glyph } from "@radroots/svelte-lib";
+
+    let {
+        basis,
+    }: {
+        basis: INavBasis;
+    } = $props();
 
     let el: HTMLElement | null;
     let el_inner: HTMLElement | null;
 
-    let previous_route = $state(``);
-    let previous_param = $state(``);
-    let previous_label = $state(``);
-
-    let title_label = $state(``);
-
-    app_nav_prev.subscribe((app_nav_prev) => {
-        console.log(JSON.stringify(app_nav_prev, null, 4), `app_nav_prev`);
-        if (app_nav_prev.length) {
-            const previous = app_nav_prev[app_nav_prev.length - 1];
-            if (previous) {
-                previous_route = previous.route;
-                if (previous.label) previous_label = previous.label;
-                if (previous.params)
-                    previous_param = encode_qp(previous.params);
-            }
-        }
+    $effect(() => {
+        app_nav_visible.set(true);
+        return () => {
+            app_nav_visible.set(false);
+        };
     });
-
-    app_nav_title.subscribe((app_nav_title) => {
-        if (!app_nav_title) return;
-        title_label = app_nav_title.label;
-    });
-
-    const handle_previous = async (): Promise<void> => {
-        try {
-            const url = `${previous_route || `/`}${previous_param || ``}`;
-            app_nav_prev.set($app_nav_prev.slice(0, -1));
-            await goto(url);
-        } catch (e) {
-            console.log(`(error) handle_previous `, e);
-        }
-    };
 </script>
 
 <div
@@ -64,7 +36,7 @@
             <button
                 class={`col-span-4 flex flex-row h-full pl-2 justify-start items-center`}
                 onclick={async () => {
-                    await handle_previous();
+                    await goto(basis.prev.route);
                 }}
             >
                 <Glyph
@@ -75,11 +47,11 @@
                         classes: `text-layer-1-glyph-hl group-active:opacity-70 transition-opacity`,
                     }}
                 />
-                {#if previous_label}
+                {#if basis.prev.label}
                     <p
                         class={`font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
                     >
-                        {previous_label}
+                        {basis.prev.label}
                     </p>
                 {:else}
                     <Fill />
@@ -88,10 +60,19 @@
             <div
                 class={`col-span-4 flex flex-row h-full justify-center items-center`}
             >
-                {#if title_label}
-                    <p class={`font-sans text-navCurrent text-layer-1-glyph`}>
-                        {title_label}
-                    </p>
+                {#if basis.title}
+                    <button
+                        class={`flex flex-row justify-center items-center`}
+                        onclick={async () => {
+                            await restart();
+                        }}
+                    >
+                        <p
+                            class={`font-sans text-navCurrent text-layer-1-glyph`}
+                        >
+                            {basis.title.label}
+                        </p>
+                    </button>
                 {:else}
                     <Fill />
                 {/if}
@@ -99,7 +80,22 @@
             <div
                 class={`col-span-4 flex flex-row h-full justify-end items-center`}
             >
-                <Fill />
+                {#if basis.option}
+                    <button
+                        class={`col-span-4 flex flex-row h-full pr-6 justify-end items-center`}
+                        onclick={async () => {
+                            await basis.option?.callback();
+                        }}
+                    >
+                        <p
+                            class={`font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
+                        >
+                            {basis.option.label}
+                        </p>
+                    </button>
+                {:else}
+                    <Fill />
+                {/if}
             </div>
         </div>
     </div>

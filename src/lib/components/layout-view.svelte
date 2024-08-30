@@ -7,13 +7,15 @@
         lg:'pt-16'
     };
 
-    let { children }: PropChildren = $props();
+    let { children, basis }: PropChildren & { basis?: { fade?: boolean; }} = $props();
 
     let el: HTMLElement | null;
 
     let classes_nav = $derived($app_nav_visible ? `pt-h_nav_${$app_layout}` : `${styles[$app_layout]}`)
     let classes_tabs = $derived($app_tabs_visible ? `pb-h_tabs_${$app_layout}` : ``)
+    let classes_fade = $derived(basis?.fade ? `fade-in` : ``)
 
+    
     const scrollChange = (): void => {
         if (Math.max(el?.scrollTop || 0, 0) > 10) app_nav_blur.set(true);
         else app_nav_blur.set(false);
@@ -31,7 +33,7 @@
 
 <div
     bind:this={el}
-    class={`absolute top-0 left-0 flex flex-col h-[100vh] w-full overflow-y-scroll scroll-hide ${classes_nav} ${classes_tabs}`}
+    class={`absolute top-0 left-0 flex flex-col h-[100vh] w-full overflow-y-scroll scroll-hide ${classes_nav} ${classes_tabs} ${classes_fade}`}
 >
     {@render children()}
 </div>

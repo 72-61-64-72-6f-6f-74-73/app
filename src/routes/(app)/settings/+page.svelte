@@ -2,15 +2,16 @@
     import { cl } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
+    import Nav from "$lib/components/nav.svelte";
     import { _cf } from "$lib/conf";
-    import { app_nav_visible, app_tabs_visible, app_thc } from "$lib/stores";
+    import { app_tabs_visible, app_thc } from "$lib/stores";
     import {
         toggle_color_mode,
         trellis as Trellis,
     } from "@radroots/svelte-lib";
 
     $effect(() => {
-        app_nav_visible.set(true);
+        //app_nav_visible.set(true);
         app_tabs_visible.set(false);
     });
 </script>
@@ -295,3 +296,11 @@
         />
     </LayoutTrellis>
 </LayoutView>
+<Nav
+    basis={{
+        prev: {
+            label: `Home`,
+            route: `/`,
+        },
+    }}
+/>

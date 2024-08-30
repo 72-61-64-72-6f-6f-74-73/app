@@ -94,6 +94,7 @@
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
             const active_nostr_pk = await cl.preferences.get(_cf.pref_key_active);
+            console.log(`active npub `, cl.nostr.lib.npub(active_nostr_pk))
             const active_nostr_sk = await cl.keystore.get(`nostr:key:${active_nostr_pk}`);
             if(typeof active_nostr_sk === `string` && active_nostr_sk && active_nostr_pk) app_nostr_key.set(active_nostr_pk);
             else {
@@ -110,6 +111,7 @@
     app_render.subscribe(async (app_render) => {
         try {
             if (!app_render) return;
+            await goto(`/`);
             await sleep(321);
         } catch (e) {
             console.log(`(app_render) error `, e);

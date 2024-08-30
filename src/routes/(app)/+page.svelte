@@ -1,25 +1,19 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { cl } from "$lib/client";
-    import {
-        app_nav_prev,
-        app_nav_title,
-        app_nav_visible,
-        app_tab_active,
-        app_tabs_visible,
-    } from "$lib/stores";
+    import { app_tab_active, app_tabs_visible } from "$lib/stores";
     import { NDKKind } from "@nostr-dev-kit/ndk";
     import { ndk, ndk_event, ndk_user, t } from "@radroots/svelte-lib";
 
     $effect(() => {
-        app_nav_visible.set(false);
+        //app_nav_visible.set(false);
         app_tabs_visible.set(true);
         app_tab_active.set(0);
     });
 
     const nostr_note_pub = async (): Promise<void> => {
         try {
-            const content = `hello from radroots`;
+            const content = `posting from radroots`;
             const ev = await ndk_event({
                 $ndk,
                 $ndk_user,
@@ -49,13 +43,6 @@
     <button
         class={`button-simple`}
         onclick={async () => {
-            $app_nav_prev.push({
-                label: `Home`,
-                route: `/`,
-            });
-            app_nav_title.set({
-                label: `Models`,
-            });
             await goto(`/models/location-gcs`);
         }}
     >

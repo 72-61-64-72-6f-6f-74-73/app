@@ -2,12 +2,8 @@
     import { goto } from "$app/navigation";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import { app_nav_prev, app_nav_title, app_nav_visible } from "$lib/stores";
+    import Nav from "$lib/components/nav.svelte";
     import { trellis as Trellis } from "@radroots/svelte-lib";
-
-    $effect(() => {
-        app_nav_visible.set(true);
-    });
 </script>
 
 <LayoutView>
@@ -31,16 +27,6 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    app_nav_prev.set([
-                                        ...$app_nav_prev,
-                                        {
-                                            label: `Nostr`,
-                                            route: `/nostr`,
-                                        },
-                                    ]);
-                                    app_nav_title.set({
-                                        label: `Profile`,
-                                    });
                                     await goto(`/nostr/profile`);
                                 },
                             },
@@ -56,16 +42,6 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    app_nav_prev.set([
-                                        ...$app_nav_prev,
-                                        {
-                                            label: `Nostr`,
-                                            route: `/nostr`,
-                                        },
-                                    ]);
-                                    app_nav_title.set({
-                                        label: `Notes`,
-                                    });
                                     await goto(`/nostr/notes`);
                                 },
                             },
@@ -76,3 +52,11 @@
         />
     </LayoutTrellis>
 </LayoutView>
+<Nav
+    basis={{
+        prev: {
+            label: `Home`,
+            route: `/`,
+        },
+    }}
+/>

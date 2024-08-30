@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { cl, nt } from "$lib/client";
+    import { cl } from "$lib/client";
     import { _cf } from "$lib/conf";
+    import { restart } from "$lib/utils";
 </script>
 
 <div class={`flex flex-col w-full pt-16 justify-center items-center`}>
     <button
         class={`flex flex-row justify-center items-center text-white`}
         onclick={async () => {
-            const sk_hex = nt.generate_key();
-            const pk_hex = nt.public_key(sk_hex);
+            const sk_hex = cl.nostr.lib.generate_key();
+            const pk_hex = cl.nostr.lib.public_key(sk_hex);
             const new_key_added = await cl.keystore.set(
                 `nostr:key:${pk_hex}`,
                 sk_hex,
@@ -20,7 +20,7 @@
                     pk_hex,
                 );
                 if (key_pref_added) {
-                    await goto(`/`);
+                    await restart();
                 }
             }
         }}
