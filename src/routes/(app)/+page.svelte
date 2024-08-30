@@ -23,6 +23,17 @@
     <button
         class={`button-simple`}
         onclick={async () => {
+            app_nav.set({
+                prev: [
+                    {
+                        label: `Home`,
+                        route: `/`,
+                    },
+                ],
+                title: {
+                    label: `Models`,
+                },
+            });
             await goto(`/models/location-gcs`);
         }}
     >
