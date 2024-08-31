@@ -1,6 +1,8 @@
 <script lang="ts">
     import { cl } from "$lib/client";
     import { _cf } from "$lib/conf";
+    import { restart } from "$lib/utils";
+    import { sleep } from "@radroots/svelte-lib";
 </script>
 
 <div class={`flex flex-col w-full pt-16 justify-center items-center`}>
@@ -14,13 +16,9 @@
                 sk_hex,
             );
             if (new_key_added) {
-                const key_pref_added = await cl.preferences.set(
-                    _cf.pref_key_active,
-                    pk_hex,
-                );
-                if (key_pref_added) {
-                    location.reload();
-                }
+                await cl.preferences.set(_cf.pref_key_active, pk_hex);
+                await sleep(500);
+                await restart(true);
             }
         }}
     >
