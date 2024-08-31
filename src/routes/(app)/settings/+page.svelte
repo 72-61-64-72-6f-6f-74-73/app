@@ -5,6 +5,7 @@
     import Nav from "$lib/components/nav.svelte";
     import { _cf } from "$lib/conf";
     import { app_tabs_visible, app_thc } from "$lib/stores";
+    import { restart } from "$lib/utils";
     import {
         toggle_color_mode,
         trellis as Trellis,
@@ -99,6 +100,7 @@
                                     const public_key = await cl.preferences.get(
                                         _cf.pref_key_active,
                                     );
+                                    console.log(`public_key `, public_key);
                                     const secret_key = await cl.keystore.get(
                                         `nostr:key:${public_key}`,
                                     );
@@ -140,18 +142,23 @@
                                         `Hi! This will delete your saved keys.`,
                                     );
                                     if (confirm) {
-                                        const public_key =
+                                        const nostr_public_key =
                                             await cl.preferences.get(
                                                 _cf.pref_key_active,
                                             );
-                                        await cl.keystore.remove(
-                                            `nostr:key:${public_key}`,
-                                        );
-                                        await cl.preferences.remove(
-                                            _cf.pref_key_active,
-                                        );
-                                        await cl.window.splash_show();
-                                        location.reload();
+                                        if (nostr_public_key) {
+                                            await cl.keystore.remove(
+                                                `nostr:key:${nostr_public_key}`,
+                                            );
+                                            await cl.preferences.remove(
+                                                _cf.pref_key_active,
+                                            );
+                                            await restart();
+                                        } else {
+                                            await cl.dialog.alert(
+                                                `There is no public key preference saved.`,
+                                            );
+                                        }
                                     }
                                 },
                             },

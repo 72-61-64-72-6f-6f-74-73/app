@@ -8,16 +8,14 @@
     import { ndk, trellis as Trellis } from "@radroots/svelte-lib";
     import { writable } from "svelte/store";
 
-    let ndk_sub = $derived(
-        $ndk.subscribe(
-            {
-                kinds: [NDKKind.Text],
-                authors: [$app_nostr_key],
-            },
-            {
-                closeOnEose: false,
-            },
-        ),
+    let ndk_sub = $ndk.subscribe(
+        {
+            kinds: [NDKKind.Text],
+            authors: [$app_nostr_key],
+        },
+        {
+            closeOnEose: false,
+        },
     );
     const events_list = writable<NDKEvent[]>([]);
 

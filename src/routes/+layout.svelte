@@ -86,7 +86,9 @@
                     console.log(`(ndk_user) connected`);
                 }
             }
-        } catch(e) {};
+        } catch(e) {
+            console.log(`(app_nostr_key) error `, e);
+        };
     })
 
     app_config.subscribe(async (app_config) => {
@@ -94,8 +96,9 @@
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
             const active_nostr_pk = await cl.preferences.get(_cf.pref_key_active);
-            console.log(`active npub `, cl.nostr.lib.npub(active_nostr_pk))
+            console.log(`active_nostr_pk `, active_nostr_pk)
             const active_nostr_sk = await cl.keystore.get(`nostr:key:${active_nostr_pk}`);
+            console.log(`active_nostr_sk `, active_nostr_sk)
             if(typeof active_nostr_sk === `string` && active_nostr_sk && active_nostr_pk) app_nostr_key.set(active_nostr_pk);
             else {
                 await cl.preferences.remove(_cf.pref_key_active);

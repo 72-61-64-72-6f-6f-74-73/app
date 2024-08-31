@@ -3,6 +3,7 @@
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
+    import { app_nostr_key } from "$lib/stores";
     import { restart } from "$lib/utils";
     import {
         NDKEvent,
@@ -21,7 +22,7 @@
 
     const ndk_filter: NDKFilter = {
         kinds: [NDKKind.Metadata],
-        // authors: [$app_nostr_key],
+        authors: [$app_nostr_key],
     };
     const ndk_opts: NDKSubscriptionOptions = {
         closeOnEose: false,
