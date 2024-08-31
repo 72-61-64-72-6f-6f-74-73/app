@@ -1,7 +1,6 @@
 <script lang="ts">
     import { cl } from "$lib/client";
     import { _cf } from "$lib/conf";
-    import { restart } from "$lib/utils";
 </script>
 
 <div class={`flex flex-col w-full pt-16 justify-center items-center`}>
@@ -20,7 +19,7 @@
                     pk_hex,
                 );
                 if (key_pref_added) {
-                    await restart();
+                    location.reload();
                 }
             }
         }}
