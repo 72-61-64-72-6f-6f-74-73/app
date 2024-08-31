@@ -127,7 +127,7 @@
                                     label: {
                                         left: [
                                             {
-                                                value: `Add Note`,
+                                                value: `Add Your First Note`,
                                             },
                                         ],
                                     },
@@ -159,7 +159,9 @@
         },
         option: $events_store.length
             ? {
-                  label: `Post`,
+                  label: {
+                      value: `Post`,
+                  },
                   callback: async () => {
                       await goto(`/nostr/notes/post`);
                   },

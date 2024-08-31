@@ -120,7 +120,7 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Profile Metadata`,
+                        value: `Your Profile`,
                     },
                     list: $events_store.length
                         ? Object.entries(
@@ -181,7 +181,9 @@
         },
         option: $events_store.length
             ? {
-                  label: `Edit`,
+                  label: {
+                      value: `Edit`,
+                  },
                   callback: async () => {
                       await nostr_metadata_publish();
                   },

@@ -89,16 +89,25 @@
             >
                 {#if basis.option}
                     <button
-                        class={`col-span-4 flex flex-row h-full pr-6 justify-end items-center`}
+                        class={`col-span-4 flex flex-row h-full pr-6 gap-2 justify-end items-center`}
                         on:click={async () => {
                             await basis.option?.callback();
                         }}
                     >
-                        <p
-                            class={`font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
-                        >
-                            {basis.option.label}
-                        </p>
+                        {#if `glyph` in basis.option && basis.option.glyph}
+                            <Glyph
+                                basis={{
+                                    ...basis.option.glyph,
+                                }}
+                            />
+                        {/if}
+                        {#if `label` in basis.option}
+                            <p
+                                class={`font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
+                            >
+                                {basis.option.label}
+                            </p>
+                        {/if}
                     </button>
                 {:else}
                     <Fill />

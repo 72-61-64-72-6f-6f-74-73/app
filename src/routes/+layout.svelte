@@ -155,10 +155,10 @@
             console.log(`init_route `, init_route);
             await goto(init_route);
             await sleep(321);
-            await cl.window.splash_hide();
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
+            await cl.window.splash_hide();
         }
     });
 </script>

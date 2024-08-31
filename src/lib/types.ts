@@ -1,9 +1,11 @@
-import type { CallbackPromise, NavigationPreviousParam } from "@radroots/svelte-lib";
+import type { ICb, IGlOpt, ILabelOpt, NavigationPreviousParam } from "@radroots/svelte-lib";
 
 export type NavParamPrev = NavigationPreviousParam[];
 export type NavParamTitle = {
     label: string;
 };
+
+
 
 export type INavBasis = {
     prev: {
@@ -13,8 +15,5 @@ export type INavBasis = {
     title?: {
         label: string;
     };
-    option?: {
-        label: string;
-        callback: CallbackPromise;
-    };
+    option?: ICb & IGlOpt & ILabelOpt;
 };

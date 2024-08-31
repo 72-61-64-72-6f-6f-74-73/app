@@ -121,26 +121,24 @@
                                 },
                             },
                         },
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Read Saved Locations`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                callback: async () => {
-                                    const res = await cl.db.location_gcs_get({
-                                        list: [`all`],
-                                    });
-                                    if (typeof res !== `string`)
-                                        locations_all = res;
-                                },
-                            },
-                        },
-                    ],
+                        locations_all.length
+                            ? {
+                                  touch: {
+                                      label: {
+                                          left: [
+                                              {
+                                                  value: `Edit Saved Location`,
+                                                  classes: `capitalize`,
+                                              },
+                                          ],
+                                      },
+                                      callback: async () => {
+                                          alert(`Todo!`);
+                                      },
+                                  },
+                              }
+                            : undefined,
+                    ].filter((i) => !!i),
                 },
             }}
         />
@@ -176,6 +174,16 @@
         },
         title: {
             label: `Locations`,
+        },
+        option: {
+            glyph: {
+                key: `arrow-counter-clockwise`,
+                dim: `md`,
+                classes: `text-layer-1-glyph-hl taps`,
+            },
+            callback: async () => {
+                await fetch_models();
+            },
         },
     }}
 />

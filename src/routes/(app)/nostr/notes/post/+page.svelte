@@ -68,7 +68,7 @@
             route: `/nostr/notes`,
         },
         title: {
-            label: `Post New`,
+            label: `Post Note`,
         },
     }}
 />
