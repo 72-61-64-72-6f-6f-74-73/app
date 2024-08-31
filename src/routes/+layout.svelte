@@ -1,11 +1,25 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
-    import { PUBLIC_DATABASE_NAME, PUBLIC_NOSTR_RELAY_DEFAULTS } from "$env/static/public";
+    import {
+        PUBLIC_DATABASE_NAME,
+        PUBLIC_NOSTR_RELAY_DEFAULTS,
+    } from "$env/static/public";
     import { cl } from "$lib/client";
     import LayoutWindow from "$lib/components/layout-window.svelte";
     import { _cf } from "$lib/conf";
-    import { app_config, app_layout, app_nostr_key, app_pwa_polyfills, app_render, app_sqlite, app_thc, app_thm, app_win } from "$lib/stores";
+    import {
+        app_config,
+        app_init_route,
+        app_layout,
+        app_nostr_key,
+        app_pwa_polyfills,
+        app_render,
+        app_sqlite,
+        app_thc,
+        app_thm,
+        app_win,
+    } from "$lib/stores";
     import {
         css_static as CssStatic,
         ndk,
@@ -13,12 +27,13 @@
         ndk_user,
         sleep,
         theme_set,
-        type PropChildren
     } from "@radroots/svelte-lib";
-    import { parse_color_mode, parse_theme_key } from "@radroots/theme/src/utils";
+    import {
+        parse_color_mode,
+        parse_theme_key,
+    } from "@radroots/theme/src/utils";
+    import { onMount } from "svelte";
     import "../app.css";
-
-    let { children }: PropChildren = $props();
 
     let render_pwa = browser && cl.platform === `web`;
     if (render_pwa) {
@@ -35,15 +50,20 @@
             });
     }
 
-    $effect(() => {
-        app_win.set([window.innerHeight, window.innerWidth]);
+    onMount(async () => {
+        try {
+            app_win.set([window.innerHeight, window.innerWidth]);
 
-        const prefers_dark = window.matchMedia(
-            `(prefers-color-scheme: dark)`,
-        ).matches;
+            const prefers_dark = window.matchMedia(
+                `(prefers-color-scheme: dark)`,
+            ).matches;
 
-        if (prefers_dark) app_thc.set(`dark`);
-        app_config.set(true);
+            if (prefers_dark) app_thc.set(`dark`);
+            app_config.set(true);
+        } catch (e) {
+            console.log(`(layout mount) `, e);
+        } finally {
+        }
     });
 
     app_win.subscribe(([win_h, win_w]) => {
@@ -63,16 +83,19 @@
     });
 
     app_sqlite.subscribe((app_sqlite) => {
-        if(!app_sqlite) return;
+        if (!app_sqlite) return;
         console.log(`(app_sqlite) connected`);
     });
 
     app_nostr_key.subscribe(async (app_nostr_key) => {
         try {
-            if(!app_nostr_key) return;
-            const private_key = await cl.keystore.get(`nostr:key:${app_nostr_key}`);
+            if (!app_nostr_key) return;
+            const private_key = await cl.keystore.get(
+                `nostr:key:${app_nostr_key}`,
+            );
             if (private_key) {
-                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(',')) $ndk.addExplicitRelay(url);
+                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(","))
+                    $ndk.addExplicitRelay(url);
                 await $ndk.connect().then(() => {
                     console.log(`(ndk) connected`);
                 });
@@ -86,20 +109,29 @@
                     console.log(`(ndk_user) connected`);
                 }
             }
-        } catch(e) {
+        } catch (e) {
             console.log(`(app_nostr_key) error `, e);
-        };
-    })
+        }
+    });
 
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
             app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
-            const active_nostr_pk = await cl.preferences.get(_cf.pref_key_active);
-            console.log(`active_nostr_pk `, active_nostr_pk)
-            const active_nostr_sk = await cl.keystore.get(`nostr:key:${active_nostr_pk}`);
-            console.log(`active_nostr_sk `, active_nostr_sk)
-            if(typeof active_nostr_sk === `string` && active_nostr_sk && active_nostr_pk) app_nostr_key.set(active_nostr_pk);
+            const active_nostr_pk = await cl.preferences.get(
+                _cf.pref_key_active,
+            );
+            console.log(`active_nostr_pk `, active_nostr_pk);
+            const active_nostr_sk = await cl.keystore.get(
+                `nostr:key:${active_nostr_pk}`,
+            );
+            console.log(`active_nostr_sk `, active_nostr_sk);
+            if (
+                typeof active_nostr_sk === `string` &&
+                active_nostr_sk &&
+                active_nostr_pk
+            )
+                app_nostr_key.set(active_nostr_pk);
             else {
                 await cl.preferences.remove(_cf.pref_key_active);
                 await goto(`/conf/nostr`);
@@ -113,20 +145,30 @@
 
     app_render.subscribe(async (app_render) => {
         try {
+            console.log(`app_render `, app_render);
             if (!app_render) return;
-            await goto(`/`);
+            let init_route = `/`;
+            if ($app_init_route) {
+                init_route = $app_init_route;
+                app_init_route.set(`/`);
+            }
+            console.log(`init_route `, init_route);
+            await goto(init_route);
             await sleep(321);
+            await cl.window.splash_hide();
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
-            await cl.window.splash_hide();
         }
     });
 </script>
+
 {#if $app_render}
     <LayoutWindow>
-        {@render children()}
+        <slot />
     </LayoutWindow>
 {/if}
 <CssStatic />
-<div class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg"></div>
+<div
+    class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg"
+></div>

@@ -10,10 +10,14 @@
         toggle_color_mode,
         trellis as Trellis,
     } from "@radroots/svelte-lib";
+    import { onMount } from "svelte";
 
-    $effect(() => {
-        //app_nav_visible.set(true);
-        app_tabs_visible.set(false);
+    onMount(async () => {
+        try {
+            app_tabs_visible.set(false);
+        } catch (e) {
+        } finally {
+        }
     });
 </script>
 
@@ -200,7 +204,7 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Tests`,
+                        value: `Web`,
                     },
                     list: [
                         {
@@ -208,7 +212,7 @@
                                 label: {
                                     left: [
                                         {
-                                            value: `Radroots Homepage (Open)`,
+                                            value: `Radroots.Org (Open Homepage)`,
                                         },
                                     ],
                                 },
@@ -223,7 +227,7 @@
                                 label: {
                                     left: [
                                         {
-                                            value: `Radroots Homepage (Share)`,
+                                            value: `Radroots.Org (Share Homepage)`,
                                         },
                                     ],
                                 },
@@ -237,6 +241,79 @@
                                 },
                             },
                         },
+                        {
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `Primal.Net (Open Profile)`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    const public_key = await cl.preferences.get(
+                                        _cf.pref_key_active,
+                                    );
+                                    const npub = cl.nostr.lib.npub(public_key);
+                                    const url = `https://primal.net/p/${npub}`;
+                                    await cl.browser.open(url);
+                                },
+                            },
+                        },
+                    ],
+                },
+            }}
+        />
+        <Trellis
+            basis={{
+                args: {
+                    layer: 1,
+                    title: {
+                        value: `Device`,
+                    },
+                    list: [
+                        {
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `Device (Info)`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    const data = await cl.device.info();
+                                    await cl.dialog.alert(JSON.stringify(data));
+                                },
+                            },
+                        },
+                        {
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `Device (Battery)`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    const data = await cl.device.battery();
+                                    await cl.dialog.alert(JSON.stringify(data));
+                                },
+                            },
+                        },
+                    ],
+                },
+            }}
+        />
+        <Trellis
+            basis={{
+                args: {
+                    layer: 1,
+                    title: {
+                        value: `Tests`,
+                    },
+                    list: [
                         {
                             touch: {
                                 label: {
@@ -308,6 +385,9 @@
         prev: {
             label: `Home`,
             route: `/`,
+        },
+        title: {
+            label: `Settings`,
         },
     }}
 />

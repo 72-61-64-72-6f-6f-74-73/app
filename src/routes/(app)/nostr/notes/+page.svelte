@@ -1,83 +1,151 @@
 <script lang="ts">
-    import { cl } from "$lib/client";
+    import { goto } from "$app/navigation";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
     import { app_nostr_key } from "$lib/stores";
-    import { NDKEvent, NDKKind } from "@nostr-dev-kit/ndk";
-    import { ndk, trellis as Trellis } from "@radroots/svelte-lib";
-    import { writable } from "svelte/store";
+    import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
+    import type {
+        ExtendedBaseType,
+        NDKEventStore,
+    } from "@nostr-dev-kit/ndk-svelte";
+    import {
+        locale,
+        ndk,
+        time_fmt_nostr_event,
+        trellis as Trellis,
+        type ITrellisKindTouch,
+    } from "@radroots/svelte-lib";
+    import { onDestroy } from "svelte";
 
-    let ndk_sub = $ndk.subscribe(
-        {
+    let events_store: NDKEventStore<ExtendedBaseType<NDKEvent>>;
+
+    $: {
+        let authors = [$app_nostr_key];
+        let ndk_filter: NDKFilter = {
             kinds: [NDKKind.Text],
-            authors: [$app_nostr_key],
-        },
-        {
-            closeOnEose: false,
-        },
-    );
-    const events_list = writable<NDKEvent[]>([]);
+            ...{ authors },
+        };
 
-    events_list.subscribe((events_list) => {
-        console.log(
-            `events_list `,
-            JSON.stringify(events_list.map((i) => i.content)),
-        );
+        fetch_events(ndk_filter).then(() => {
+            events_store?.startSubscription();
+        });
+    }
+
+    async function fetch_events(filter: NDKFilter) {
+        try {
+            events_store = $ndk.storeSubscribe(filter, {
+                closeOnEose: true,
+                groupable: false,
+                autoStart: false,
+            });
+            if (events_store) {
+                events_store.onEose(() => {});
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    onDestroy(() => {
+        events_store?.unsubscribe();
     });
 
-    ndk_sub.on("event", (event) => {
-        events_list.set([...$events_list, event]);
-    });
+    const parse_nostr_text_note = (ev: NDKEvent): ITrellisKindTouch[] => {
+        const trellis_list: ITrellisKindTouch[] = [];
+
+        trellis_list.push({
+            touch: {
+                label: {
+                    left: [
+                        {
+                            value: ev.content,
+                        },
+                    ],
+                },
+                callback: async () => {
+                    await goto(`/nostr/notes/post`);
+                },
+            },
+        });
+
+        trellis_list.push({
+            hide_active: true,
+            touch: {
+                label: {
+                    left: [
+                        {
+                            value: `Published At:`,
+                        },
+                    ],
+                    right: [
+                        {
+                            value: time_fmt_nostr_event($locale, ev.created_at),
+                        },
+                    ],
+                },
+            },
+        });
+
+        for (const tags of Object.entries(ev.tags)) {
+            console.log(`tags `, tags);
+        }
+        return trellis_list;
+    };
 </script>
 
 <LayoutView basis={{ fade: true }}>
     <LayoutTrellis>
-        <Trellis
-            basis={{
-                args: {
-                    layer: 1,
-                    title: {
-                        value: `Nostr Profile`,
+        {#if $events_store.length}
+            {#each $events_store as ev, ev_i (ev.id)}
+                <Trellis
+                    basis={{
+                        args: {
+                            layer: 1,
+                            title:
+                                ev_i === 0
+                                    ? {
+                                          value: `Your Notes`,
+                                      }
+                                    : undefined,
+                            list: parse_nostr_text_note(ev),
+                        },
+                    }}
+                />
+            {/each}
+        {:else}
+            <Trellis
+                basis={{
+                    args: {
+                        layer: 1,
+                        title: {
+                            value: `Your Notes`,
+                        },
+                        list: [
+                            {
+                                touch: {
+                                    label: {
+                                        left: [
+                                            {
+                                                value: `Add Note`,
+                                            },
+                                        ],
+                                    },
+                                    end: {
+                                        icon: {
+                                            key: `caret-right`,
+                                        },
+                                    },
+                                    callback: async () => {
+                                        await goto(`/nostr/notes/post`);
+                                    },
+                                },
+                            },
+                        ],
                     },
-                    list: $events_list.length
-                        ? $events_list.map((ev) => ({
-                              hide_active: true,
-                              touch: {
-                                  label: {
-                                      left: [
-                                          {
-                                              value: ev.content,
-                                          },
-                                      ],
-                                  },
-                                  callback: async () => {},
-                              },
-                          }))
-                        : [
-                              {
-                                  touch: {
-                                      label: {
-                                          left: [
-                                              {
-                                                  value: `Add Note`,
-                                              },
-                                          ],
-                                      },
-                                      end: {
-                                          icon: {
-                                              key: `caret-right`,
-                                          },
-                                      },
-                                      callback: async () => {
-                                          await cl.dialog.alert(`Todo!`);
-                                      },
-                                  },
-                              },
-                          ],
-                },
-            }}
-        />
+                }}
+            />
+        {/if}
     </LayoutTrellis>
 </LayoutView>
 <Nav
@@ -89,11 +157,11 @@
         title: {
             label: `Notes`,
         },
-        option: $events_list.length
+        option: $events_store.length
             ? {
-                  label: `Edit`,
+                  label: `Post`,
                   callback: async () => {
-                      await cl.dialog.alert(`Todo!`);
+                      await goto(`/nostr/notes/post`);
                   },
               }
             : undefined,

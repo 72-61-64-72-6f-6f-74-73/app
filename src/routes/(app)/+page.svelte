@@ -4,11 +4,15 @@
     import { app_tab_active, app_tabs_visible } from "$lib/stores";
     import { NDKKind } from "@nostr-dev-kit/ndk";
     import { ndk, ndk_event, ndk_user, t } from "@radroots/svelte-lib";
+    import { onMount } from "svelte";
 
-    $effect(() => {
-        //app_nav_visible.set(false);
-        app_tabs_visible.set(true);
-        app_tab_active.set(0);
+    onMount(async () => {
+        try {
+            app_tabs_visible.set(true);
+            app_tab_active.set(0);
+        } catch (e) {
+        } finally {
+        }
     });
 
     const nostr_note_pub = async (): Promise<void> => {
@@ -34,7 +38,7 @@
 <div class={`flex flex-col w-full pt-16 gap-8 justify-center items-center`}>
     <button
         class={`button-simple`}
-        onclick={async () => {
+        on:click={async () => {
             await cl.dialog.alert(`Hi! You're platform is ${cl.platform}`);
         }}
     >
@@ -42,18 +46,10 @@
     </button>
     <button
         class={`button-simple`}
-        onclick={async () => {
+        on:click={async () => {
             await goto(`/models/location-gcs`);
         }}
     >
-        {"models location_gcs"}
-    </button>
-    <button
-        class={`button-simple`}
-        onclick={async () => {
-            await nostr_note_pub();
-        }}
-    >
-        {"publish test note"}
+        {"models geolocation"}
     </button>
 </div>

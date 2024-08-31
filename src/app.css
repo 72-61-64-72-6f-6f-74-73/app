@@ -1,10 +1,27 @@
+@import "./lib/css/spinner.css";
+@import "./lib/css/spinner-6.css";
+@import "./lib/css/spinner-12.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
+    .input-simple {
+        @apply input flex flex-row w-full h-fit p-0 border-0 focus:border-0 outline-0 focus:outline-0 placeholder:font-[300] bg-layer-1-surface font-mono text-sm text-layer-2-glyph;
+    }
+
+    .button-submit {
+        @apply h-[32px] min-w-[82px] w-fit rounded-xl active:bg-layer-1-surface_a;
+    }
+
     .button-simple {
-        @apply flex flex-row h-line w-line justify-center items-center bg-layer-1-surface font-mono text-sm lowercase text-layer-2-glyph;
+        @apply h-line w-line;
+    }
+
+    .button-simple,
+    .button-submit {
+        @apply flex flex-row justify-center items-center bg-layer-1-surface font-mono text-sm lowercase text-layer-2-glyph transition-all select-none cursor-none;
     }
 
     .flex-fill {

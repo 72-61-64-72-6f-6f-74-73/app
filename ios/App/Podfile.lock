@@ -4,6 +4,8 @@ PODS:
   - CapacitorBrowser (6.0.2):
     - Capacitor
   - CapacitorCordova (6.1.2)
+  - CapacitorDevice (6.0.1):
+    - Capacitor
   - CapacitorDialog (6.0.1):
     - Capacitor
   - CapacitorGeolocation (6.0.1):
@@ -41,6 +43,7 @@ DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
   - "CapacitorBrowser (from `../../../../node_modules/.pnpm/@capacitor+browser@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/browser`)"
   - "CapacitorCordova (from `../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios`)"
+  - "CapacitorDevice (from `../../../../node_modules/.pnpm/@capacitor+device@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/device`)"
   - "CapacitorDialog (from `../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog`)"
   - "CapacitorGeolocation (from `../../../../node_modules/.pnpm/@capacitor+geolocation@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/geolocation`)"
   - "CapacitorHaptics (from `../../../../node_modules/.pnpm/@capacitor+haptics@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/haptics`)"
@@ -66,6 +69,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/.pnpm/@capacitor+browser@6.0.2_@capacitor+core@6.1.2/node_modules/@capacitor/browser"
   CapacitorCordova:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@6.1.2_@capacitor+core@6.1.2/node_modules/@capacitor/ios"
+  CapacitorDevice:
+    :path: "../../../../node_modules/.pnpm/@capacitor+device@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/device"
   CapacitorDialog:
     :path: "../../../../node_modules/.pnpm/@capacitor+dialog@6.0.1_@capacitor+core@6.1.2/node_modules/@capacitor/dialog"
   CapacitorGeolocation:
@@ -93,6 +98,7 @@ SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
   CapacitorBrowser: 83ec661a9ccd56c28a6851e4dd1ac33b181227ec
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
+  CapacitorDevice: 7097a1deb4224b77fd13a6e60a355d0062a5d772
   CapacitorDialog: ad752191fdb22a8d0ac199b0754b8a021d86dbf9
   CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
   CapacitorHaptics: fe689ade56ef20ec9b041a753c6da70c5d8ec9a9
@@ -108,6 +114,6 @@ SPEC CHECKSUMS:
   SQLCipher: 77fbe633cd84db04b07876dd50766b4924b57d61
   ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: c6c1e7d552d32beb42585f968d80f8b142e3fef4
+PODFILE CHECKSUM: 37b4ea0a5a13844ab526c251f4635f95ea68eb09
 
 COCOAPODS: 1.15.2

@@ -7,7 +7,7 @@
 <div class={`flex flex-col w-full pt-16 justify-center items-center`}>
     <button
         class={`flex flex-row justify-center items-center text-white`}
-        onclick={async () => {
+        on:click={async () => {
             const sk_hex = cl.nostr.lib.generate_key();
             const pk_hex = cl.nostr.lib.public_key(sk_hex);
             const new_key_added = await cl.keystore.set(

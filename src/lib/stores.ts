@@ -23,3 +23,5 @@ export const app_sqlite = writable<boolean>(false);
 export const app_nav_visible = writable<boolean>(false);
 //export const app_nav_prev = writable<NavParamPrev>([]);
 //export const app_nav_title = writable<NavParamTitle | false>(false);
+
+export const app_init_route = writable<string>(``);

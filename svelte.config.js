@@ -7,11 +7,6 @@ const config = {
 	kit: {
 		adapter: adapter(),
 	},
-	compilerOptions: {
-		compatibility: {
-			componentApi: 5
-		}
-	}
 };
 
 export default config;

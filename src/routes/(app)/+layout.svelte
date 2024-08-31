@@ -2,14 +2,11 @@
     import { goto } from "$app/navigation";
     import Tabs from "$lib/components/tabs.svelte";
     import { app_layout, app_tab_active, app_tabs_visible } from "$lib/stores";
-    import { type PropChildren } from "@radroots/svelte-lib";
-    let { children }: PropChildren = $props();
-
 </script>
 
-{@render children()}
+<slot />
 {#if $app_tabs_visible}
-    <Tabs 
+    <Tabs
         basis={{
             tab_active: $app_tab_active,
             app_layout: $app_layout,

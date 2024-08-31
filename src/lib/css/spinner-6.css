@@ -1,0 +1,59 @@
+@layer base {
+	.spinner6 {
+		position: relative;
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+	}
+	
+	.spinner6.center {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		margin: auto;
+	}
+	
+	.spinner6 .spinner6-blade {
+		position: absolute;
+		left: 0.4629em;
+		bottom: 0;
+		width: 0.074em;
+		height: 0.2777em;
+		border-radius: 0.0555em;
+		background-color: transparent;
+		transform-origin: center -0.2222em;
+		animation: spinner-fade-base 1s infinite linear;
+	}
+
+	.spinner6 .spinner6-blade:nth-child(1) {
+		animation-delay: 0s;
+		transform: rotate(0deg);
+	}
+	
+	.spinner6 .spinner6-blade:nth-child(2) {
+		animation-delay: 0.1s;
+		transform: rotate(60deg);
+	}
+	
+	.spinner6 .spinner6-blade:nth-child(3) {
+		animation-delay: 0.2s;
+		transform: rotate(120deg);
+	}
+	
+	.spinner6 .spinner6-blade:nth-child(4) {
+		animation-delay: 0.3s;
+		transform: rotate(180deg);
+	}
+	
+	.spinner6 .spinner6-blade:nth-child(5) {
+		animation-delay: 0.4s;
+		transform: rotate(240deg);
+	}
+	
+	.spinner6 .spinner6-blade:nth-child(6) {
+		animation-delay: 0.5s;
+		transform: rotate(300deg);
+	}
+}

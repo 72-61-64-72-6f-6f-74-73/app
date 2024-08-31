@@ -4,21 +4,28 @@
     import type { INavBasis } from "$lib/types";
     import { restart } from "$lib/utils";
     import { fill as Fill, glyph as Glyph } from "@radroots/svelte-lib";
+    import { onDestroy, onMount } from "svelte";
 
-    let {
-        basis,
-    }: {
-        basis: INavBasis;
-    } = $props();
+    export let basis: INavBasis;
+    $: basis = basis;
 
     let el: HTMLElement | null;
     let el_inner: HTMLElement | null;
 
-    $effect(() => {
-        app_nav_visible.set(true);
-        return () => {
+    onMount(async () => {
+        try {
+            app_nav_visible.set(true);
+        } catch (e) {
+        } finally {
+        }
+    });
+
+    onDestroy(async () => {
+        try {
             app_nav_visible.set(false);
-        };
+        } catch (e) {
+        } finally {
+        }
     });
 </script>
 
@@ -35,7 +42,7 @@
         >
             <button
                 class={`col-span-4 flex flex-row h-full pl-2 justify-start items-center`}
-                onclick={async () => {
+                on:click={async () => {
                     await goto(basis.prev.route);
                 }}
             >
@@ -63,7 +70,7 @@
                 {#if basis.title}
                     <button
                         class={`flex flex-row justify-center items-center`}
-                        onclick={async () => {
+                        on:click={async () => {
                             await restart();
                         }}
                     >
@@ -83,7 +90,7 @@
                 {#if basis.option}
                     <button
                         class={`col-span-4 flex flex-row h-full pr-6 justify-end items-center`}
-                        onclick={async () => {
+                        on:click={async () => {
                             await basis.option?.callback();
                         }}
                     >

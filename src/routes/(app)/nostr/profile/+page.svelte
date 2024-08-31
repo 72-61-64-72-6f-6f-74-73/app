@@ -4,13 +4,11 @@
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
     import { app_nostr_key } from "$lib/stores";
-    import { restart } from "$lib/utils";
-    import {
-        NDKEvent,
-        NDKKind,
-        type NDKFilter,
-        type NDKSubscriptionOptions,
-    } from "@nostr-dev-kit/ndk";
+    import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
+    import type {
+        ExtendedBaseType,
+        NDKEventStore,
+    } from "@nostr-dev-kit/ndk-svelte";
     import {
         ndk,
         ndk_event,
@@ -18,56 +16,84 @@
         t,
         trellis as Trellis,
     } from "@radroots/svelte-lib";
-    import { writable } from "svelte/store";
+    import { onDestroy } from "svelte";
 
-    const ndk_filter: NDKFilter = {
-        kinds: [NDKKind.Metadata],
-        authors: [$app_nostr_key],
-    };
-    const ndk_opts: NDKSubscriptionOptions = {
-        closeOnEose: false,
-    };
-    const ndk_sub = $ndk.subscribe(ndk_filter, ndk_opts);
+    let events_store: NDKEventStore<ExtendedBaseType<NDKEvent>>;
 
-    const events_list = writable<NDKEvent[]>([]);
+    $: {
+        let authors = [$app_nostr_key];
+        let ndk_filter: NDKFilter = {
+            kinds: [NDKKind.Metadata],
+            ...{ authors },
+        };
 
-    events_list.subscribe((events_list) => {
-        console.log(
-            `events_list `,
-            JSON.stringify(events_list.map((i) => i.content)),
-        );
-    });
+        fetch_events(ndk_filter).then(() => {
+            events_store?.startSubscription();
+        });
+    }
 
-    ndk_sub.on("event", (event) => {
-        events_list.set(
-            [...$events_list, event].sort(
-                (a, b) =>
-                    parseInt(cl.nostr.ev.first_tag_value(b, "published_at")) -
-                    parseInt(cl.nostr.ev.first_tag_value(a, "published_at")),
-            ),
-        );
+    async function fetch_events(filter: NDKFilter) {
+        try {
+            events_store = $ndk.storeSubscribe(filter, {
+                closeOnEose: true,
+                groupable: false,
+                autoStart: false,
+            });
+            if (events_store) {
+                events_store.onEose(() => {});
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    onDestroy(() => {
+        events_store?.unsubscribe();
     });
 
     const nostr_metadata_publish = async (): Promise<void> => {
         try {
-            const profile_name = await cl.dialog.prompt({
+            const kind0_name = await cl.dialog.prompt({
+                title: `Name`,
+                message: `What is your personal name.`,
+                input_placeholder: `Enter your name`,
+            });
+            if (kind0_name === false) return;
+
+            const kind0_display_name = await cl.dialog.prompt({
                 title: `Profile Name`,
                 message: `What is your profile name.`,
                 input_placeholder: `Enter profile name`,
             });
-            if (profile_name === false) return;
+            if (kind0_display_name === false) return;
 
-            const display_name = await cl.dialog.prompt({
-                title: `Display Name`,
-                message: `What is your display name.`,
-                input_placeholder: `Enter display name`,
+            const kind0_about = await cl.dialog.prompt({
+                title: `About`,
+                message: `What is your about me blurb.`,
+                input_placeholder: `Enter about me`,
             });
-            if (display_name === false) return;
+            if (kind0_about === false) return;
 
-            const content = {
-                name: profile_name,
-                display_name,
-            };
+            const kind0_website = await cl.dialog.prompt({
+                title: `About`,
+                message: `What is your website.`,
+                input_placeholder: `Enter website`,
+            });
+            if (kind0_website === false) return;
+
+            const content: Record<string, string> = {};
+
+            if (kind0_name) content.name = kind0_name;
+            if (kind0_display_name) content.display_name = kind0_display_name;
+            if (kind0_about) content.about = kind0_about;
+            if (kind0_website) content.website = kind0_website;
+
+            if (Object.keys(content).length === 0) {
+                await cl.dialog.alert(
+                    `You must specify at least one profile field.`,
+                );
+                return;
+            }
             const ev = await ndk_event({
                 $ndk,
                 $ndk_user,
@@ -78,7 +104,8 @@
             });
             if (ev) {
                 await ev.publish();
-                await restart();
+                events_store?.unsubscribe();
+                events_store?.startSubscription();
             }
         } catch (e) {
             console.log(`(error) nostr_metadata_pub `, e);
@@ -93,19 +120,24 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Nostr Profile`,
+                        value: `Profile Metadata`,
                     },
-                    list: $events_list.length
+                    list: $events_store.length
                         ? Object.entries(
-                              JSON.parse($events_list[0].content),
+                              JSON.parse($events_store[0].content),
                           ).map(([entry_key, entry_val]) => ({
                               hide_active: true,
                               touch: {
                                   label: {
                                       left: [
                                           {
-                                              value: `${$t(`common.${entry_key}`, { default: `${entry_key.replace(`_`, ` `)}` })}: ${entry_val}`,
+                                              value: `${$t(`common.${entry_key}`, { default: `${entry_key.replace(`_`, ` `)}` })}:`,
                                               classes: `capitalize`,
+                                          },
+                                      ],
+                                      right: [
+                                          {
+                                              value: `${entry_val}`,
                                           },
                                       ],
                                   },
@@ -147,7 +179,7 @@
         title: {
             label: `Profile`,
         },
-        option: $events_list.length
+        option: $events_store.length
             ? {
                   label: `Edit`,
                   callback: async () => {

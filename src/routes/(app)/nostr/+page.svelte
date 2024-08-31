@@ -22,12 +22,17 @@
                                 label: {
                                     left: [
                                         {
-                                            value: `View Profile`,
+                                            value: `View Your Keys`,
                                         },
                                     ],
                                 },
                                 callback: async () => {
-                                    await goto(`/nostr/profile`);
+                                    await goto(`/nostr/keys`);
+                                },
+                                end: {
+                                    icon: {
+                                        key: `caret-right`,
+                                    },
                                 },
                             },
                         },
@@ -37,12 +42,37 @@
                                 label: {
                                     left: [
                                         {
-                                            value: `View Notes`,
+                                            value: `View Your Profile`,
+                                        },
+                                    ],
+                                },
+                                callback: async () => {
+                                    await goto(`/nostr/profile`);
+                                },
+                                end: {
+                                    icon: {
+                                        key: `caret-right`,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            hide_active: true,
+                            touch: {
+                                label: {
+                                    left: [
+                                        {
+                                            value: `View Your Notes`,
                                         },
                                     ],
                                 },
                                 callback: async () => {
                                     await goto(`/nostr/notes`);
+                                },
+                                end: {
+                                    icon: {
+                                        key: `caret-right`,
+                                    },
                                 },
                             },
                         },
@@ -57,6 +87,9 @@
         prev: {
             label: `Home`,
             route: `/`,
+        },
+        title: {
+            label: `Nostr`,
         },
     }}
 />

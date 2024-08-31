@@ -2,13 +2,10 @@
     import { app_layout, app_tab_active, app_tabs_blur } from "$lib/stores";
     import { glyph as Glyph, type ITabsBasis } from "@radroots/svelte-lib";
 
-    let {
-        basis,
-    }: {
-        basis: ITabsBasis;
-    } = $props();
+    export let basis: ITabsBasis;
+    $: basis = basis;
 
-    let classes_blur = $derived($app_tabs_blur ? `bg-layer-1-surface/30` : ``);
+    $: classes_blur = $app_tabs_blur ? `bg-layer-1-surface/30` : ``;
 
     let el: HTMLElement | null;
     let el_inner: HTMLElement | null;
@@ -28,7 +25,7 @@
             {#each basis.list as tab, tab_i}
                 <button
                     class={`col-span-3 flex flex-col h-full justify-start items-center transition-all`}
-                    onclick={async () => {
+                    on:click={async () => {
                         app_tab_active.set(tab_i);
                         await tab.callback(tab_i);
                     }}
