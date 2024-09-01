@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import { _cf } from "$lib/conf";
     import { restart } from "$lib/utils";
     import { sleep } from "@radroots/svelte-lib";
@@ -9,14 +9,14 @@
     <button
         class={`flex flex-row justify-center items-center text-white`}
         on:click={async () => {
-            const sk_hex = cl.nostr.lib.generate_key();
-            const pk_hex = cl.nostr.lib.public_key(sk_hex);
-            const new_key_added = await cl.keystore.set(
+            const sk_hex = lc.nostr.lib.generate_key();
+            const pk_hex = lc.nostr.lib.public_key(sk_hex);
+            const new_key_added = await lc.keystore.set(
                 `nostr:key:${pk_hex}`,
                 sk_hex,
             );
             if (new_key_added) {
-                await cl.preferences.set(_cf.pref_key_active, pk_hex);
+                await lc.preferences.set(_cf.pref_key_active, pk_hex);
                 await sleep(500);
                 await restart(true);
             }

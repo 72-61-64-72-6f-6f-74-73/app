@@ -4,6 +4,10 @@ import type { Config } from "tailwindcss";
 import tailwind_default from "tailwindcss/defaultTheme";
 const { fontFamily: tw_font } = tailwind_default;
 
+const heights_form = {
+  line: "42px",
+};
+
 const heights = {
   line: `46px`,
   tabs_base: `64px`,
@@ -41,6 +45,7 @@ const config: Config = {
       },
       height: {
         ...heights,
+        ...Object.fromEntries(Object.entries(heights_form).map(([k, v]) => [`form_${k}`, v])),
       },
       width: {
         ...widths,
@@ -67,6 +72,9 @@ const config: Config = {
       },
       borderWidth: {
         "line": "1px"
+      },
+      borderRadius: {
+        input_form: "8px",
       },
     }
   },

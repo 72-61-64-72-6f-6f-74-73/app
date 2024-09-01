@@ -1,13 +1,13 @@
 import { goto } from '$app/navigation';
-import { cl } from '$lib/client';
+import { lc } from '$lib/client';
 import { _cf } from '$lib/conf';
 import type { LayoutLoad, LayoutLoadEvent } from '../$types';
 
 export const load: LayoutLoad = async ({ url }: LayoutLoadEvent) => {
     try {
-        const key_active = await cl.preferences.get(_cf.pref_key_active);
+        const key_active = await lc.preferences.get(_cf.pref_key_active);
         if (key_active) {
-            const ks_keys = await cl.keystore.keys();
+            const ks_keys = await lc.keystore.keys();
             const active_nostr_key = ks_keys?.find(
                 (i) => i === `nostr:key:${key_active}`,
             );
@@ -17,7 +17,7 @@ export const load: LayoutLoad = async ({ url }: LayoutLoadEvent) => {
             }
         }
     } catch (e) { } finally {
-        await cl.window.splash_hide();
+        await lc.window.splash_hide();
         return {};
     };
 };

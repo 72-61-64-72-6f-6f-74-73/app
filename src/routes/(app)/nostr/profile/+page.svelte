@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
@@ -53,28 +53,28 @@
 
     const nostr_metadata_publish = async (): Promise<void> => {
         try {
-            const kind0_name = await cl.dialog.prompt({
+            const kind0_name = await lc.dialog.prompt({
                 title: `Name`,
                 message: `What is your personal name.`,
                 input_placeholder: `Enter your name`,
             });
             if (kind0_name === false) return;
 
-            const kind0_display_name = await cl.dialog.prompt({
+            const kind0_display_name = await lc.dialog.prompt({
                 title: `Profile Name`,
                 message: `What is your profile name.`,
                 input_placeholder: `Enter profile name`,
             });
             if (kind0_display_name === false) return;
 
-            const kind0_about = await cl.dialog.prompt({
+            const kind0_about = await lc.dialog.prompt({
                 title: `About`,
                 message: `What is your about me blurb.`,
                 input_placeholder: `Enter about me`,
             });
             if (kind0_about === false) return;
 
-            const kind0_website = await cl.dialog.prompt({
+            const kind0_website = await lc.dialog.prompt({
                 title: `About`,
                 message: `What is your website.`,
                 input_placeholder: `Enter website`,
@@ -89,7 +89,7 @@
             if (kind0_website) content.website = kind0_website;
 
             if (Object.keys(content).length === 0) {
-                await cl.dialog.alert(
+                await lc.dialog.alert(
                     `You must specify at least one profile field.`,
                 );
                 return;

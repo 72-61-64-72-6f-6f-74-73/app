@@ -1,15 +1,15 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
     import { app_tabs_visible } from "$lib/stores";
-    import { location_gcs_add } from "$lib/utils/models";
-    import { type LocationGcs } from "@radroots/client";
+    import { type TradeProduct } from "@radroots/client";
     import { trellis as Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: LocationGcs[] = [];
+    let models_list: TradeProduct[] = [];
 
     onMount(async () => {
         try {
@@ -22,7 +22,7 @@
 
     const fetch_models = async (): Promise<void> => {
         try {
-            const res = await lc.db.location_gcs_get({
+            const res = await lc.db.trade_product_get({
                 list: [`all`],
             });
             if (typeof res !== `string`) models_list = res;
@@ -39,7 +39,7 @@
                 args: {
                     layer: 1,
                     title: {
-                        value: `Location GCS`,
+                        value: `Trade Products`,
                     },
                     list: [
                         {
@@ -47,42 +47,29 @@
                                 label: {
                                     left: [
                                         {
-                                            value: `Add Current Location`,
+                                            value: `Add new product`,
                                             classes: `capitalize`,
                                         },
                                     ],
                                 },
                                 callback: async () => {
-                                    const res = await location_gcs_add();
-                                    if (res === true) await fetch_models();
+                                    await goto(`/models/trade-product/add`);
+                                },
+                                end: {
+                                    icon: {
+                                        key: `caret-right`,
+                                    },
                                 },
                             },
                         },
-                        models_list.length
-                            ? {
-                                  touch: {
-                                      label: {
-                                          left: [
-                                              {
-                                                  value: `Edit Saved Location`,
-                                                  classes: `capitalize`,
-                                              },
-                                          ],
-                                      },
-                                      callback: async () => {
-                                          alert(`Todo!`);
-                                      },
-                                  },
-                              }
-                            : undefined,
-                    ].filter((i) => !!i),
+                    ],
                 },
             }}
         />
         <div class={`flex flex-col justify-center items-center pt-4 px-4`}>
             {#if models_list.length > 0}
                 <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"Your locations:"}
+                    {"Your products:"}
                 </p>
                 {#each models_list as li}
                     <div class={`flex flex-col justify-center items-center`}>
@@ -97,7 +84,7 @@
                 {/each}
             {:else}
                 <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"No locations saved"}
+                    {"No products saved"}
                 </p>
             {/if}
         </div>
@@ -110,7 +97,7 @@
             route: `/`,
         },
         title: {
-            label: `Locations`,
+            label: `Products`,
         },
         option: {
             glyph: {

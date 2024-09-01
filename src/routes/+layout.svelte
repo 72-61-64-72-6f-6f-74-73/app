@@ -5,7 +5,7 @@
         PUBLIC_DATABASE_NAME,
         PUBLIC_NOSTR_RELAY_DEFAULTS,
     } from "$env/static/public";
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import LayoutWindow from "$lib/components/layout-window.svelte";
     import { _cf } from "$lib/conf";
     import {
@@ -35,7 +35,7 @@
     import { onMount } from "svelte";
     import "../app.css";
 
-    let render_pwa = browser && cl.platform === `web`;
+    let render_pwa = browser && lc.platform === `web`;
     if (render_pwa) {
         const el = document.createElement(`jeep-sqlite`);
         document.body.appendChild(el);
@@ -73,13 +73,13 @@
     app_thc.subscribe((app_thc) => {
         const color_mode = parse_color_mode(app_thc);
         theme_set(parse_theme_key($app_thm), color_mode);
-        cl.window.status_style(color_mode);
+        lc.window.status_style(color_mode);
     });
 
     app_thm.subscribe((app_thm) => {
         const color_mode = parse_color_mode($app_thc);
         theme_set(parse_theme_key(app_thm), color_mode);
-        cl.window.status_style(color_mode);
+        lc.window.status_style(color_mode);
     });
 
     app_sqlite.subscribe((app_sqlite) => {
@@ -90,7 +90,7 @@
     app_nostr_key.subscribe(async (app_nostr_key) => {
         try {
             if (!app_nostr_key) return;
-            const private_key = await cl.keystore.get(
+            const private_key = await lc.keystore.get(
                 `nostr:key:${app_nostr_key}`,
             );
             if (private_key) {
@@ -117,12 +117,12 @@
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
-            app_sqlite.set(!!(await cl.db.connect(PUBLIC_DATABASE_NAME)));
-            const active_nostr_pk = await cl.preferences.get(
+            app_sqlite.set(!!(await lc.db.connect(PUBLIC_DATABASE_NAME)));
+            const active_nostr_pk = await lc.preferences.get(
                 _cf.pref_key_active,
             );
             console.log(`active_nostr_pk `, active_nostr_pk);
-            const active_nostr_sk = await cl.keystore.get(
+            const active_nostr_sk = await lc.keystore.get(
                 `nostr:key:${active_nostr_pk}`,
             );
             console.log(`active_nostr_sk `, active_nostr_sk);
@@ -133,7 +133,7 @@
             )
                 app_nostr_key.set(active_nostr_pk);
             else {
-                await cl.preferences.remove(_cf.pref_key_active);
+                await lc.preferences.remove(_cf.pref_key_active);
                 await goto(`/conf/nostr`);
             }
         } catch (e) {
@@ -158,7 +158,7 @@
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
-            await cl.window.splash_hide();
+            await lc.window.splash_hide();
         }
     });
 </script>

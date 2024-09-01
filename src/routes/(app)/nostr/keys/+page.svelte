@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
@@ -12,9 +12,9 @@
 
     onMount(async () => {
         try {
-            const public_key = await cl.preferences.get(_cf.pref_key_active);
+            const public_key = await lc.preferences.get(_cf.pref_key_active);
             if (public_key) nostr_public_key = public_key;
-            const secret_key = await cl.keystore.get(`nostr:key:${public_key}`);
+            const secret_key = await lc.keystore.get(`nostr:key:${public_key}`);
             if (secret_key) nostr_secret_key = secret_key;
         } catch (e) {
         } finally {
@@ -23,7 +23,7 @@
 
     async function copyToClipboard(text: string) {
         navigator.clipboard.writeText(text).then(async () => {
-            await cl.dialog.alert(
+            await lc.dialog.alert(
                 `Copied nostr key "${text.slice(0, 12)}..." to clipboard.`,
             );
         });
@@ -60,7 +60,7 @@
                                 label: {
                                     left: [
                                         {
-                                            value: cl.nostr.lib.npub(
+                                            value: lc.nostr.lib.npub(
                                                 nostr_public_key,
                                             ),
                                         },
@@ -69,7 +69,7 @@
 
                                 callback: async () => {
                                     await copyToClipboard(
-                                        cl.nostr.lib.npub(nostr_public_key),
+                                        lc.nostr.lib.npub(nostr_public_key),
                                     );
                                 },
                             },
@@ -106,7 +106,7 @@
                                 label: {
                                     left: [
                                         {
-                                            value: cl.nostr.lib.nsec(
+                                            value: lc.nostr.lib.nsec(
                                                 nostr_secret_key,
                                             ),
                                         },
@@ -115,7 +115,7 @@
 
                                 callback: async () => {
                                     await copyToClipboard(
-                                        cl.nostr.lib.nsec(nostr_secret_key),
+                                        lc.nostr.lib.nsec(nostr_secret_key),
                                     );
                                 },
                             },

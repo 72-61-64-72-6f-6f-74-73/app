@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
@@ -43,7 +43,7 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    await cl.haptics.impact();
+                                    await lc.haptics.impact();
                                     app_thc.set(toggle_color_mode($app_thc));
                                 },
                             },
@@ -76,10 +76,10 @@
                                     },
                                 },
                                 callback: async () => {
-                                    const public_key = await cl.preferences.get(
+                                    const public_key = await lc.preferences.get(
                                         _cf.pref_key_active,
                                     );
-                                    await cl.dialog.alert(
+                                    await lc.dialog.alert(
                                         `Hi! This is your nostr public key ${public_key}`,
                                     );
                                 },
@@ -101,14 +101,14 @@
                                     },
                                 },
                                 callback: async () => {
-                                    const public_key = await cl.preferences.get(
+                                    const public_key = await lc.preferences.get(
                                         _cf.pref_key_active,
                                     );
                                     console.log(`public_key `, public_key);
-                                    const secret_key = await cl.keystore.get(
+                                    const secret_key = await lc.keystore.get(
                                         `nostr:key:${public_key}`,
                                     );
-                                    await cl.dialog.alert(
+                                    await lc.dialog.alert(
                                         `Hi! This is your nostr secret key ${secret_key}`,
                                     );
                                 },
@@ -142,24 +142,24 @@
                                     },
                                 },
                                 callback: async () => {
-                                    const confirm = await cl.dialog.confirm(
+                                    const confirm = await lc.dialog.confirm(
                                         `Hi! This will delete your saved keys.`,
                                     );
                                     if (confirm) {
                                         const nostr_public_key =
-                                            await cl.preferences.get(
+                                            await lc.preferences.get(
                                                 _cf.pref_key_active,
                                             );
                                         if (nostr_public_key) {
-                                            await cl.keystore.remove(
+                                            await lc.keystore.remove(
                                                 `nostr:key:${nostr_public_key}`,
                                             );
-                                            await cl.preferences.remove(
+                                            await lc.preferences.remove(
                                                 _cf.pref_key_active,
                                             );
                                             await restart();
                                         } else {
-                                            await cl.dialog.alert(
+                                            await lc.dialog.alert(
                                                 `There is no public key preference saved.`,
                                             );
                                         }
@@ -190,8 +190,8 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    const pos = await cl.geo.current();
-                                    await cl.dialog.alert(JSON.stringify(pos));
+                                    const pos = await lc.geo.current();
+                                    await lc.dialog.alert(JSON.stringify(pos));
                                 },
                             },
                         },
@@ -218,7 +218,7 @@
                                 },
                                 callback: async () => {
                                     const url = `https://radroots.org`;
-                                    await cl.browser.open(url);
+                                    await lc.browser.open(url);
                                 },
                             },
                         },
@@ -232,7 +232,7 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    await cl.share.open({
+                                    await lc.share.open({
                                         title: `Radroots Home Page`,
                                         text: `Find farmers around the world.`,
                                         url: `https://radroots.org`,
@@ -251,12 +251,12 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    const public_key = await cl.preferences.get(
+                                    const public_key = await lc.preferences.get(
                                         _cf.pref_key_active,
                                     );
-                                    const npub = cl.nostr.lib.npub(public_key);
+                                    const npub = lc.nostr.lib.npub(public_key);
                                     const url = `https://primal.net/p/${npub}`;
-                                    await cl.browser.open(url);
+                                    await lc.browser.open(url);
                                 },
                             },
                         },
@@ -282,8 +282,8 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    const data = await cl.device.info();
-                                    await cl.dialog.alert(JSON.stringify(data));
+                                    const data = await lc.device.info();
+                                    await lc.dialog.alert(JSON.stringify(data));
                                 },
                             },
                         },
@@ -297,8 +297,8 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    const data = await cl.device.battery();
-                                    await cl.dialog.alert(JSON.stringify(data));
+                                    const data = await lc.device.battery();
+                                    await lc.dialog.alert(JSON.stringify(data));
                                 },
                             },
                         },
@@ -330,7 +330,7 @@
                                     },
                                 },
                                 callback: async () => {
-                                    await cl.haptics.impact("less");
+                                    await lc.haptics.impact("less");
                                 },
                             },
                         },
@@ -350,7 +350,7 @@
                                     },
                                 },
                                 callback: async () => {
-                                    await cl.haptics.impact("more");
+                                    await lc.haptics.impact("more");
                                 },
                             },
                         },
@@ -370,7 +370,7 @@
                                     },
                                 },
                                 callback: async () => {
-                                    await cl.haptics.vibrate(500);
+                                    await lc.haptics.vibrate(500);
                                 },
                             },
                         },

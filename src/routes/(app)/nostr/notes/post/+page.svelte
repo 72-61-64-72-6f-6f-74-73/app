@@ -1,6 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { cl } from "$lib/client";
+    import { lc } from "$lib/client";
     import ButtonSubmit from "$lib/components/button-submit.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
@@ -14,7 +14,7 @@
     const nostr_note_publish = async (): Promise<void> => {
         try {
             if (!value_note_content) {
-                await cl.dialog.alert(`You must write something to post.`);
+                await lc.dialog.alert(`You must write something to post.`);
                 return;
             }
 

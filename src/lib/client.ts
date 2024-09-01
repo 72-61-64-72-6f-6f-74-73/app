@@ -1,3 +1,3 @@
 import { ClientCapacitor } from "@radroots/client";
 
-export const cl = new ClientCapacitor();
+export const lc = new ClientCapacitor();

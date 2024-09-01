@@ -1,9 +1,9 @@
 import { goto } from "$app/navigation";
-import { cl } from "./client";
+import { lc } from "../client";
 
-export const restart = async (route_to: true | string): Promise<void> => {
+export const restart = async (route_to?: true | string): Promise<void> => {
     try {
-        await cl.window.splash_show();
+        await lc.window.splash_show();
         if (route_to) {
             if (route_to === true) await goto(`/`);
             else await goto(route_to)
