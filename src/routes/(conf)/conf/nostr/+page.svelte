@@ -16,7 +16,7 @@
                 sk_hex,
             );
             if (new_key_added) {
-                await lc.preferences.set(_cf.pref_key_active, pk_hex);
+                await lc.preferences.set(_cf.pref.key_active, pk_hex);
                 await sleep(500);
                 await restart(true);
             }

@@ -16,6 +16,11 @@
 
     let buttons: { route: string; label: string; key: GlyphKey }[] = [
         {
+            route: `/models/location-gcs`,
+            label: `Locations`,
+            key: `globe`,
+        },
+        {
             route: `/models/trade-product`,
             label: `Post Goods`,
             key: `handbag-simple`,

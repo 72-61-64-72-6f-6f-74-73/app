@@ -12,7 +12,7 @@
 
     onMount(async () => {
         try {
-            const public_key = await lc.preferences.get(_cf.pref_key_active);
+            const public_key = await lc.preferences.get(_cf.pref.key_active);
             if (public_key) nostr_public_key = public_key;
             const secret_key = await lc.keystore.get(`nostr:key:${public_key}`);
             if (secret_key) nostr_secret_key = secret_key;

@@ -5,7 +5,7 @@ import type { LayoutLoad, LayoutLoadEvent } from '../$types';
 
 export const load: LayoutLoad = async ({ url }: LayoutLoadEvent) => {
     try {
-        const key_active = await lc.preferences.get(_cf.pref_key_active);
+        const key_active = await lc.preferences.get(_cf.pref.key_active);
         if (key_active) {
             const ks_keys = await lc.keystore.keys();
             const active_nostr_key = ks_keys?.find(

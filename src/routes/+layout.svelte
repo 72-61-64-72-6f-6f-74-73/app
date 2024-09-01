@@ -119,7 +119,7 @@
             if (!app_config) return;
             app_sqlite.set(!!(await lc.db.connect(PUBLIC_DATABASE_NAME)));
             const active_nostr_pk = await lc.preferences.get(
-                _cf.pref_key_active,
+                _cf.pref.key_active,
             );
             console.log(`active_nostr_pk `, active_nostr_pk);
             const active_nostr_sk = await lc.keystore.get(
@@ -133,7 +133,7 @@
             )
                 app_nostr_key.set(active_nostr_pk);
             else {
-                await lc.preferences.remove(_cf.pref_key_active);
+                await lc.preferences.remove(_cf.pref.key_active);
                 await goto(`/conf/nostr`);
             }
         } catch (e) {

@@ -10,6 +10,7 @@
     import { onMount } from "svelte";
 
     let models_list: LocationGcs[] = [];
+    let loading_models = false;
 
     onMount(async () => {
         try {
@@ -22,85 +23,97 @@
 
     const fetch_models = async (): Promise<void> => {
         try {
+            loading_models = true;
             const res = await lc.db.location_gcs_get({
                 list: [`all`],
             });
             if (typeof res !== `string`) models_list = res;
         } catch (e) {
             console.log(`(error) fetch_models `, e);
+        } finally {
+            loading_models = false;
         }
     };
 </script>
 
 <LayoutView>
     <LayoutTrellis>
-        <Trellis
-            basis={{
-                args: {
-                    layer: 1,
-                    title: {
-                        value: `Location GCS`,
-                    },
-                    list: [
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Add Current Location`,
-                                            classes: `capitalize`,
-                                        },
-                                    ],
-                                },
-                                callback: async () => {
-                                    const res = await location_gcs_add();
-                                    if (res === true) await fetch_models();
-                                },
+        {#if models_list.length}
+            {#each models_list as li}
+                <Trellis
+                    basis={{
+                        args: {
+                            layer: 1,
+                            title: {
+                                value: `Your Locations`,
                             },
+                            list: [
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Location:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: li.label,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Coordinates:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: `${li.lat.toFixed(3)} ${li.lng.toFixed(3)}`,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                            ],
                         },
-                        models_list.length
-                            ? {
-                                  touch: {
-                                      label: {
-                                          left: [
-                                              {
-                                                  value: `Edit Saved Location`,
-                                                  classes: `capitalize`,
-                                              },
-                                          ],
-                                      },
-                                      callback: async () => {
-                                          alert(`Todo!`);
-                                      },
-                                  },
-                              }
-                            : undefined,
-                    ].filter((i) => !!i),
-                },
-            }}
-        />
-        <div class={`flex flex-col justify-center items-center pt-4 px-4`}>
-            {#if models_list.length > 0}
-                <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"Your locations:"}
+                    }}
+                />
+            {/each}
+        {:else if !loading_models}
+            <div
+                class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
+            >
+                <p class={`font-sans font-[400] text-layer-2-glyph`}>
+                    {`No items to display.`}
                 </p>
-                {#each models_list as li}
-                    <div class={`flex flex-col justify-center items-center`}>
-                        <pre
-                            class={`font-sans font-[400] text-layer-0-glyph text-xs`}>{JSON.stringify(
-                                li,
-                                null,
-                                4,
-                            )}
-                        </pre>
-                    </div>
-                {/each}
-            {:else}
-                <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"No locations saved"}
-                </p>
-            {/if}
-        </div>
+
+                <button
+                    class={`flex flex-row justify-center items-center`}
+                    on:click={async () => {
+                        const res = await location_gcs_add();
+                        if (res === true) await fetch_models();
+                    }}
+                >
+                    <p
+                        class={`font-sans font-[400] text-layer-2-glyph-hl text-sm`}
+                    >
+                        {`Click to add a new location`}
+                    </p>
+                </button>
+            </div>
+        {/if}
     </LayoutTrellis>
 </LayoutView>
 <Nav
@@ -112,15 +125,17 @@
         title: {
             label: `Locations`,
         },
-        option: {
-            glyph: {
-                key: `arrow-counter-clockwise`,
-                dim: `md`,
-                classes: `text-layer-1-glyph-hl tap-scale`,
-            },
-            callback: async () => {
-                await fetch_models();
-            },
-        },
+        option: models_list.length
+            ? {
+                  label: {
+                      value: `Add`,
+                      classes: `tap-color`,
+                  },
+                  callback: async () => {
+                      const res = await location_gcs_add();
+                      if (res === true) await fetch_models();
+                  },
+              }
+            : undefined,
     }}
 />

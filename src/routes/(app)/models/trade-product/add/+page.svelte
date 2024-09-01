@@ -40,16 +40,17 @@
     let loading_location = false;
 
     let ls_model_location_gcs: LocationGcs[] = [];
-    let val_model_location_gcs_selected = ``;
-    let val_model_trade_good_key = ``;
+    let sel_model_location_gcs_id = ``;
+    let sel_model_trade_good_key = ``;
 
     $: {
-        if (ls_model_location_gcs.length && !val_model_location_gcs_selected)
-            val_model_location_gcs_selected = ls_model_location_gcs[0].id;
+        if (ls_model_location_gcs.length && !sel_model_location_gcs_id)
+            sel_model_location_gcs_id = ls_model_location_gcs[0].id;
     }
 
     onMount(async () => {
         try {
+            sel_model_trade_good_key = trade_keys[0];
             await fetch_models_location_gcs();
         } catch (e) {
         } finally {
@@ -82,6 +83,27 @@
     const submit = async (): Promise<void> => {
         try {
             loading = true;
+
+            if (!sel_model_location_gcs_id) {
+                await lc.dialog.alert(`The product location is missing.`);
+                return;
+            }
+
+            const db_location_gcs = await lc.db.location_gcs_get({
+                id: sel_model_location_gcs_id,
+            });
+
+            if (
+                typeof db_location_gcs === `string` ||
+                db_location_gcs.length !== 1
+            ) {
+                await lc.dialog.alert(
+                    `There was an error finding the selected location`,
+                );
+                await goto(`/`);
+                return;
+            }
+
             const vals = trade_product_form_vals;
             for (const [k, field] of Object.entries(
                 trade_product_form_fields,
@@ -91,7 +113,7 @@
                 const field_id = fmt_id(field_k);
                 const field_val =
                     field_k === `key`
-                        ? val_model_trade_good_key
+                        ? sel_model_trade_good_key
                         : await $kv.get(field_id);
 
                 if (
@@ -108,11 +130,22 @@
                 }
                 vals[field_k] = field_val;
             }
-            const res = await lc.db.trade_product_add(vals);
-            if (typeof res !== `string` && !Array.isArray(res)) {
+            const db_add = await lc.db.trade_product_add(vals);
+            if (typeof db_add !== `string` && !Array.isArray(db_add)) {
+                const { id: trade_product_id } = db_add;
+                const db_rel = await lc.db.set_trade_product_location({
+                    trade_product_id,
+                    location_gcs_id: db_location_gcs[0].id,
+                });
+                if (typeof db_rel === `string`) {
+                    // @todo
+                }
                 await goto(`/models/trade-product`);
             } else {
-                await lc.dialog.alert(`There was an error: ${res.toString()}`);
+                // @todo
+                await lc.dialog.alert(
+                    `There was an error: ${db_add.toString()}`,
+                );
             }
         } catch (e) {
             console.log(`(error) submit `, e);
@@ -142,8 +175,8 @@
                             </p>
                         </div>
                         <select
-                            class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-2-glyph`}
-                            bind:value={val_model_trade_good_key}
+                            class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-1-glyph/70`}
+                            bind:value={sel_model_trade_good_key}
                             on:change={async ({ currentTarget: el }) => {
                                 const val = el.value;
                                 console.log(`val `, val);
@@ -176,12 +209,12 @@
                             </div>
                         {:else}
                             <select
-                                class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-2-glyph`}
-                                bind:value={val_model_location_gcs_selected}
+                                class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-1-glyph/70`}
+                                bind:value={sel_model_location_gcs_id}
                                 on:change={async ({ currentTarget: el }) => {
                                     const val = el.value;
                                     if (val === texts_key.opt_lcs_add) {
-                                        val_model_location_gcs_selected = ``;
+                                        sel_model_location_gcs_id = ``;
                                         await add_model_location_gcs();
                                     }
                                 }}
@@ -189,7 +222,7 @@
                                 {#if ls_model_location_gcs.length}
                                     {#each ls_model_location_gcs as li}
                                         <option value={li.id}>
-                                            {li.label}
+                                            {`${li.label}`}
                                         </option>
                                     {/each}
                                 {:else}
@@ -216,7 +249,9 @@
                             {`Product - ${texts_kv[field_k] || field_k}`}
                         </p>
                     </div>
-                    <div class={`form-line-e bg-layer-1-surface rounded-xl`}>
+                    <div
+                        class={`form-line-e bg-layer-1-surface text-layer-1-glyph/70 rounded-xl`}
+                    >
                         <InputForm
                             basis={{
                                 id: fmt_id(field_k),

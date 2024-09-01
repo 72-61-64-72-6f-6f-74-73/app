@@ -15,6 +15,10 @@ export const location_gcs_add = async (): Promise<boolean> => {
                     input_placeholder: `Enter location name`,
                 });
             if (loc_gcs_label === false) return false;
+            else if (!loc_gcs_label) {
+                await lc.dialog.alert(`A location name is required.`);
+                return false;
+            }
 
             const { lat, lng } = loc_gcs;
             const geohash = location_geohash(

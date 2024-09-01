@@ -14,6 +14,7 @@
     import { onMount } from "svelte";
 
     let models_list: TradeProduct[] = [];
+    let loading_models = false;
 
     onMount(async () => {
         try {
@@ -26,12 +27,15 @@
 
     const fetch_models = async (): Promise<void> => {
         try {
+            loading_models = true;
             const res = await lc.db.trade_product_get({
                 list: [`all`],
             });
             if (typeof res !== `string`) models_list = res;
         } catch (e) {
             console.log(`(error) fetch_models `, e);
+        } finally {
+            loading_models = false;
         }
     };
 </script>
@@ -132,7 +136,7 @@
                     }}
                 />
             {/each}
-        {:else}
+        {:else if !loading_models}
             <div
                 class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
             >
