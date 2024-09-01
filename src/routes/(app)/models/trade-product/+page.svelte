@@ -58,13 +58,14 @@
                                         label: {
                                             left: [
                                                 {
-                                                    value: `Name:`,
+                                                    value: `Kind:`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
                                             right: [
                                                 {
                                                     value: li.key,
+                                                    classes: `capitalize`,
                                                 },
                                             ],
                                         },

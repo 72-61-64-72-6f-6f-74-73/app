@@ -6,7 +6,6 @@
         PUBLIC_NOSTR_RELAY_DEFAULTS,
     } from "$env/static/public";
     import { lc } from "$lib/client";
-    import LayoutWindow from "$lib/components/layout-window.svelte";
     import { _cf } from "$lib/conf";
     import {
         app_config,
@@ -19,6 +18,7 @@
         app_thc,
         app_thm,
         app_win,
+        map_full_center,
     } from "$lib/stores";
     import {
         css_static as CssStatic,
@@ -136,6 +136,10 @@
                 await lc.preferences.remove(_cf.pref.key_active);
                 await goto(`/conf/nostr`);
             }
+
+            const pos = await lc.geo.current();
+            if (pos && typeof pos !== `string`)
+                map_full_center.set([pos.lng, pos.lat]);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
@@ -170,9 +174,7 @@
     <meta property="og:description" content={_cf.app.description} />
 </svelte:head>
 {#if $app_render}
-    <LayoutWindow>
-        <slot />
-    </LayoutWindow>
+    <slot />
 {/if}
 <CssStatic />
 <div

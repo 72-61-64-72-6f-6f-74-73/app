@@ -25,3 +25,6 @@ export const app_nav_visible = writable<boolean>(false);
 //export const app_nav_title = writable<NavParamTitle | false>(false);
 
 export const app_init_route = writable<string>(``);
+
+export const map_full_center = writable<[number, number]>([0, 0]);
+export const map_full_zoom = writable<number>(4);

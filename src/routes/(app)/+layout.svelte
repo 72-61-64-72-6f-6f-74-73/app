@@ -2,9 +2,12 @@
     import { goto } from "$app/navigation";
     import Tabs from "$lib/components/tabs.svelte";
     import { app_layout, app_tab_active, app_tabs_visible } from "$lib/stores";
+    import LayoutWindow from "$lib/components/layout-window.svelte";
 </script>
 
-<slot />
+<LayoutWindow>
+    <slot />
+</LayoutWindow>
 {#if $app_tabs_visible}
     <Tabs
         basis={{
@@ -19,9 +22,9 @@
                     },
                 },
                 {
-                    icon: `key`,
+                    icon: `compass`,
                     callback: async (tab_i) => {
-                        //
+                        await goto(`/map`)
                     },
                 },
                 {
