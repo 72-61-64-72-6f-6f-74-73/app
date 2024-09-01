@@ -1,17 +1,8 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { lc } from "$lib/client";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import { _cf } from "$lib/conf";
     import { app_tab_active, app_tabs_visible } from "$lib/stores";
-    import { NDKKind } from "@nostr-dev-kit/ndk";
-    import {
-        glyph as Glyph,
-        ndk,
-        ndk_event,
-        ndk_user,
-        type GlyphKey,
-    } from "@radroots/svelte-lib";
+    import { glyph as Glyph, type GlyphKey } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     onMount(async () => {
@@ -23,58 +14,9 @@
         }
     });
 
-    const nostr_note_pub = async (): Promise<void> => {
-        try {
-            const content = `posting from radroots`;
-            const ev = await ndk_event({
-                $ndk,
-                $ndk_user,
-                basis: {
-                    kind: NDKKind.Text,
-                    content: JSON.stringify(content),
-                },
-            });
-            console.log(JSON.stringify(ev, null, 4), `ev`);
-            if (ev) await ev.publish();
-            lc.dialog.alert(`Published content ${JSON.stringify(content)}`);
-        } catch (e) {
-            console.log(`(error) nostr_note_pub `, e);
-        }
-    };
-
-    /*
-<div class={`grid grid-cols-12 w-full gap-8 pt-6 px-6`}>
-        <button
-            class={`button-base surface-1 col-span-6 h-24 rounded-2xl font-[500] text-lg font-mono`}
-            on:click={async () => {
-                await goto(`/models/location-gcs`);
-            }}
-        >
-            {`Post `}
-        </button>
-        <button
-            class={`button-base surface-1 col-span-6 h-32 rounded-2xl font-[500] text-lg font-mono`}
-            on:click={async () => {
-                await goto(`/models/location-gcs`);
-            }}
-        >
-            {`Post `}
-        </button>
-        <button
-            class={`button-base surface-1 col-span-6 h-32 rounded-2xl font-[500] text-lg font-mono`}
-            on:click={async () => {
-                await goto(`/models/location-gcs`);
-            }}
-        >
-            {`Post `}
-        </button>
-        
-    </div>
-    */
-
     let buttons: { route: string; label: string; key: GlyphKey }[] = [
         {
-            route: `/models/trade-product/add`,
+            route: `/models/trade-product`,
             label: `Post Goods`,
             key: `handbag-simple`,
         },
@@ -86,8 +28,10 @@
         class={`flex flex-col w-full justify-start items-start pt-6 gap-6 px-6`}
     >
         <div class={`flex flex-row w-full px-1 justify-start items-center`}>
-            <p class={`font-mono font-[500] text-layer-2-glyph text-lg`}>
-                {`radroots ${_cf.root_symbol}`}
+            <p
+                class={`font-mono font-[600] text-layer-2-glyph text-xl tracking-wide`}
+            >
+                {`radroots app (beta-1.0.0)`}
             </p>
         </div>
         <button
@@ -115,7 +59,7 @@
                     }}
                 >
                     <div
-                        class={`flex flex-row w-full justify-between items-center`}
+                        class={`flex flex-row w-full p-[2px] justify-between items-center`}
                     >
                         <div class={`flex flex-row justify-start items-center`}>
                             <Glyph
@@ -130,8 +74,9 @@
                             <Glyph
                                 basis={{
                                     key: `caret-right`,
-                                    dim: `sm`,
+                                    dim: `sm-`,
                                     weight: `bold`,
+                                    classes: `text-layer-2-glyph`,
                                 }}
                             />
                         </div>

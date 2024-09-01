@@ -6,7 +6,11 @@
     import Nav from "$lib/components/nav.svelte";
     import { app_tabs_visible } from "$lib/stores";
     import { type TradeProduct } from "@radroots/client";
-    import { trellis as Trellis } from "@radroots/svelte-lib";
+    import {
+        locale,
+        time_fmt_db_iso,
+        trellis as Trellis,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let models_list: TradeProduct[] = [];
@@ -34,60 +38,116 @@
 
 <LayoutView>
     <LayoutTrellis>
-        <Trellis
-            basis={{
-                args: {
-                    layer: 1,
-                    title: {
-                        value: `Trade Products`,
-                    },
-                    list: [
-                        {
-                            touch: {
-                                label: {
-                                    left: [
-                                        {
-                                            value: `Add new product`,
-                                            classes: `capitalize`,
+        {#if models_list.length}
+            {#each models_list as li}
+                <Trellis
+                    basis={{
+                        args: {
+                            layer: 1,
+                            title: {
+                                value: `Trade Products`,
+                            },
+                            list: [
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Name:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: li.key,
+                                                },
+                                            ],
                                         },
-                                    ],
-                                },
-                                callback: async () => {
-                                    await goto(`/models/trade-product/add`);
-                                },
-                                end: {
-                                    icon: {
-                                        key: `caret-right`,
+                                        callback: async () => {},
                                     },
                                 },
-                            },
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Lot:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: li.lot,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Varietal:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: li.varietal,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Date Created:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: time_fmt_db_iso(
+                                                        $locale,
+                                                        li.created_at,
+                                                    ),
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                            ],
                         },
-                    ],
-                },
-            }}
-        />
-        <div class={`flex flex-col justify-center items-center pt-4 px-4`}>
-            {#if models_list.length > 0}
-                <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"Your products:"}
+                    }}
+                />
+            {/each}
+        {:else}
+            <div
+                class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
+            >
+                <p class={`font-sans font-[400] text-layer-2-glyph`}>
+                    {`No items to display.`}
                 </p>
-                {#each models_list as li}
-                    <div class={`flex flex-col justify-center items-center`}>
-                        <pre
-                            class={`font-sans font-[400] text-layer-0-glyph text-xs`}>{JSON.stringify(
-                                li,
-                                null,
-                                4,
-                            )}
-                        </pre>
-                    </div>
-                {/each}
-            {:else}
-                <p class={`font-sans font-[400] text-layer-0-glyph text-xs`}>
-                    {"No products saved"}
-                </p>
-            {/if}
-        </div>
+                <a href={`/models/trade-product/add`}>
+                    <p
+                        class={`font-sans font-[400] text-layer-2-glyph-hl text-sm`}
+                    >
+                        {`Click to add a new product`}
+                    </p>
+                </a>
+            </div>
+        {/if}
     </LayoutTrellis>
 </LayoutView>
 <Nav
@@ -99,15 +159,16 @@
         title: {
             label: `Products`,
         },
-        option: {
-            glyph: {
-                key: `arrow-counter-clockwise`,
-                dim: `md`,
-                classes: `text-layer-1-glyph-hl taps`,
-            },
-            callback: async () => {
-                await fetch_models();
-            },
-        },
+        option: models_list.length
+            ? {
+                  label: {
+                      value: `Add`,
+                      classes: `tap-color`,
+                  },
+                  callback: async () => {
+                      await goto(`/models/trade-product/add`);
+                  },
+              }
+            : undefined,
     }}
 />

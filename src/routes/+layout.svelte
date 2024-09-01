@@ -163,6 +163,12 @@
     });
 </script>
 
+<svelte:head>
+    <title>{_cf.app.title}</title>
+    <meta name="description" content={_cf.app.description} />
+    <meta property="og:title" content={_cf.app.title} />
+    <meta property="og:description" content={_cf.app.description} />
+</svelte:head>
 {#if $app_render}
     <LayoutWindow>
         <slot />

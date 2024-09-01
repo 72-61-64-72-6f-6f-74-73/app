@@ -8,7 +8,11 @@
 
 @layer components {
     .form-select-e {
-        @apply select select-sm border-0 focus:border-0 outline-0 focus:outline-0;
+        @apply border-0 focus:border-0 outline-0 focus:outline-0;
+    }
+
+    select:focus {
+        outline: none;
     }
 
     .form-line-e {
@@ -29,8 +33,13 @@
         @apply outline outline-[2px] outline-red-300/70;
     }
     
-    .taps {
-        @apply active:scale-[94%] active:opacity-80 transition-all;
+    .tap-scale {
+        @apply active:scale-[94%];
+    }
+
+    .tap-scale,
+    .tap-color {
+        @apply active:opacity-80 transition-all;
     }
 
     .input-simple {

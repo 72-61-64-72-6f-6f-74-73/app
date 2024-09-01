@@ -13,11 +13,14 @@
         type LocationGcs,
     } from "@radroots/client";
     import {
+        fmt_capitalize,
         fmt_id,
         input_form as InputForm,
         kv,
         loading as Loading,
     } from "@radroots/svelte-lib";
+    import { trade_keys } from "@radroots/utils";
+
     import { onMount } from "svelte";
 
     const texts_key = {
@@ -30,7 +33,7 @@
     };
 
     const texts_kv: Record<string, string> = {
-        key: `Name`,
+        key: `Kind`,
     };
 
     let loading = false;
@@ -38,6 +41,7 @@
 
     let ls_model_location_gcs: LocationGcs[] = [];
     let val_model_location_gcs_selected = ``;
+    let val_model_trade_good_key = ``;
 
     $: {
         if (ls_model_location_gcs.length && !val_model_location_gcs_selected)
@@ -85,7 +89,10 @@
                 const field_k = parse_trade_product_form_keys(k);
                 if (!field_k) continue;
                 const field_id = fmt_id(field_k);
-                const field_val = await $kv.get(field_id);
+                const field_val =
+                    field_k === `key`
+                        ? val_model_trade_good_key
+                        : await $kv.get(field_id);
 
                 if (
                     (!field.optional && !field.validation.test(field_val)) ||
@@ -104,6 +111,8 @@
             const res = await lc.db.trade_product_add(vals);
             if (typeof res !== `string` && !Array.isArray(res)) {
                 await goto(`/models/trade-product`);
+            } else {
+                await lc.dialog.alert(`There was an error: ${res.toString()}`);
             }
         } catch (e) {
             console.log(`(error) submit `, e);
@@ -118,8 +127,35 @@
         <div
             class={`flex flex-col w-full px-4 gap-3 justify-center items-center`}
         >
-            {#each Object.entries(trade_product_form_fields) as [field_k, field], field_i}
-                {#if field_i === 1}
+            {#each Object.entries(trade_product_form_fields).filter((i) => i[0] !== `key`) as [field_k, field], field_i}
+                {#if field_i === 0}
+                    <div
+                        class={`flex flex-col w-full gap-1 justify-start items-start`}
+                    >
+                        <div
+                            class={`flex flex-row w-full px-2 justify-start items-center`}
+                        >
+                            <p
+                                class={`font-sans font-[400] uppercase text-layer-2-glyph text-sm`}
+                            >
+                                {`Product - Kind`}
+                            </p>
+                        </div>
+                        <select
+                            class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-2-glyph`}
+                            bind:value={val_model_trade_good_key}
+                            on:change={async ({ currentTarget: el }) => {
+                                const val = el.value;
+                                console.log(`val `, val);
+                            }}
+                        >
+                            {#each trade_keys as li}
+                                <option value={li}>
+                                    {fmt_capitalize(li)}
+                                </option>
+                            {/each}
+                        </select>
+                    </div>
                     <div
                         class={`flex flex-col w-full gap-1 justify-start items-start`}
                     >
@@ -215,13 +251,13 @@
             route: `/models/trade-product`,
         },
         title: {
-            label: `Trade Product`,
+            label: `Add New`,
         },
         option: {
             glyph: {
                 key: `info`,
                 dim: `md`,
-                classes: `text-layer-1-glyph-hl taps`,
+                classes: `text-layer-1-glyph-hl tap-scale`,
             },
             callback: async () => {
                 //await fetch_models();

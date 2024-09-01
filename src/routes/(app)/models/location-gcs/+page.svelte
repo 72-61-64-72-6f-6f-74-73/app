@@ -116,7 +116,7 @@
             glyph: {
                 key: `arrow-counter-clockwise`,
                 dim: `md`,
-                classes: `text-layer-1-glyph-hl taps`,
+                classes: `text-layer-1-glyph-hl tap-scale`,
             },
             callback: async () => {
                 await fetch_models();

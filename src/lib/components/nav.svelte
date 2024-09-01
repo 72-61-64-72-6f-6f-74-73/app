@@ -3,7 +3,7 @@
     import { app_layout, app_nav_blur, app_nav_visible } from "$lib/stores";
     import type { INavBasis } from "$lib/types";
     import { restart } from "$lib/utils";
-    import { fill as Fill, glyph as Glyph } from "@radroots/svelte-lib";
+    import { fill as Fill, fmt_cl, glyph as Glyph } from "@radroots/svelte-lib";
     import { onDestroy, onMount } from "svelte";
 
     export let basis: INavBasis;
@@ -101,11 +101,11 @@
                                 }}
                             />
                         {/if}
-                        {#if `label` in basis.option}
+                        {#if `label` in basis.option && basis.option.label}
                             <p
-                                class={`font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
+                                class={`${fmt_cl(basis.option.label.classes)} font-sans text-navPrevious text-layer-1-glyph-hl group-active:opacity-60 transition-opacity`}
                             >
-                                {basis.option.label}
+                                {basis.option.label.value}
                             </p>
                         {/if}
                     </button>
