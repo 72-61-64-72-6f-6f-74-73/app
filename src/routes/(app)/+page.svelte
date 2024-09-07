@@ -134,7 +134,7 @@
     }}
 >
     <div class={`flex flex-col w-full justify-center items-center px-2`}>
-        <p class={`font-sans font-[400] text-layer-2-glyph break-all`}>
+        <p class={`font-apercu font-[400] text-layer-2-glyph break-all`}>
             {`Your nostr key is ${$app_nostr_key}`}
         </p>
     </div>

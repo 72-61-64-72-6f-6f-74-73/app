@@ -39,7 +39,7 @@ const config: Config = {
         ...theme_colors,
       },
       fontFamily: {
-        sans: ['"SF Pro Display"', ...tw_font.sans],
+        sans: ['SF Pro Display', ...tw_font.sans],
         serif: [...tw_font.serif],
         mono: [...tw_font.mono],
         apercu: ['Apercu Mono Pro'],
