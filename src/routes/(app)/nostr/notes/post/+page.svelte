@@ -4,9 +4,8 @@
     import ButtonSubmit from "$lib/components/button-submit.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
     import { NDKKind } from "@nostr-dev-kit/ndk";
-    import { ndk, ndk_event, ndk_user } from "@radroots/svelte-lib";
+    import { Nav, ndk, ndk_event, ndk_user } from "@radroots/svelte-lib";
 
     let loading = false;
     let value_note_content = ``;

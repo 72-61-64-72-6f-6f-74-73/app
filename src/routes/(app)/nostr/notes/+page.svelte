@@ -2,7 +2,6 @@
     import { goto } from "$app/navigation";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
     import { app_nostr_key } from "$lib/stores";
     import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
     import type {
@@ -11,6 +10,7 @@
     } from "@nostr-dev-kit/ndk-svelte";
     import {
         locale,
+        Nav,
         ndk,
         time_fmt_epoch_s,
         Trellis,

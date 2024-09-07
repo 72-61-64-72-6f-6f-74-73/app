@@ -10,7 +10,6 @@
     import {
         app_config,
         app_init_route,
-        app_layout,
         app_nostr_key,
         app_pwa_polyfills,
         app_render,
@@ -20,6 +19,7 @@
         app_win,
     } from "$lib/stores";
     import {
+        app_layout,
         CssStatic,
         ndk,
         ndk_setup_privkey,

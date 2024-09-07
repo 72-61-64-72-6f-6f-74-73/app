@@ -2,11 +2,10 @@
     import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
     import { _cf } from "$lib/conf";
     import { app_tabs_visible, app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
-    import { toggle_color_mode, Trellis } from "@radroots/svelte-lib";
+    import { Nav, toggle_color_mode, Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     onMount(async () => {

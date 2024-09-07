@@ -4,7 +4,6 @@
     import ButtonSubmit from "$lib/components/button-submit.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
     import { location_gcs_add } from "$lib/utils/models";
     import {
         parse_trade_product_form_keys,
@@ -18,6 +17,7 @@
         InputForm,
         kv,
         Loading,
+        Nav,
     } from "@radroots/svelte-lib";
     import { trade_keys } from "@radroots/utils";
 
@@ -295,7 +295,6 @@
                 classes: `text-layer-1-glyph-hl tap-scale`,
             },
             callback: async () => {
-                //await fetch_models();
                 alert(`Todo!`);
             },
         },

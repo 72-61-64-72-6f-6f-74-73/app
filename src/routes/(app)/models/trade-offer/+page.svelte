@@ -4,11 +4,11 @@
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
     import { app_tabs_visible } from "$lib/stores";
-    import { type TradeProduct } from "@radroots/client";
-    import { locale, Nav, time_fmt_iso, Trellis } from "@radroots/svelte-lib";
+    import { type TradeOffer } from "@radroots/client";
+    import { Nav, Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: TradeProduct[] = [];
+    let models_list: TradeOffer[] = [];
     let loading_models = false;
 
     onMount(async () => {
@@ -23,7 +23,7 @@
     const fetch_models = async (): Promise<void> => {
         try {
             loading_models = true;
-            const res = await lc.db.trade_product_get({
+            const res = await lc.db.trade_offer_get({
                 list: [`all`],
             });
             if (typeof res !== `string`) models_list = res;
@@ -46,7 +46,7 @@
                             title:
                                 li_i === 0
                                     ? {
-                                          value: `Trade Products`,
+                                          value: `Trade Offers`,
                                       }
                                     : undefined,
                             list: [
@@ -56,13 +56,13 @@
                                         label: {
                                             left: [
                                                 {
-                                                    value: `Product:`,
+                                                    value: `Price:`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
                                             right: [
                                                 {
-                                                    value: li.key,
+                                                    value: `${li.price_amt} ${li.price_currency}`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
@@ -76,54 +76,14 @@
                                         label: {
                                             left: [
                                                 {
-                                                    value: `Date Created:`,
+                                                    value: `Quantity:`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
                                             right: [
                                                 {
-                                                    value: time_fmt_iso(
-                                                        $locale,
-                                                        li.created_at,
-                                                    ),
-                                                },
-                                            ],
-                                        },
-                                        callback: async () => {},
-                                    },
-                                },
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Lot:`,
+                                                    value: `${li.quantity_amt} ${li.quantity_unit}`,
                                                     classes: `capitalize`,
-                                                },
-                                            ],
-                                            right: [
-                                                {
-                                                    value: li.lot,
-                                                },
-                                            ],
-                                        },
-                                        callback: async () => {},
-                                    },
-                                },
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Varietal:`,
-                                                    classes: `capitalize`,
-                                                },
-                                            ],
-                                            right: [
-                                                {
-                                                    value: li.varietal,
                                                 },
                                             ],
                                         },
@@ -142,7 +102,7 @@
                 <p class={`font-sans font-[400] text-layer-2-glyph`}>
                     {`No items to display.`}
                 </p>
-                <a href={`/models/trade-product/add`}>
+                <a href={`/models/trade-offer/add`}>
                     <p
                         class={`font-sans font-[400] text-layer-2-glyph-hl text-sm`}
                     >
@@ -169,7 +129,7 @@
                       classes: `tap-color`,
                   },
                   callback: async () => {
-                      await goto(`/models/trade-product/add`);
+                      await goto(`/models/trade-offer/add`);
                   },
               }
             : undefined,

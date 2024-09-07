@@ -2,12 +2,11 @@
     import { lc } from "$lib/client";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
     import { _cf } from "$lib/conf";
     import { app_tabs_visible, app_thc } from "$lib/stores";
     import { location_gcs_add } from "$lib/utils/models";
     import { type LocationGcs } from "@radroots/client";
-    import { Fill, fmt_geo_direction } from "@radroots/svelte-lib";
+    import { Fill, fmt_geo_direction, Nav } from "@radroots/svelte-lib";
     import { MapLibre, Marker } from "@radroots/svelte-maplibre";
     import { onMount } from "svelte";
 

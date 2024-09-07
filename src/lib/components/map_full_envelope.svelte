@@ -1,7 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { app_layout } from "$lib/stores";
-    import { Glyph } from "@radroots/svelte-lib";
+    import { Glyph, app_layout } from "@radroots/svelte-lib";
 
     let el: HTMLElement | null;
 </script>

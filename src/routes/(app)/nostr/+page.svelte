@@ -2,8 +2,7 @@
     import { goto } from "$app/navigation";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import Nav from "$lib/components/nav.svelte";
-    import { Trellis } from "@radroots/svelte-lib";
+    import { Nav, Trellis } from "@radroots/svelte-lib";
 </script>
 
 <LayoutView>

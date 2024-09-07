@@ -1,12 +1,11 @@
 <script lang="ts">
+    import { app_tabs_blur, app_tabs_visible } from "$lib/stores";
     import {
+        type AppLayoutKey,
         app_layout,
         app_nav_blur,
         app_nav_visible,
-        app_tabs_blur,
-        app_tabs_visible,
-    } from "$lib/stores";
-    import { type AppLayoutKey } from "@radroots/svelte-lib";
+    } from "@radroots/svelte-lib";
     import { onDestroy, onMount } from "svelte";
 
     const styles: Record<AppLayoutKey, string> = {
