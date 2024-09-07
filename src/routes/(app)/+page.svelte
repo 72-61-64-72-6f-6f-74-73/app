@@ -1,9 +1,20 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import { app_tab_active, app_tabs_visible } from "$lib/stores";
-    import { glyph as Glyph, type GlyphKey } from "@radroots/svelte-lib";
+    import {
+        app_nostr_key,
+        app_tab_active,
+        app_tabs_visible,
+    } from "$lib/stores";
+    import {
+        Envelope,
+        Glyph,
+        type GlyphKey,
+        type GlyphWeight,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
+
+    let tmp_show_envelope = false;
 
     onMount(async () => {
         try {
@@ -14,7 +25,12 @@
         }
     });
 
-    let buttons: { route: string; label: string; key: GlyphKey }[] = [
+    let buttons: {
+        route: string;
+        label: string;
+        key: GlyphKey;
+        weight?: GlyphWeight;
+    }[] = [
         {
             route: `/models/location-gcs`,
             label: `Locations`,
@@ -24,6 +40,7 @@
             route: `/models/trade-product`,
             label: `Post Goods`,
             key: `handbag-simple`,
+            weight: `fill`,
         },
     ];
 </script>
@@ -34,13 +51,16 @@
     >
         <div class={`flex flex-row w-full px-1 justify-start items-center`}>
             <p
-                class={`font-mono font-[600] text-layer-2-glyph text-xl tracking-wide`}
+                class={`font-mono font-[600] text-layer-2-glyph max-sm:text-lg text-xl tracking-wide`}
             >
                 {`radroots app (beta-1.0.0)`}
             </p>
         </div>
         <button
-            class={`flex flex-row w-full h-8 px-4 gap-2 justify-start items-center surface-1 rounded-xl active:bg-layer-1-surface_a transition-all`}
+            class={`flex flex-row w-full h-[34px] px-4 gap-2 justify-start items-center surface-1 rounded-xl active:bg-layer-1-surface_a transition-all`}
+            on:click={async () => {
+                tmp_show_envelope = !tmp_show_envelope;
+            }}
         >
             <Glyph
                 basis={{
@@ -58,7 +78,7 @@
         >
             {#each buttons as btn}
                 <button
-                    class={`surface-1 col-span-6 flex flex-col h-20 py-2 px-3 justify-between rounded-2xl font-[500] text-lg font-mono active:bg-layer-1-surface_a transition-all`}
+                    class={`surface-1 col-span-6 flex flex-col h-20 py-2 px-3 justify-between rounded-2xl font-[500] text-lg font-mono tap-active-op transition-all`}
                     on:click={async () => {
                         await goto(btn.route);
                     }}
@@ -71,7 +91,7 @@
                                 basis={{
                                     key: btn.key,
                                     dim: `md`,
-                                    weight: `bold`,
+                                    weight: btn.weight || `bold`,
                                 }}
                             />
                         </div>
@@ -98,3 +118,24 @@
         </div>
     </div>
 </LayoutView>
+<Envelope
+    basis={{
+        visible: tmp_show_envelope,
+        close: async () => {
+            tmp_show_envelope = !tmp_show_envelope;
+        },
+        titled: {
+            previous: {
+                label: {
+                    value: `Go Back`,
+                },
+            },
+        },
+    }}
+>
+    <div class={`flex flex-col w-full justify-center items-center px-2`}>
+        <p class={`font-sans font-[400] text-layer-2-glyph break-all`}>
+            {`Your nostr key is ${$app_nostr_key}`}
+        </p>
+    </div>
+</Envelope>

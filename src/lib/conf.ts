@@ -1,4 +1,22 @@
-export const _cf = {
+import type { ColorMode } from "@radroots/theme";
+import { type NumberTuple } from "@radroots/utils";
+
+type Conf = {
+    app: Record<string, string>;
+    pref: Record<string, string>;
+    map: {
+        styles: {
+            base: Record<ColorMode, string>;
+        },
+        popup: {
+            dot: {
+                offset: NumberTuple;
+            }
+        }
+    }
+}
+
+export const _cf: Conf = {
     app: {
         root_symbol: "»--`--,---",
         title: `Radroots`,
@@ -7,4 +25,17 @@ export const _cf = {
     pref: {
         key_active: `nostr:key:active`
     },
+    map: {
+        styles: {
+            base: {
+                light: `https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json`,
+                dark: `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json`
+            }
+        },
+        popup: {
+            dot: {
+                offset: [0, -10] as const
+            }
+        }
+    }
 };

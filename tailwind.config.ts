@@ -14,11 +14,19 @@ const heights = {
   tabs_lg: `86px`,
   nav_base: `71px`,
   nav_lg: `100px`,
+  "envTop": "56px",
 };
 
 const widths = {
   line: `320px`
 };
+
+const dimensions = {
+  map_circle: `16px`,
+  map_circle_inner: `10px`,
+  map_offset_top_base: `32px`,
+  map_offset_top_lg: `64px`,
+}
 
 const config: Config = {
   content: [
@@ -34,6 +42,7 @@ const config: Config = {
         sans: ['"SF Pro Display"', ...tw_font.sans],
         serif: [...tw_font.serif],
         mono: [...tw_font.mono],
+        apercu: ['Apercu Mono Pro'],
       },
       fontSize: {
         line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
@@ -42,13 +51,18 @@ const config: Config = {
         trellisLabel: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
         navPrevious: ["1.09rem", { lineHeight: "1.33rem", fontWeight: 400 }],
         navCurrent: ["1.09rem", { lineHeight: "1.33rem", fontWeight: 500 }],
+        envelopeTitle: ["1.05rem", { lineHeight: "1.75rem", fontWeight: 600 }],
+        envelopeTitlePrevious: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 400 }],
+        envelopeTitleAction: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 500 }],
       },
       height: {
         ...heights,
+        ...dimensions,
         ...Object.fromEntries(Object.entries(heights_form).map(([k, v]) => [`form_${k}`, v])),
       },
       width: {
         ...widths,
+        ...dimensions,
       },
       minHeight: {
         ...heights
@@ -65,10 +79,14 @@ const config: Config = {
       padding: {
         ...Object.fromEntries(Object.entries(heights).map(([k, v]) => [`h_${k}`, v])),
         ...Object.fromEntries(Object.entries(widths).map(([k, v]) => [`w_${k}`, v])),
+        ...Object.fromEntries(Object.entries(dimensions).map(([k, v]) => [`dim_${k}`, v])),
       },
       translate: {
         ...Object.fromEntries(Object.entries(heights).map(([k, v]) => [`h_${k}`, v])),
         ...Object.fromEntries(Object.entries(widths).map(([k, v]) => [`w_${k}`, v])),
+      },
+      spacing: {
+        ...Object.fromEntries(Object.entries(dimensions).map(([k, v]) => [`dim_${k}`, v])),
       },
       borderWidth: {
         "line": "1px"
@@ -83,6 +101,7 @@ const config: Config = {
   ],
   daisyui: {
     themes: [
+      themes.theme_earth_light,
       themes.theme_os_dark,
       themes.theme_os_light,
     ],

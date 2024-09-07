@@ -4,7 +4,7 @@
     import LayoutView from "$lib/components/layout-view.svelte";
     import Nav from "$lib/components/nav.svelte";
     import { _cf } from "$lib/conf";
-    import { trellis as Trellis } from "@radroots/svelte-lib";
+    import { Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let nostr_public_key = ``;

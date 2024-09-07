@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { CallbackPromise } from "@radroots/svelte-lib";
-    import { loading as Loading, t } from "@radroots/svelte-lib";
+    import { Loading, t } from "@radroots/svelte-lib";
 
     export let basis: {
         callback: CallbackPromise;

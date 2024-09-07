@@ -6,11 +6,7 @@
     import Nav from "$lib/components/nav.svelte";
     import { app_tabs_visible } from "$lib/stores";
     import { type TradeProduct } from "@radroots/client";
-    import {
-        locale,
-        time_fmt_db_iso,
-        trellis as Trellis,
-    } from "@radroots/svelte-lib";
+    import { locale, time_fmt_iso, Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let models_list: TradeProduct[] = [];
@@ -43,14 +39,17 @@
 <LayoutView>
     <LayoutTrellis>
         {#if models_list.length}
-            {#each models_list as li}
+            {#each models_list as li, li_i}
                 <Trellis
                     basis={{
                         args: {
                             layer: 1,
-                            title: {
-                                value: `Trade Products`,
-                            },
+                            title:
+                                li_i === 0
+                                    ? {
+                                          value: `Trade Products`,
+                                      }
+                                    : undefined,
                             list: [
                                 {
                                     hide_active: true,
@@ -58,7 +57,7 @@
                                         label: {
                                             left: [
                                                 {
-                                                    value: `Kind:`,
+                                                    value: `Product:`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
@@ -66,6 +65,28 @@
                                                 {
                                                     value: li.key,
                                                     classes: `capitalize`,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Date Created:`,
+                                                    classes: `capitalize`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    value: time_fmt_iso(
+                                                        $locale,
+                                                        li.created_at,
+                                                    ),
                                                 },
                                             ],
                                         },
@@ -104,28 +125,6 @@
                                             right: [
                                                 {
                                                     value: li.varietal,
-                                                },
-                                            ],
-                                        },
-                                        callback: async () => {},
-                                    },
-                                },
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Date Created:`,
-                                                    classes: `capitalize`,
-                                                },
-                                            ],
-                                            right: [
-                                                {
-                                                    value: time_fmt_db_iso(
-                                                        $locale,
-                                                        li.created_at,
-                                                    ),
                                                 },
                                             ],
                                         },

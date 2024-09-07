@@ -9,13 +9,7 @@
         ExtendedBaseType,
         NDKEventStore,
     } from "@nostr-dev-kit/ndk-svelte";
-    import {
-        ndk,
-        ndk_event,
-        ndk_user,
-        t,
-        trellis as Trellis,
-    } from "@radroots/svelte-lib";
+    import { ndk, ndk_event, ndk_user, t, Trellis } from "@radroots/svelte-lib";
     import { onDestroy } from "svelte";
 
     let events_store: NDKEventStore<ExtendedBaseType<NDKEvent>>;

@@ -1,36 +1,88 @@
 <script lang="ts">
-  import { map_full_center } from "$lib/stores";
-  import { MapLibre } from "@radroots/svelte-maplibre";
+  import { lc } from "$lib/client";
+  import MapControlFull from "$lib/components/map_control_full.svelte";
+  import { _cf } from "$lib/conf";
+  import { app_thc } from "$lib/stores";
+  import { Fill, LoadingView, sleep } from "@radroots/svelte-lib";
+  import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
+  import { type NumberTuple } from "@radroots/utils";
   import { onMount } from "svelte";
 
-  let el: any;
+  let loading_layout = true;
+  let map_coords: NumberTuple | undefined = undefined;
 
   onMount(async () => {
     try {
-      /*
       const loc = await lc.geo.current();
       if (loc && typeof loc !== `string`) {
-        const tup: [number, number] = [loc.lng, loc.lat];
-        console.log(`tup `, tup);
-        map_full_center.set(tup);
+        map_coords = [loc.lng, loc.lat];
       }
-      */
+      await sleep(321);
     } catch (e) {
       console.log(`e `, e);
     } finally {
+      loading_layout = false;
     }
   });
 </script>
 
-<MapLibre
-  bind:this={el}
-  center={$map_full_center}
-  class="map-full"
-  style="https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json"
-/>
+{#if map_coords}
+  <MapLibre
+    center={map_coords}
+    zoom={10}
+    class={`map-full ${loading_layout ? `hidden` : ``}`}
+    style={_cf.map.styles.base[$app_thc]}
+  >
+    <Marker lngLat={map_coords}>
+      <div class="flex flex-row p-1">
+        <div
+          class={`flex flex-row h-map_circle w-map_circle justify-center items-center bg-white rounded-full shadow-lg`}
+        >
+          <div
+            class={`flex flex-row h-map_circle_inner w-map_circle_inner justify-center items-center bg-blue-400 rounded-full`}
+          >
+            <Fill />
+          </div>
+        </div>
+      </div>
+      <Popup offset={_cf.map.popup.dot.offset}>
+        <button
+          class={`flex flex-row justify-center items-center transition-all`}
+          on:click={async () => {}}
+        >
+          <div
+            class={`flex flex-col w-fit px-2 py-1 gap-2 justify-start items-start`}
+          >
+            <div class={`flex flex-row w-full justify-start items-center`}>
+              <p class={`font-mono font-[400] text-layer-2-glyph`}>
+                {`Marker location:`}
+              </p>
+            </div>
+            <div
+              class={`flex flex-row w-full gap-2 justify-start items-center`}
+            >
+              <p class={`font-mono font-[400] text-layer-2-glyph`}>
+                {map_coords[0]}
+              </p>
+              <p class={`font-mono font-[400] text-layer-2-glyph`}>
+                {map_coords[1]}
+              </p>
+            </div>
+          </div>
+        </button>
+      </Popup>
+    </Marker>
+  </MapLibre>
+{/if}
+{#if loading_layout}
+  <LoadingView />
+{:else}
+  <MapControlFull />
+{/if}
 
 <style>
   :global(.map-full) {
     height: 100vh;
+    width: 100vh;
   }
 </style>

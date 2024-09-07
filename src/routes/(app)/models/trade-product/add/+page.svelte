@@ -15,9 +15,9 @@
     import {
         fmt_capitalize,
         fmt_id,
-        input_form as InputForm,
+        InputForm,
         kv,
-        loading as Loading,
+        Loading,
     } from "@radroots/svelte-lib";
     import { trade_keys } from "@radroots/utils";
 

@@ -1,18 +1,19 @@
 @import "./lib/css/spinner.css";
 @import "./lib/css/spinner-6.css";
 @import "./lib/css/spinner-12.css";
+@import "./lib/css/fonts.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-    .form-select-e {
-        @apply border-0 focus:border-0 outline-0 focus:outline-0;
+    .map-marker-popup-simple-open {
+        @apply h-40 w-72;
     }
 
-    select:focus {
-        outline: none;
+    .form-select-e {
+        @apply border-0 focus:border-0 outline-0 focus:outline-0;
     }
 
     .form-line-e {
@@ -95,6 +96,26 @@
         opacity: 0;
         animation: fade-in 250ms ease-in-out forwards;
     }
+
+    .active-ring-blue {
+        @apply active:ring-4 active:ring-slate-300/70;
+    }
+
+    .active-ring-gray {
+        @apply active:ring-4 active:ring-slate-300/20;
+    }
+
+    .tap-active-op {
+        @apply active:opacity-60;
+    }
+
+    .tap-rise {
+        @apply active:scale-[101%] group-active:scale-[101%] delay-[150ms] duration-[400ms] ease-in-out transition-all;
+    }
+
+    .tap-in {
+        @apply active:scale-[97%] group-active:scale-[97%] delay-[150ms] duration-[300ms] ease-in-out transition-all;
+    }
 }
 
 @layer base {
@@ -102,92 +123,15 @@
         background-color: hsl(var(--layer-0-surface));
     }
 
-    p {
+    html {
         @apply select-none cursor-none;
     }
 
-    pre {
-        @apply select-none cursor-none;
+    select:focus {
+        outline: none;
     }
 
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-BlackItalic.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-BlackItalic.woff') format('woff');
-        font-weight: 900;
-        font-style: italic;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-Black.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-Black.woff') format('woff');
-        font-weight: 900;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-Bold.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-Bold.woff') format('woff');
-        font-weight: bold;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-BoldItalic.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-BoldItalic.woff') format('woff');
-        font-weight: bold;
-        font-style: italic;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-Heavy.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-Heavy.woff') format('woff');
-        font-weight: 900;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-HeavyItalic.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-HeavyItalic.woff') format('woff');
-        font-weight: 900;
-        font-style: italic;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-Light.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-Light.woff') format('woff');
-        font-weight: 300;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-LightItalic.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-LightItalic.woff') format('woff');
-        font-weight: 300;
-        font-style: italic;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: 'SFProDisplay';
-        src: url('/webfonts/sf-pro-display/SFProDisplay-Medium.woff2') format('woff2'),
-            url('/webfonts/sf-pro-display/SFProDisplay-Medium.woff') format('woff');
-        font-weight: 500;
-        font-style: normal;
-        font-display: swap;
+    button:focus {
+        outline: none;
     }
 }

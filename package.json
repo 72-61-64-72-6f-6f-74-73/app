@@ -61,6 +61,9 @@
 		"@radroots/svelte-maplibre": "workspace:*",
 		"@radroots/theme": "workspace:*",
 		"@radroots/utils": "workspace:*",
+		"maplibre-gl": "^4.0.0",
+		"pmtiles": "^3.0.3",
+		"protomaps-themes-base": "^3.1.0",
 		"sql.js": "^1.11.0"
 	}
 }

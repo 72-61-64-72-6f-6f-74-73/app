@@ -12,8 +12,8 @@
     import {
         locale,
         ndk,
-        time_fmt_nostr_event,
-        trellis as Trellis,
+        time_fmt_epoch_s,
+        Trellis,
         type ITrellisKindTouch,
     } from "@radroots/svelte-lib";
     import { onDestroy } from "svelte";
@@ -80,7 +80,7 @@
                     ],
                     right: [
                         {
-                            value: time_fmt_nostr_event($locale, ev.created_at),
+                            value: time_fmt_epoch_s($locale, ev.created_at),
                         },
                     ],
                 },

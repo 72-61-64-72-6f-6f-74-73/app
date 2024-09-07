@@ -3,7 +3,7 @@
     import { app_layout, app_nav_blur, app_nav_visible } from "$lib/stores";
     import type { INavBasis } from "$lib/types";
     import { restart } from "$lib/utils";
-    import { fill as Fill, fmt_cl, glyph as Glyph } from "@radroots/svelte-lib";
+    import { Fill, fmt_cl, Glyph } from "@radroots/svelte-lib";
     import { onDestroy, onMount } from "svelte";
 
     export let basis: INavBasis;

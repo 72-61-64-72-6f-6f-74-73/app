@@ -18,10 +18,9 @@
         app_thc,
         app_thm,
         app_win,
-        map_full_center,
     } from "$lib/stores";
     import {
-        css_static as CssStatic,
+        CssStatic,
         ndk,
         ndk_setup_privkey,
         ndk_user,
@@ -136,10 +135,6 @@
                 await lc.preferences.remove(_cf.pref.key_active);
                 await goto(`/conf/nostr`);
             }
-
-            const pos = await lc.geo.current();
-            if (pos && typeof pos !== `string`)
-                map_full_center.set([pos.lng, pos.lat]);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
@@ -168,7 +163,6 @@
 </script>
 
 <svelte:head>
-    <title>{_cf.app.title}</title>
     <meta name="description" content={_cf.app.description} />
     <meta property="og:title" content={_cf.app.title} />
     <meta property="og:description" content={_cf.app.description} />
@@ -178,5 +172,5 @@
 {/if}
 <CssStatic />
 <div
-    class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg"
+    class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg top-dim_map_offset_top_base top-dim_map_offset_top_lg"
 ></div>

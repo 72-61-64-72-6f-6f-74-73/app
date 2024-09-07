@@ -3,11 +3,11 @@
     import { app_layout } from "$lib/stores";
     import { Glyph } from "@radroots/svelte-lib";
 
-    let el_zoom: HTMLElement | null;
+    let el: HTMLElement | null;
 </script>
 
 <div
-    bind:this={el_zoom}
+    bind:this={el}
     class={`z-10 absolute top-dim_map_offset_top_${$app_layout} left-6 flex flex-col w-full gap-8 justify-start items-start`}
 >
     <button

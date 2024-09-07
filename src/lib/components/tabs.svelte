@@ -1,6 +1,6 @@
 <script lang="ts">
     import { app_layout, app_tab_active, app_tabs_blur } from "$lib/stores";
-    import { glyph as Glyph, type ITabsBasis } from "@radroots/svelte-lib";
+    import { Glyph, type ITabsBasis } from "@radroots/svelte-lib";
 
     export let basis: ITabsBasis;
     $: basis = basis;

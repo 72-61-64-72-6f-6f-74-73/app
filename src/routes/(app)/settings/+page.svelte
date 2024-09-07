@@ -6,10 +6,7 @@
     import { _cf } from "$lib/conf";
     import { app_tabs_visible, app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
-    import {
-        toggle_color_mode,
-        trellis as Trellis,
-    } from "@radroots/svelte-lib";
+    import { toggle_color_mode, Trellis } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     onMount(async () => {

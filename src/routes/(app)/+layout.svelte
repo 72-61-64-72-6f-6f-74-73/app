@@ -1,8 +1,8 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import LayoutWindow from "$lib/components/layout-window.svelte";
     import Tabs from "$lib/components/tabs.svelte";
     import { app_layout, app_tab_active, app_tabs_visible } from "$lib/stores";
-    import LayoutWindow from "$lib/components/layout-window.svelte";
 </script>
 
 <LayoutWindow>
@@ -24,7 +24,7 @@
                 {
                     icon: `compass`,
                     callback: async (tab_i) => {
-                        await goto(`/map`)
+                        await goto(`/map/test`);
                     },
                 },
                 {
