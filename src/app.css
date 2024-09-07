@@ -1,7 +1,6 @@
 @import "./lib/css/spinner.css";
 @import "./lib/css/spinner-6.css";
 @import "./lib/css/spinner-12.css";
-@import "./lib/css/fonts.css";
 
 @tailwind base;
 @tailwind components;
