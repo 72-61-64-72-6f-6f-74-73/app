@@ -5,18 +5,16 @@ export const trade_product_kv_vals = async (kv_pref: string): Promise<TradeProdu
     try {
         const vals = {
             ...trade_product_form_vals
-        }
+        };
 
         for (const [k, field] of Object.entries(
             trade_product_form_fields,
         )) {
             const field_k = parse_trade_product_form_keys(k);
             if (!field_k) continue;
-            const field_id = `${kv_pref}-${field_k}`
-            let field_val = ``;
-            field_val = await kv.get(field_id);
+            const field_id = `${kv_pref}-${field_k}`;
+            const field_val = await kv.get(field_id);
             if (field_val) vals[field_k] = field_val;
-
             //@todo add validation
         }
         return vals;

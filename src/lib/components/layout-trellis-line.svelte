@@ -30,7 +30,7 @@
                     }}
                 >
                     <p
-                        class={`${fmt_cl(basis.notify.label.classes)} font-sans font-[400] uppercase text-layer-2-glyph text-sm`}
+                        class={`${fmt_cl(basis.notify.label.classes)} font-sans font-[600] uppercase text-layer-2-glyph/80 text-xs`}
                     >
                         {basis.notify.label.value}
                     </p>
