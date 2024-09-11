@@ -1,19 +1,26 @@
 <script lang="ts">
-    import ButtonSubmit from "$lib/components/button-submit.svelte";
+    import { goto } from "$app/navigation";
+    import { lc } from "$lib/client";
     import LayoutTrellisLine from "$lib/components/layout-trellis-line.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
+    import { location_gcs_add } from "$lib/utils/location_gcs";
     import {
         trade_product_kv_init,
-        trade_product_submit_preview,
+        trade_product_kv_vals,
     } from "$lib/utils/trade_product";
-    import { mass_units, trade_product_form_fields } from "@radroots/client";
+    import {
+        mass_units,
+        trade_product_form_fields,
+        type LocationGcs,
+    } from "@radroots/client";
     import {
         fmt_id,
         InputForm,
         InputSelect,
         kv,
         Nav,
+        sleep,
         t,
     } from "@radroots/svelte-lib";
     import {
@@ -28,13 +35,16 @@
     const trade_key_default: TradeKey = `coffee`;
 
     let loading_submit = false;
+    let loading_location = false;
 
-    let sel_key = ``;
+    let sel_key: string = trade_key_default;
     let show_sel_key_other = false;
+
+    let sel_location_gcs_id = ``;
+    let ls_location_gcs: LocationGcs[] = [];
 
     let sel_price_qty_amt = ``;
     let sel_price_qty_unit = ``;
-
     let show_sel_price_qty_amt_other = false;
 
     $: sel_key_parsed = parse_trade_key(sel_key);
@@ -46,15 +56,13 @@
         ? fmt_trade_quantity_val(trade_quantities[sel_key_parsed][0])
         : fmt_trade_quantity_val(trade_quantities[trade_key_default][0]);
 
+    $: {
+        if (ls_location_gcs.length && !sel_location_gcs_id) {
+            sel_location_gcs_id = ls_location_gcs[0].id;
+        }
+    }
     onMount(async () => {
         try {
-            sel_key = trade_key_default;
-            /*
-            sel_key = trade_keys[0];
-            sel_price_qty_amt = sel_key_parsed
-                ? fmt_trade_quantity_val(trade_quantities[sel_key_parsed][0])
-                : ``;
-                */
         } catch (e) {
         } finally {
         }
@@ -62,6 +70,7 @@
 
     onMount(async () => {
         try {
+            await fetch_models_location_gcs();
         } catch (e) {
         } finally {
         }
@@ -100,13 +109,55 @@
         }
     };
 
+    const fetch_models_location_gcs = async (): Promise<void> => {
+        try {
+            const res = await lc.db.location_gcs_get({
+                list: [`all`],
+            });
+            if (typeof res !== `string`) ls_location_gcs = res;
+        } catch (e) {
+            console.log(`(error) fetch_models_location_gcs `, e);
+        }
+    };
+
+    const add_model_location_gcs = async (): Promise<void> => {
+        try {
+            loading_location = true;
+            await location_gcs_add();
+            await fetch_models_location_gcs();
+        } catch (e) {
+            console.log(`(error) add_model_location_gcs `, e);
+        } finally {
+            loading_location = false;
+        }
+    };
+
     const submit = async (): Promise<void> => {
         try {
             loading_submit = true;
 
-            const res = await trade_product_submit_preview(fmt_id());
+            const location_gcs_id = await kv.get(fmt_id(`location_gcs_id`));
+            if (!location_gcs_id || typeof location_gcs_id !== `string`) {
+                await lc.dialog.alert(`The product location is missing.`);
+                return;
+            }
 
-            console.log(JSON.stringify(res, null, 4), `res`);
+            const location_gcs_res = await lc.db.location_gcs_get({
+                id: location_gcs_id,
+            });
+
+            if (typeof location_gcs_res === `string`) {
+                await lc.dialog.alert(
+                    `There was an error finding the selected location`,
+                );
+                await goto(`/`);
+                return;
+            }
+
+            const vals = await trade_product_kv_vals(fmt_id());
+            console.log(JSON.stringify(vals, null, 4), `vals`);
+
+            await sleep(1000);
         } catch (e) {
             console.log(`(error) submit `, e);
         } finally {
@@ -182,6 +233,51 @@
         <LayoutTrellisLine
             basis={{
                 label: {
+                    value: `Location`,
+                },
+            }}
+        >
+            <InputSelect
+                bind:value={sel_location_gcs_id}
+                basis={{
+                    id: fmt_id(`location_gcs_id`),
+                    sync: true,
+                    loading: loading_location,
+                    options: ls_location_gcs.length
+                        ? [
+                              ...ls_location_gcs.map((i) => ({
+                                  value: i.id,
+                                  label: `${i.label}`,
+                              })),
+                              {
+                                  value: `add-new`,
+                                  label: `${$t(`common.add_new_location`)}`,
+                              },
+                          ]
+                        : [
+                              {
+                                  value: ``,
+                                  disabled: true,
+                                  selected: true,
+                                  label: `${$t(`common.no_locations_saved`)}`,
+                              },
+                              {
+                                  value: `add-new`,
+                                  label: `${$t(`common.add_new_location`)}`,
+                              },
+                          ],
+                    callback: async (val) => {
+                        if (val === `add-new`) {
+                            sel_location_gcs_id = ``;
+                            await add_model_location_gcs();
+                        }
+                    },
+                }}
+            />
+        </LayoutTrellisLine>
+        <LayoutTrellisLine
+            basis={{
+                label: {
                     value: `Quantity`,
                 },
                 notify: show_sel_price_qty_amt_other
@@ -249,7 +345,7 @@
                             options: [
                                 ...ls_trade_product_quantities.map((i) => ({
                                     value: `${i.qty_amt}-${i.qty_unit}`,
-                                    label: `${i.qty_amt} ${$t(`trade.quantity.mass_unit.${i.qty_unit}_ab`, { default: i.qty_unit })}${i.label ? ` ${i.label}` : ``}`,
+                                    label: `${i.qty_amt} ${i.qty_unit}${i.label ? ` ${i.label}` : ``}`,
                                 })),
                                 {
                                     value: `other`,
@@ -266,17 +362,6 @@
                 {/if}
             </div>
         </LayoutTrellisLine>
-        <div class={`flex flex-row w-full pt-4 justify-end items-center`}>
-            <ButtonSubmit
-                basis={{
-                    loading: loading_submit,
-                    label: `preview`,
-                    callback: async () => {
-                        await submit();
-                    },
-                }}
-            />
-        </div>
     </LayoutTrellis>
 </LayoutView>
 <Nav
@@ -292,12 +377,13 @@
             label: `Add Product`,
         },
         option: {
+            loading: loading_submit,
             label: {
                 value: `Preview`,
                 classes: `text-layer-1-glyph-hl tap-scale`,
             },
             callback: async () => {
-                alert(`@todo!`);
+                await submit();
             },
         },
     }}
