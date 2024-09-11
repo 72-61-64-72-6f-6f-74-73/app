@@ -1,301 +1,303 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { lc } from "$lib/client";
     import ButtonSubmit from "$lib/components/button-submit.svelte";
+    import LayoutTrellisLine from "$lib/components/layout-trellis-line.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
     import LayoutView from "$lib/components/layout-view.svelte";
-    import { location_gcs_add } from "$lib/utils/models";
     import {
-        parse_trade_product_form_keys,
-        trade_product_form_fields,
-        trade_product_form_vals,
-        type LocationGcs,
-    } from "@radroots/client";
+        trade_product_kv_init,
+        trade_product_submit_preview,
+    } from "$lib/utils/trade_product";
+    import { mass_units, trade_product_form_fields } from "@radroots/client";
     import {
-        fmt_capitalize,
         fmt_id,
         InputForm,
+        InputSelect,
         kv,
-        Loading,
         Nav,
+        t,
     } from "@radroots/svelte-lib";
-    import { trade_keys } from "@radroots/utils";
-
+    import {
+        fmt_trade_quantity_val,
+        parse_trade_key,
+        trade_keys,
+        trade_quantities,
+        type TradeKey,
+    } from "@radroots/utils";
     import { onMount } from "svelte";
 
-    const texts_key = {
-        opt_lcs_add: `location_gcs-add-current`,
-    };
+    const trade_key_default: TradeKey = `coffee`;
 
-    const texts = {
-        1: `No locations saved`,
-        2: `Add new location`,
-    };
+    let loading_submit = false;
 
-    const texts_kv: Record<string, string> = {
-        key: `Kind`,
-    };
+    let sel_key = ``;
+    let show_sel_key_other = false;
 
-    let loading = false;
-    let loading_location = false;
+    let sel_price_qty_amt = ``;
+    let sel_price_qty_unit = ``;
 
-    let ls_model_location_gcs: LocationGcs[] = [];
-    let sel_model_location_gcs_id = ``;
-    let sel_model_trade_good_key = ``;
+    let show_sel_price_qty_amt_other = false;
 
-    $: {
-        if (ls_model_location_gcs.length && !sel_model_location_gcs_id)
-            sel_model_location_gcs_id = ls_model_location_gcs[0].id;
-    }
+    $: sel_key_parsed = parse_trade_key(sel_key);
+    $: ls_trade_product_quantities = sel_key_parsed
+        ? trade_quantities[sel_key_parsed]
+        : trade_quantities[trade_key_default];
+
+    $: sel_price_qty_amt = sel_key_parsed
+        ? fmt_trade_quantity_val(trade_quantities[sel_key_parsed][0])
+        : fmt_trade_quantity_val(trade_quantities[trade_key_default][0]);
 
     onMount(async () => {
         try {
-            sel_model_trade_good_key = trade_keys[0];
-            await fetch_models_location_gcs();
+            sel_key = trade_key_default;
+            /*
+            sel_key = trade_keys[0];
+            sel_price_qty_amt = sel_key_parsed
+                ? fmt_trade_quantity_val(trade_quantities[sel_key_parsed][0])
+                : ``;
+                */
         } catch (e) {
         } finally {
         }
     });
 
-    const fetch_models_location_gcs = async (): Promise<void> => {
+    onMount(async () => {
         try {
-            const res = await lc.db.location_gcs_get({
-                list: [`all`],
-            });
-            if (typeof res !== `string`) ls_model_location_gcs = res;
         } catch (e) {
-            console.log(`(error) fetch_models_location_gcs `, e);
+        } finally {
+        }
+    });
+
+    const toggle_show_key_other = async (visible: boolean): Promise<void> => {
+        try {
+            show_sel_key_other = visible;
+            if (visible) {
+                await kv.set(fmt_id(`key`), ``);
+            } else {
+                sel_key = trade_keys[0];
+            }
+        } catch (e) {
+            console.log(`(error) toggle_show_key_other `, e);
         }
     };
 
-    const add_model_location_gcs = async (): Promise<void> => {
+    const toggle_show_price_qty_amt_other = async (
+        visible: boolean,
+    ): Promise<void> => {
         try {
-            loading_location = true;
-            await location_gcs_add();
-            await fetch_models_location_gcs();
+            show_sel_price_qty_amt_other = visible;
+            if (visible) {
+                sel_price_qty_unit = mass_units[0];
+                await kv.set(fmt_id(`price_qty_amt`), ``);
+            } else {
+                sel_price_qty_amt = sel_key_parsed
+                    ? fmt_trade_quantity_val(
+                          trade_quantities[sel_key_parsed][0],
+                      )
+                    : ``;
+            }
         } catch (e) {
-            console.log(`(error) add_model_location_gcs `, e);
-        } finally {
-            loading_location = false;
+            console.log(`(error) toggle_show_price_qty_amt_other `, e);
         }
     };
 
     const submit = async (): Promise<void> => {
         try {
-            loading = true;
+            loading_submit = true;
 
-            if (!sel_model_location_gcs_id) {
-                await lc.dialog.alert(`The product location is missing.`);
-                return;
-            }
+            const res = await trade_product_submit_preview(fmt_id());
 
-            const db_location_gcs = await lc.db.location_gcs_get({
-                id: sel_model_location_gcs_id,
-            });
-
-            if (
-                typeof db_location_gcs === `string` ||
-                db_location_gcs.length !== 1
-            ) {
-                await lc.dialog.alert(
-                    `There was an error finding the selected location`,
-                );
-                await goto(`/`);
-                return;
-            }
-
-            const vals = trade_product_form_vals;
-            for (const [k, field] of Object.entries(
-                trade_product_form_fields,
-            )) {
-                const field_k = parse_trade_product_form_keys(k);
-                if (!field_k) continue;
-                const field_id = fmt_id(field_k);
-                const field_val =
-                    field_k === `key`
-                        ? sel_model_trade_good_key
-                        : await $kv.get(field_id);
-
-                if (
-                    (!field.optional && !field.validation.test(field_val)) ||
-                    (field.optional &&
-                        field_val &&
-                        !field.validation.test(field_val))
-                ) {
-                    loading = false;
-                    await lc.dialog.alert(
-                        `Invalid product ${texts_kv[field_k]?.toLowerCase() || field_k} value.`,
-                    );
-                    return;
-                }
-                vals[field_k] = field_val;
-            }
-            const db_add = await lc.db.trade_product_add(vals);
-            if (typeof db_add !== `string` && !Array.isArray(db_add)) {
-                const { id: trade_product_id } = db_add;
-                const db_rel = await lc.db.set_trade_product_location({
-                    trade_product_id,
-                    location_gcs_id: db_location_gcs[0].id,
-                });
-                if (typeof db_rel === `string`) {
-                    // @todo
-                }
-                await goto(`/models/trade-product`);
-            } else {
-                // @todo
-                await lc.dialog.alert(
-                    `There was an error: ${db_add.toString()}`,
-                );
-            }
+            console.log(JSON.stringify(res, null, 4), `res`);
         } catch (e) {
             console.log(`(error) submit `, e);
         } finally {
-            loading = false;
+            loading_submit = false;
         }
     };
 </script>
 
 <LayoutView>
     <LayoutTrellis>
-        <div
-            class={`flex flex-col w-full px-4 gap-3 justify-center items-center`}
+        <LayoutTrellisLine
+            basis={{
+                label: {
+                    value: `Product`,
+                },
+                notify: show_sel_key_other
+                    ? {
+                          classes: `w-full justify-end`,
+                          label: {
+                              classes: `text-xs font-[600]`,
+                              value: `Show Options`,
+                          },
+                          callback: async () => {
+                              await toggle_show_key_other(false);
+                          },
+                      }
+                    : undefined,
+            }}
         >
-            {#each Object.entries(trade_product_form_fields).filter((i) => i[0] !== `key`) as [field_k, field], field_i}
-                {#if field_i === 0}
-                    <div
-                        class={`flex flex-col w-full gap-1 justify-start items-start`}
-                    >
-                        <div
-                            class={`flex flex-row w-full px-2 justify-start items-center`}
-                        >
-                            <p
-                                class={`font-sans font-[400] uppercase text-layer-2-glyph text-sm`}
-                            >
-                                {`Product - Kind`}
-                            </p>
-                        </div>
-                        <select
-                            class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-1-glyph/70`}
-                            bind:value={sel_model_trade_good_key}
-                            on:change={async ({ currentTarget: el }) => {
-                                const val = el.value;
-                                console.log(`val `, val);
-                            }}
-                        >
-                            {#each trade_keys as li}
-                                <option value={li}>
-                                    {fmt_capitalize(li)}
-                                </option>
-                            {/each}
-                        </select>
-                    </div>
-                    <div
-                        class={`flex flex-col w-full gap-1 justify-start items-start`}
-                    >
-                        <div
-                            class={`flex flex-row w-full px-2 justify-start items-center`}
-                        >
-                            <p
-                                class={`font-sans font-[400] uppercase text-layer-2-glyph text-sm`}
-                            >
-                                {`Product - Location`}
-                            </p>
-                        </div>
-                        {#if loading_location}
-                            <div
-                                class={`form-line surface-1 flex flex-row justify-center items-center rounded-xl`}
-                            >
-                                <Loading basis={{ dim: `xs-` }} />
-                            </div>
-                        {:else}
-                            <select
-                                class={`form-select-e w-full bg-layer-1-surface rounded-xl text-layer-1-glyph/70`}
-                                bind:value={sel_model_location_gcs_id}
-                                on:change={async ({ currentTarget: el }) => {
-                                    const val = el.value;
-                                    if (val === texts_key.opt_lcs_add) {
-                                        sel_model_location_gcs_id = ``;
-                                        await add_model_location_gcs();
-                                    }
-                                }}
-                            >
-                                {#if ls_model_location_gcs.length}
-                                    {#each ls_model_location_gcs as li}
-                                        <option value={li.id}>
-                                            {`${li.label}`}
-                                        </option>
-                                    {/each}
-                                {:else}
-                                    <option disabled selected={true}>
-                                        {texts[1]}
-                                    </option>
-                                {/if}
-                                <option value={texts_key.opt_lcs_add}>
-                                    {texts[2]}
-                                </option>
-                            </select>
-                        {/if}
-                    </div>
-                {/if}
+            {#if show_sel_key_other}
                 <div
-                    class={`flex flex-col w-full gap-1 justify-start items-start`}
+                    class={`relative flex flex-row w-full justify-center items-center`}
                 >
+                    <InputForm
+                        basis={{
+                            id: fmt_id(`key`),
+                            sync: true,
+                            placeholder: `Enter the product name`,
+                            field: {
+                                charset: trade_product_form_fields.key.charset,
+                                validate:
+                                    trade_product_form_fields.key.validation,
+                                validate_keypress: true,
+                            },
+                        }}
+                    />
+                </div>
+            {:else}
+                <InputSelect
+                    bind:value={sel_key}
+                    basis={{
+                        id: fmt_id(`key`),
+                        sync: true,
+                        options: [
+                            ...trade_keys.map((i) => ({
+                                value: i,
+                                label: `${$t(`trade.product.key.${i}`, { default: i })}`,
+                            })),
+                            {
+                                value: `other`,
+                                label: `${$t(`common.other`)}`,
+                            },
+                        ],
+                        callback: async (val) => {
+                            if (val === `other`) {
+                                await toggle_show_key_other(true);
+                            }
+                        },
+                    }}
+                />
+            {/if}
+        </LayoutTrellisLine>
+        <LayoutTrellisLine
+            basis={{
+                label: {
+                    value: `Quantity`,
+                },
+                notify: show_sel_price_qty_amt_other
+                    ? {
+                          classes: `w-full justify-end`,
+                          label: {
+                              classes: `text-xs font-[600]`,
+                              value: `Show Options`,
+                          },
+                          callback: async () => {
+                              await toggle_show_price_qty_amt_other(false);
+                          },
+                      }
+                    : undefined,
+            }}
+        >
+            <div
+                class={`relative flex flex-row w-full gap-3 justify-between items-center h-form_line bg-layer-1-surface text-layer-1-glyph/70 rounded-2xl transition-all`}
+            >
+                {#if show_sel_price_qty_amt_other}
                     <div
-                        class={`flex flex-row w-full px-2 justify-start items-center`}
-                    >
-                        <p
-                            class={`font-sans font-[400] uppercase text-layer-2-glyph text-sm`}
-                        >
-                            {`Product - ${texts_kv[field_k] || field_k}`}
-                        </p>
-                    </div>
-                    <div
-                        class={`form-line-e bg-layer-1-surface text-layer-1-glyph/70 rounded-xl`}
+                        class={`relative flex flex-row w-full justify-center items-center`}
                     >
                         <InputForm
                             basis={{
-                                id: fmt_id(field_k),
-                                layer: 1,
+                                id: fmt_id(`price_qty_amt`),
+                                layer: false,
                                 sync: true,
+                                placeholder: `Enter number of ${$t(`trade.quantity.mass_unit.${sel_price_qty_unit}_ab`, { default: sel_price_qty_unit })} per order`,
                                 field: {
-                                    charset: field.charset,
-                                    validate: field.validation,
+                                    charset:
+                                        trade_product_form_fields.price_qty_amt
+                                            .charset,
+                                    validate:
+                                        trade_product_form_fields.price_qty_amt
+                                            .validation,
+                                    validate_keypress: true,
                                 },
                             }}
                         />
+                        <div
+                            class={`absolute top-0 right-0 flex flex-row h-full gap-2 justify-center items-center`}
+                        >
+                            <InputSelect
+                                bind:value={sel_price_qty_unit}
+                                basis={{
+                                    id: fmt_id(`price_qty_unit`),
+                                    classes: `w-16 text-layer-1-glyph/70 font-[500]`,
+                                    layer: false,
+                                    sync: true,
+                                    options: mass_units.map((i) => ({
+                                        value: i,
+                                        label: `${$t(`trade.quantity.mass_unit.${i}_ab`, { default: i })}`,
+                                    })),
+                                }}
+                            />
+                        </div>
                     </div>
-                </div>
-            {/each}
-            <div class={`flex flex-row w-full pt-4 justify-end items-center`}>
-                <ButtonSubmit
-                    basis={{
-                        callback: async () => {
-                            await submit();
-                        },
-                        loading,
-                    }}
-                />
+                {:else}
+                    <InputSelect
+                        bind:value={sel_price_qty_amt}
+                        basis={{
+                            id: fmt_id(`price_qty_tup`),
+                            sync: true,
+                            options: [
+                                ...ls_trade_product_quantities.map((i) => ({
+                                    value: `${i.qty_amt}-${i.qty_unit}`,
+                                    label: `${i.qty_amt} ${$t(`trade.quantity.mass_unit.${i.qty_unit}_ab`, { default: i.qty_unit })}${i.label ? ` ${i.label}` : ``}`,
+                                })),
+                                {
+                                    value: `other`,
+                                    label: `${$t(`common.other`)}`,
+                                },
+                            ],
+                            callback: async (val) => {
+                                if (val === `other`) {
+                                    await toggle_show_price_qty_amt_other(true);
+                                }
+                            },
+                        }}
+                    />
+                {/if}
             </div>
+        </LayoutTrellisLine>
+        <div class={`flex flex-row w-full pt-4 justify-end items-center`}>
+            <ButtonSubmit
+                basis={{
+                    loading: loading_submit,
+                    label: `preview`,
+                    callback: async () => {
+                        await submit();
+                    },
+                }}
+            />
         </div>
     </LayoutTrellis>
 </LayoutView>
 <Nav
     basis={{
         prev: {
-            label: `Products`,
+            label: `Back`,
             route: `/models/trade-product`,
+            callback: async () => {
+                await trade_product_kv_init(fmt_id());
+            },
         },
         title: {
-            label: `Add New`,
+            label: `Add Product`,
         },
         option: {
-            glyph: {
-                key: `info`,
-                dim: `md`,
+            label: {
+                value: `Preview`,
                 classes: `text-layer-1-glyph-hl tap-scale`,
             },
             callback: async () => {
-                alert(`Todo!`);
+                alert(`@todo!`);
             },
         },
     }}

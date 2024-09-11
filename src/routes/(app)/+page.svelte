@@ -38,7 +38,7 @@
         },
         {
             route: `/models/trade-product`,
-            label: `Post Goods`,
+            label: `Products`,
             key: `handbag-simple`,
             weight: `fill`,
         },
@@ -57,7 +57,7 @@
             </p>
         </div>
         <button
-            class={`flex flex-row w-full h-[34px] px-4 gap-2 justify-start items-center surface-1 rounded-xl active:bg-layer-1-surface_a transition-all`}
+            class={`flex flex-row w-full h-[34px] px-4 gap-2 justify-start items-center rounded-xl bg-layer-1-surface active:bg-layer-1-surface_a transition-all`}
             on:click={async () => {
                 tmp_show_envelope = !tmp_show_envelope;
             }}
@@ -67,9 +67,10 @@
                     key: `magnifying-glass`,
                     dim: `sm-`,
                     weight: `bold`,
+                    classes: `text-layer-2-glyph/90`,
                 }}
             />
-            <p class={`font-sans font-[500] text-layer-2-glyph/70`}>
+            <p class={`font-sans font-[500] text-layer-2-glyph/80`}>
                 {`Search`}
             </p>
         </button>
@@ -78,7 +79,7 @@
         >
             {#each buttons as btn}
                 <button
-                    class={`surface-1 col-span-6 flex flex-col h-20 py-2 px-3 justify-between rounded-2xl font-[500] text-lg font-mono tap-active-op transition-all`}
+                    class={`col-span-6 flex flex-col h-20 py-2 px-3 justify-between rounded-2xl bg-layer-1-surface text-layer-2-glyph font-[500] text-lg font-mono tap-rise active-ring-gray transition-all`}
                     on:click={async () => {
                         await goto(btn.route);
                     }}

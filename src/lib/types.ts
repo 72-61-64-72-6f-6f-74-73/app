@@ -4,4 +4,3 @@ export type NavParamPrev = NavigationPreviousParam[];
 export type NavParamTitle = {
     label: string;
 };
-

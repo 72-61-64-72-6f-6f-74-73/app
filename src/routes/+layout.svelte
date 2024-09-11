@@ -9,18 +9,18 @@
     import { _cf } from "$lib/conf";
     import {
         app_config,
-        app_init_route,
         app_nostr_key,
         app_pwa_polyfills,
         app_render,
         app_sqlite,
+        app_th,
         app_thc,
-        app_thm,
         app_win,
     } from "$lib/stores";
     import {
         app_layout,
         CssStatic,
+        kv,
         ndk,
         ndk_setup_privkey,
         ndk_user,
@@ -71,13 +71,13 @@
 
     app_thc.subscribe((app_thc) => {
         const color_mode = parse_color_mode(app_thc);
-        theme_set(parse_theme_key($app_thm), color_mode);
+        theme_set(parse_theme_key($app_th), color_mode);
         lc.window.status_style(color_mode);
     });
 
-    app_thm.subscribe((app_thm) => {
+    app_th.subscribe((app_th) => {
         const color_mode = parse_color_mode($app_thc);
-        theme_set(parse_theme_key(app_thm), color_mode);
+        theme_set(parse_theme_key(app_th), color_mode);
         lc.window.status_style(color_mode);
     });
 
@@ -147,9 +147,10 @@
             console.log(`app_render `, app_render);
             if (!app_render) return;
             let init_route = `/`;
-            if ($app_init_route) {
-                init_route = $app_init_route;
-                app_init_route.set(`/`);
+            const app_init_route = await kv.get(`app-init-route`);
+            if (app_init_route) {
+                init_route = app_init_route;
+                await kv.delete(`app-init-route`);
             }
             console.log(`init_route `, init_route);
             await goto(init_route);
@@ -174,3 +175,4 @@
 <div
     class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg top-dim_map_offset_top_base top-dim_map_offset_top_lg"
 ></div>
+<div class="hidden border-layer-1-surface-edge/40"></div>

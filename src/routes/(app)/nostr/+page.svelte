@@ -16,12 +16,12 @@
                     },
                     list: [
                         {
-                            hide_active: true,
                             touch: {
                                 label: {
                                     left: [
                                         {
                                             value: `View Your Keys`,
+                                            classes: `font-[300]`,
                                         },
                                     ],
                                 },
@@ -36,7 +36,6 @@
                             },
                         },
                         {
-                            hide_active: true,
                             touch: {
                                 label: {
                                     left: [
@@ -56,7 +55,6 @@
                             },
                         },
                         {
-                            hide_active: true,
                             touch: {
                                 label: {
                                     left: [

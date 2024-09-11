@@ -5,6 +5,7 @@
     export let basis: {
         callback: CallbackPromise;
         loading?: boolean;
+        label?: string;
     };
     $: basis = basis;
 </script>
@@ -18,6 +19,6 @@
     {#if basis.loading}
         <Loading basis={{ dim: `xs` }} />
     {:else}
-        {`${$t(`common.submit`, { default: `submit` })}`}
+        {basis.label || `${$t(`common.submit`, { default: `submit` })}`}
     {/if}
 </button>

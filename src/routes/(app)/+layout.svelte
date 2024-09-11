@@ -25,14 +25,14 @@
                 {
                     icon: `compass`,
                     callback: async (tab_i) => {
-                        await goto(`/models/trade-offer`);
+                        await goto(`/models/trade-product/add`);
                     },
                 },
                 {
                     icon: `network`,
                     callback: async (tab_i) => {
                         app_tab_active.set(tab_i);
-                        await goto("/nostr");
+                        await goto("/test");
                     },
                 },
                 {

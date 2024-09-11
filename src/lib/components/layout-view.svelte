@@ -2,9 +2,11 @@
     import { app_tabs_blur, app_tabs_visible } from "$lib/stores";
     import {
         type AppLayoutKey,
+        type IClOpt,
         app_layout,
         app_nav_blur,
         app_nav_visible,
+        fmt_cl,
     } from "@radroots/svelte-lib";
     import { onDestroy, onMount } from "svelte";
 
@@ -13,7 +15,7 @@
         lg: "pt-16",
     };
 
-    export let basis: { fade?: boolean } | undefined = undefined;
+    export let basis: (IClOpt & { fade?: boolean }) | undefined = undefined;
     $: basis = basis;
 
     let el: HTMLElement | null;
@@ -51,7 +53,7 @@
 
 <div
     bind:this={el}
-    class={`absolute top-0 left-0 flex flex-col h-[100vh] w-full overflow-y-scroll scroll-hide ${classes_nav} ${classes_tabs} ${classes_fade}`}
+    class={`${fmt_cl(basis?.classes)} absolute top-0 left-0 flex flex-col h-[100vh] w-full overflow-y-scroll scroll-hide ${classes_nav} ${classes_tabs} ${classes_fade}`}
 >
     <slot />
 </div>

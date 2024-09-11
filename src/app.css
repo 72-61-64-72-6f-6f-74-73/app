@@ -1,3 +1,4 @@
+@import "./lib/css/form.css";
 @import "./lib/css/spinner.css";
 @import "./lib/css/spinner-6.css";
 @import "./lib/css/spinner-12.css";
@@ -13,22 +14,8 @@
         @apply h-40 w-72;
     }
 
-    .form-select-e {
-        @apply border-0 focus:border-0 outline-0 focus:outline-0;
-    }
-
-    .form-line-e {
-        @apply pl-4 justify-center items-center;
-    }
-
-    .form-select-e,
-    .form-line-e,
-    .form-line {
-        @apply flex flex-row h-form_line w-full;
-    }
-
-    .form-input {
-        @apply input flex flex-row w-full p-0 border-0 focus:border-0 outline-0 focus:outline-0 placeholder:font-[300] bg-transparent;
+    .nobg {
+        @apply bg-transparent;
     }
 
     .form-input-invalid {
@@ -49,7 +36,7 @@
     }
 
     .button-submit {
-        @apply h-[32px] min-w-[82px] w-fit rounded-xl active:bg-layer-1-surface_a;
+        @apply h-[34px] min-w-[82px] w-fit rounded-xl active:bg-layer-1-surface_a;
     }
 
     .button-simple {
@@ -62,7 +49,6 @@
         @apply flex flex-row justify-center items-center font-mono text-sm lowercase transition-all select-none cursor-none;
     }
 
-    .surface-1,
     .button-simple,
     .button-submit {
         @apply bg-layer-1-surface text-layer-2-glyph;
@@ -103,15 +89,15 @@
     }
 
     .active-ring-gray {
-        @apply active:ring-4 active:ring-slate-300/20;
+        @apply active:ring-4 active:ring-stone-200/60;
     }
 
-    .tap-active-op {
+    .active-op {
         @apply active:opacity-60;
     }
 
     .tap-rise {
-        @apply active:scale-[101%] group-active:scale-[101%] delay-[150ms] duration-[400ms] ease-in-out transition-all;
+        @apply active:scale-[102%] group-active:scale-[102%] delay-[150ms] duration-[400ms] ease-in-out transition-all;
     }
 
     .tap-in {
@@ -135,4 +121,16 @@
     button:focus {
         outline: none;
     }
+
+    select {
+        appearance: none;
+        -webkit-appearance: none; 
+        -moz-appearance: none;
+        background: transparent; 
+        background-image: none; 
+      }
+      
+      select::-ms-expand {
+        display: none;
+      }
 }

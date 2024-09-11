@@ -117,13 +117,13 @@
                                         label: {
                                             left: [
                                                 {
-                                                    value: `Varietal:`,
+                                                    value: `Process:`,
                                                     classes: `capitalize`,
                                                 },
                                             ],
                                             right: [
                                                 {
-                                                    value: li.varietal,
+                                                    value: li.process,
                                                 },
                                             ],
                                         },

@@ -102,6 +102,7 @@ const config: Config = {
   daisyui: {
     themes: [
       themes.theme_earth_light,
+      themes.theme_earth_dark,
       themes.theme_os_dark,
       themes.theme_os_light,
     ],

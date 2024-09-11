@@ -10,7 +10,7 @@
     class={`z-10 absolute top-dim_map_offset_top_${$app_layout} left-6 flex flex-col w-full gap-8 justify-start items-start`}
 >
     <button
-        class={`surface-1 flex flex-row h-8 w-8 justify-center items-center rounded-2xl`}
+        class={`flex flex-row h-8 w-8 justify-center items-center rounded-2xl bg-layer-1-surface`}
         on:click={async () => {
             await goto(`/`);
         }}
