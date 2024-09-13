@@ -2,14 +2,19 @@
 @import "./lib/css/spinner.css";
 @import "./lib/css/spinner-6.css";
 @import "./lib/css/spinner-12.css";
-@import "/static/webfonts/apercu//styles.css";
+@import "/static/webfonts/apercu-mono-pro/styles.css";
 @import "/static/webfonts/sf-pro-display/styles.css";
+@import "/static/webfonts/magda-text/styles.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
+    .font-mono-display {
+        @apply font-mono tracking-tighter;
+    }
+
     .map-marker-popup-simple-open {
         @apply h-40 w-72;
     }
@@ -132,5 +137,9 @@
       
       select::-ms-expand {
         display: none;
+      }
+
+      div:focus {
+        outline: 4px solid transparent;
       }
 }

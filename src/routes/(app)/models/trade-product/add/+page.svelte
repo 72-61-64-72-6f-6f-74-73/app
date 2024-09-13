@@ -1,4 +1,7 @@
+<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import LayoutTrellisLine from "$lib/components/layout-trellis-line.svelte";
     import LayoutTrellis from "$lib/components/layout-trellis.svelte";
@@ -14,13 +17,13 @@
         type LocationGcs,
     } from "@radroots/client";
     import {
+        el_id,
         fmt_id,
         InputForm,
         InputSelect,
         kv,
         Nav,
         NotifyGlyph,
-        sleep,
         t,
     } from "@radroots/svelte-lib";
     import {
@@ -36,7 +39,7 @@
 
     const trade_key_default: TradeKey = `coffee`;
 
-    let el_trellis_wrap_1: HTMLElement | null;
+    let el_trellis_wrap_price: HTMLElement | null;
 
     let loading_submit = false;
     let loading_location = false;
@@ -79,9 +82,7 @@
                         fmt_id(`location_gcs_id`),
                         sel_location_gcs_id,
                     );
-                } catch (e) {
-                    console.log(`e `, e);
-                }
+                } catch (e) {}
             })();
         }
     }
@@ -91,25 +92,41 @@
             (async () => {
                 try {
                     const tup = parse_trade_mass_tuple(sel_qty_tup);
-                    console.log(`tup `, tup);
                     if (tup) {
                         await kv.set(fmt_id(`qty_amt`), tup[0].toString());
                         await kv.set(fmt_id(`qty_unit`), tup[1]);
                         await kv.set(fmt_id(`qty_label`), tup[2]);
+
+                        //@note
+                        await kv.set(fmt_id(`qty_avail`), `1`);
                     }
-                } catch (e) {
-                    console.log(`e `, e);
-                }
+                } catch (e) {}
+            })();
+        }
+    }
+
+    $: {
+        if (sel_price_currency) {
+            (async () => {
+                try {
+                    await kv.set(fmt_id(`price_currency`), sel_price_currency);
+                } catch (e) {}
             })();
         }
     }
 
     onMount(async () => {
         try {
-            sel_price_currency = "usd";
+            sel_price_currency = "eur";
             sel_price_qty_unit = "kg";
             sel_qty_unit = "kg";
             await fetch_models_location_gcs();
+
+            const el_focus = el_id(await kv.get(`*-el-focus`));
+            if (el_focus) {
+                await kv.delete(`*-el-focus`);
+                el_focus.focus();
+            }
         } catch (e) {
         } finally {
         }
@@ -123,9 +140,7 @@
             } else {
                 sel_key = trade_keys[0];
             }
-        } catch (e) {
-            console.log(`(error) toggle_show_key_other `, e);
-        }
+        } catch (e) {}
     };
 
     const toggle_show_qty_amt_other = async (
@@ -143,9 +158,7 @@
                       )
                     : ``;
             }
-        } catch (e) {
-            console.log(`(error) toggle_show_qty_amt_other `, e);
-        }
+        } catch (e) {}
     };
 
     const fetch_models_location_gcs = async (): Promise<void> => {
@@ -175,26 +188,26 @@
         try {
             loading_submit = true;
 
-            const location_gcs_res = await lc.db.location_gcs_get({
-                id: sel_location_gcs_id,
+            const vals = await trade_product_kv_vals({
+                kv_pref: fmt_id(),
+                no_validation: [`year`, `price_qty_amt`, `qty_avail`],
             });
-
-            if (typeof location_gcs_res === `string`) {
-                await lc.dialog.alert(`The product location is missing.`);
+            if (typeof vals === `string`) {
+                await lc.dialog.alert(
+                    `${$t(`trade.product.fields.${vals}.err_invalid`, { default: `Invalid ${vals}` })}`, //@todo
+                );
                 return;
             }
 
-            const vals = await trade_product_kv_vals(fmt_id());
-            if (!vals) {
-                alert(`@todo!`);
-                return;
-            }
-            if (!vals.year) vals.year = new Date().getFullYear().toString();
-            if (!vals.price_qty_amt) vals.price_qty_amt = `1`;
+            if (!vals.year)
+                await kv.set(
+                    fmt_id(`year`),
+                    new Date().getFullYear().toString(),
+                );
+            if (!vals.price_qty_amt) await kv.set(fmt_id(`price_qty_amt`), `1`);
+            if (!vals.qty_avail) await kv.set(fmt_id(`qty_avail`), `1`);
 
-            console.log(JSON.stringify(vals, null, 4), `vals`);
-
-            await sleep(1000);
+            await goto(`/models/trade-product/add/preview`);
         } catch (e) {
             console.log(`(error) submit `, e);
         } finally {
@@ -245,7 +258,9 @@
                 <InputSelect
                     bind:value={sel_key}
                     basis={{
+                        id_wrap: fmt_id(`key_wrap`),
                         id: fmt_id(`key`),
+                        classes: `font-mono-display`,
                         sync: true,
                         options: [
                             ...trade_keys.map((i) => ({
@@ -276,7 +291,9 @@
             <InputSelect
                 bind:value={sel_location_gcs_id}
                 basis={{
+                    id_wrap: fmt_id(`location_gcs_id_wrap`),
                     id: fmt_id(`location_gcs_id`),
+                    classes: `font-mono-display`,
                     sync: true,
                     loading: loading_location,
                     options: ls_location_gcs.length
@@ -303,7 +320,6 @@
                               },
                           ],
                     callback: async (val) => {
-                        console.log(`val `, val);
                         if (val === `add-new`) {
                             sel_location_gcs_id = ``;
                             await add_model_location_gcs();
@@ -331,7 +347,9 @@
             }}
         >
             <div
-                class={`relative flex flex-row w-full gap-3 justify-between items-center h-form_line bg-layer-1-surface text-layer-1-glyph/70 rounded-2xl transition-all`}
+                id={fmt_id(`qty_wrap`)}
+                tabindex={-1}
+                class={`relative form-line-active flex flex-row w-full gap-3 justify-between items-center h-form_line bg-layer-1-surface text-layer-1-glyph rounded-2xl transition-all`}
             >
                 {#if show_sel_qty_tup_other}
                     <div
@@ -342,7 +360,7 @@
                                 id: fmt_id(`qty_amt`),
                                 layer: false,
                                 sync: true,
-                                placeholder: `Enter number of ${$t(`trade.quantity.mass_unit.${sel_price_qty_unit}_ab`, { default: sel_price_qty_unit })} per order`,
+                                placeholder: `Enter number of ${$t(`measurement.mass.unit.${sel_price_qty_unit}_ab`, { default: sel_price_qty_unit })} per order`,
                                 field: {
                                     charset:
                                         trade_product_form_fields.qty_amt
@@ -361,12 +379,12 @@
                                 bind:value={sel_qty_unit}
                                 basis={{
                                     id: fmt_id(`qty_unit`),
-                                    classes: `w-[3.5rem] text-layer-1-glyph/70 font-[500]`,
+                                    classes: `w-[3.5rem] text-layer-1-glyph font-[500]`,
                                     layer: false,
                                     sync: true,
                                     options: mass_units.map((i) => ({
                                         value: i,
-                                        label: `${$t(`trade.quantity.mass_unit.${i}_ab`, { default: i })}`,
+                                        label: `${$t(`measurement.mass.unit.${i}_ab`, { default: i })}`,
                                     })),
                                 }}
                             />
@@ -376,10 +394,11 @@
                     <InputSelect
                         bind:value={sel_qty_tup}
                         basis={{
+                            classes: `font-mono-display`,
                             options: [
                                 ...ls_trade_product_quantities.map((i) => ({
                                     value: fmt_trade_quantity_val(i),
-                                    label: `${i.mass} ${$t(`trade.quantity.mass_unit.${i.mass_unit}_ab`, { default: i.mass_unit })} ${i.label}`,
+                                    label: `${i.mass} ${$t(`measurement.mass.unit.${i.mass_unit}_ab`, { default: i.mass_unit })} ${i.label}`,
                                 })),
                                 {
                                     value: `other`,
@@ -389,6 +408,8 @@
                             callback: async (val) => {
                                 if (val === `other`) {
                                     await toggle_show_qty_amt_other(true);
+                                } else {
+                                    await kv.set(fmt_id(`qty_avail`), `1`);
                                 }
                             },
                         }}
@@ -404,14 +425,17 @@
             }}
         >
             <div
-                bind:this={el_trellis_wrap_1}
-                class={`relative flex flex-row w-full gap-3 justify-between items-center h-form_line bg-layer-1-surface text-layer-1-glyph/70 rounded-2xl transition-all`}
+                bind:this={el_trellis_wrap_price}
+                id={fmt_id(`price_wrap`)}
+                tabindex={-1}
+                class={`relative form-line-active flex flex-row w-full gap-3 justify-between items-center h-form_line bg-layer-1-surface text-layer-1-glyph rounded-2xl transition-all`}
             >
                 <InputForm
                     basis={{
                         id: fmt_id(`price_amt`),
                         layer: false,
                         sync: true,
+                        classes: `font-mono-display`,
                         placeholder: `Enter price`,
                         field: {
                             charset:
@@ -429,12 +453,12 @@
                                     period_count < 2) ||
                                 val.length < 1
                             ) {
-                                el_trellis_wrap_1?.classList.remove(
+                                el_trellis_wrap_price?.classList.remove(
                                     `bg-layer-1-surface-err`,
                                 );
                                 show_sel_price_currency = false;
                             } else {
-                                el_trellis_wrap_1?.classList.add(
+                                el_trellis_wrap_price?.classList.add(
                                     `bg-layer-1-surface-err`,
                                 );
                                 show_sel_price_currency = true;
@@ -443,24 +467,24 @@
                     }}
                 />
                 <div
-                    class={`flex flex-row gap-2 pr-4 justify-end items-center`}
+                    class={`flex flex-row gap-2 pr-4 justify-end items-center text-layer-1-glyph/70`}
                 >
                     <InputSelect
                         bind:value={sel_price_currency}
                         basis={{
                             id: fmt_id(`price_currency`),
-                            classes: `w-fit`,
+                            classes: `w-fit font-mono-display font-[500] text-lg`,
                             layer: false,
                             hide_arrows: true,
                             sync: true,
                             options: fiat_currencies.map((i) => ({
                                 value: i,
-                                label: `${$t(`trade.currency.${i}.symbol`, { default: i })}`,
+                                label: `${$t(`currency.${i}.symbol`, { default: i })}`,
                             })),
                         }}
                     />
                     <p
-                        class={`font-sans font-[500] text-layer-1-glyph/60 text-lg -translate-y-[1px]`}
+                        class={`font-sans font-[500] text-[1.1rem] -translate-y-[1px] scale-y-[110%]`}
                     >
                         {`/`}
                     </p>
@@ -468,20 +492,24 @@
                         bind:value={sel_price_qty_unit}
                         basis={{
                             id: fmt_id(`price_qty_unit`),
-                            classes: `w-fit`,
+                            classes: `w-fit font-mono-display font-[600] text-[0.95rem] leading-[1rem]`,
                             layer: false,
                             hide_arrows: true,
                             sync: true,
                             options: mass_units.map((i) => ({
                                 value: i,
-                                label: `${$t(`trade.quantity.mass_unit.${i}_ab`, { default: i })}`,
+                                label: `${$t(`measurement.mass.unit.${i}_ab`, { default: i })}`,
                             })),
                         }}
                     />
                 </div>
                 {#if show_sel_price_currency}
                     <NotifyGlyph
-                        basis={{ glyph: `warning-circle`, layer: 2 }}
+                        basis={{
+                            glyph: `warning-circle`,
+                            layer: 2,
+                            classes: `translate-x-[32px]`,
+                        }}
                     />
                 {/if}
             </div>
@@ -499,6 +527,10 @@
         },
         title: {
             label: `Add Product`,
+            callback: async () => {
+                const el = el_id(fmt_id(`key_wrap`));
+                el?.focus();
+            },
         },
         option: {
             loading: loading_submit,

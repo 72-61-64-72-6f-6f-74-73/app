@@ -43,6 +43,7 @@ const config: Config = {
         serif: [...tw_font.serif],
         mono: [...tw_font.mono],
         apercu: ['Apercu Mono Pro'],
+        magda: [`Magda Text`],
       },
       fontSize: {
         line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],

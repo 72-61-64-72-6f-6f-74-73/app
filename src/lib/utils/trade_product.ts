@@ -1,8 +1,12 @@
 import { parse_trade_product_form_keys, trade_product_form_fields, trade_product_form_vals, type TradeProductFormFields } from "@radroots/client";
 import { kv } from "@radroots/svelte-lib";
 
-export const trade_product_kv_vals = async (kv_pref: string): Promise<TradeProductFormFields | undefined> => {
+export const trade_product_kv_vals = async (opts: {
+    kv_pref: string;
+    no_validation?: string[];
+}): Promise<TradeProductFormFields | string> => {
     try {
+        let no_validation = opts.no_validation || [];
         const vals = {
             ...trade_product_form_vals
         };
@@ -12,14 +16,23 @@ export const trade_product_kv_vals = async (kv_pref: string): Promise<TradeProdu
         )) {
             const field_k = parse_trade_product_form_keys(k);
             if (!field_k) continue;
-            const field_id = `${kv_pref}-${field_k}`;
+            const field_id = `${opts.kv_pref}-${field_k}`;
             const field_val = await kv.get(field_id);
             if (field_val) vals[field_k] = field_val;
-            //@todo add validation
+            if (
+                (!field.optional && !field.validation.test(field_val)) ||
+                (field.optional &&
+                    field_val &&
+                    !field.validation.test(field_val))
+            ) {
+                if (no_validation.includes(field_k)) continue;
+                else return field_k;
+            }
         }
         return vals;
     } catch (e) {
         console.log(`(error) trade_product_submit_preview `, e);
+        return ``
     }
 };
 
@@ -61,18 +74,7 @@ export const trade_product_kv_init = async (kv_pref: string): Promise<void> => {
                     field_val = sel_trade_product_key;
                 } else 
 
-                if (
-                    (!field.optional && !field.validation.test(field_val)) ||
-                    (field.optional &&
-                        field_val &&
-                        !field.validation.test(field_val))
-                ) {
-                    loading = false;
-                    await lc.dialog.alert(
-                        `Invalid product ${field_k} value.`,
-                    );
-                    return;
-                }
+                
                 vals[field_k] = field_val;
             }
 

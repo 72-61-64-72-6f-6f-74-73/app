@@ -147,10 +147,11 @@
             console.log(`app_render `, app_render);
             if (!app_render) return;
             let init_route = `/`;
-            const app_init_route = await kv.get(`app-init-route`);
+            init_route = `/models/trade-product/add`;
+            const app_init_route = await kv.get(`*-init-route`);
             if (app_init_route) {
                 init_route = app_init_route;
-                await kv.delete(`app-init-route`);
+                await kv.delete(`*-init-route`);
             }
             console.log(`init_route `, init_route);
             await goto(init_route);
