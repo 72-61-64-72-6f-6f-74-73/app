@@ -10,11 +10,10 @@
     import { app_nostr_key, app_pwa_polyfills, app_sqlite } from "$lib/stores";
     import {
         app_config,
-        app_layout,
         app_render,
         app_th,
         app_thc,
-        app_win,
+        AppConfig,
         CssStatic,
         kv,
         ndk,
@@ -27,7 +26,6 @@
         parse_color_mode,
         parse_theme_key,
     } from "@radroots/theme/src/utils";
-    import { onMount } from "svelte";
     import "../app.css";
 
     let render_pwa = browser && lc.platform === `web`;
@@ -45,26 +43,6 @@
             });
     }
 
-    onMount(async () => {
-        try {
-            app_win.set([window.innerHeight, window.innerWidth]);
-
-            const prefers_dark = window.matchMedia(
-                `(prefers-color-scheme: dark)`,
-            ).matches;
-
-            if (prefers_dark) app_thc.set(`dark`);
-            app_config.set(true);
-        } catch (e) {
-            console.log(`(layout mount) `, e);
-        } finally {
-        }
-    });
-
-    app_win.subscribe(([win_h, win_w]) => {
-        if (win_h > 800) app_layout.set("lg");
-    });
-
     app_thc.subscribe((app_thc) => {
         const color_mode = parse_color_mode(app_thc);
         theme_set(parse_theme_key($app_th), color_mode);
@@ -80,33 +58,6 @@
     app_sqlite.subscribe((app_sqlite) => {
         if (!app_sqlite) return;
         console.log(`(app_sqlite) connected`);
-    });
-
-    app_nostr_key.subscribe(async (app_nostr_key) => {
-        try {
-            if (!app_nostr_key) return;
-            const private_key = await lc.keystore.get(
-                `nostr:key:${app_nostr_key}`,
-            );
-            if (private_key) {
-                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(","))
-                    $ndk.addExplicitRelay(url);
-                await $ndk.connect().then(() => {
-                    console.log(`(ndk) connected`);
-                });
-                const setup_user = await ndk_setup_privkey({
-                    $ndk,
-                    private_key,
-                });
-                if (setup_user) {
-                    $ndk_user = setup_user;
-                    $ndk_user.ndk = $ndk;
-                    console.log(`(ndk_user) connected`);
-                }
-            }
-        } catch (e) {
-            console.log(`(app_nostr_key) error `, e);
-        }
     });
 
     app_config.subscribe(async (app_config) => {
@@ -158,6 +109,33 @@
             await lc.window.splash_hide();
         }
     });
+
+    app_nostr_key.subscribe(async (app_nostr_key) => {
+        try {
+            if (!app_nostr_key) return;
+            const private_key = await lc.keystore.get(
+                `nostr:key:${app_nostr_key}`,
+            );
+            if (private_key) {
+                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(","))
+                    $ndk.addExplicitRelay(url);
+                await $ndk.connect().then(() => {
+                    console.log(`(ndk) connected`);
+                });
+                const setup_user = await ndk_setup_privkey({
+                    $ndk,
+                    private_key,
+                });
+                if (setup_user) {
+                    $ndk_user = setup_user;
+                    $ndk_user.ndk = $ndk;
+                    console.log(`(ndk_user) connected`);
+                }
+            }
+        } catch (e) {
+            console.log(`(app_nostr_key) error `, e);
+        }
+    });
 </script>
 
 <svelte:head>
@@ -168,6 +146,7 @@
 {#if $app_render}
     <slot />
 {/if}
+<AppConfig />
 <CssStatic />
 <div
     class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg top-dim_map_offset_top_base top-dim_map_offset_top_lg"
