@@ -1,7 +1,5 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
     import { app_nostr_key } from "$lib/stores";
     import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
     import type {
@@ -9,6 +7,8 @@
         NDKEventStore,
     } from "@nostr-dev-kit/ndk-svelte";
     import {
+        LayoutTrellis,
+        LayoutView,
         Nav,
         ndk,
         ndk_event,

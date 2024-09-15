@@ -7,18 +7,14 @@
     } from "$env/static/public";
     import { lc } from "$lib/client";
     import { _cf } from "$lib/conf";
+    import { app_nostr_key, app_pwa_polyfills, app_sqlite } from "$lib/stores";
     import {
         app_config,
-        app_nostr_key,
-        app_pwa_polyfills,
+        app_layout,
         app_render,
-        app_sqlite,
         app_th,
         app_thc,
         app_win,
-    } from "$lib/stores";
-    import {
-        app_layout,
         CssStatic,
         kv,
         ndk,

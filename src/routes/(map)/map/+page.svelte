@@ -2,8 +2,7 @@
   import { lc } from "$lib/client";
   import MapControlFull from "$lib/components/map_control_full.svelte";
   import { _cf } from "$lib/conf";
-  import { app_thc } from "$lib/stores";
-  import { Fill, LoadingView, sleep } from "@radroots/svelte-lib";
+  import { app_thc, Fill, LoadingView, sleep } from "@radroots/svelte-lib";
   import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
   import { type NumberTuple } from "@radroots/utils";
   import { onMount } from "svelte";

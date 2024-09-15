@@ -1,11 +1,14 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
-    import { app_tabs_visible } from "$lib/stores";
     import { location_gcs_add } from "$lib/utils/location_gcs";
     import { type LocationGcs } from "@radroots/client";
-    import { Nav, Trellis } from "@radroots/svelte-lib";
+    import {
+        app_tabs_visible,
+        LayoutTrellis,
+        LayoutView,
+        Nav,
+        Trellis,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let models_list: LocationGcs[] = [];

@@ -1,9 +1,12 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import LayoutWindow from "$lib/components/layout-window.svelte";
-    import Tabs from "$lib/components/tabs.svelte";
-    import { app_tab_active, app_tabs_visible } from "$lib/stores";
-    import { app_layout } from "@radroots/svelte-lib";
+    import {
+        LayoutWindow,
+        Tabs,
+        app_layout,
+        app_tab_active,
+        app_tabs_visible,
+    } from "@radroots/svelte-lib";
 </script>
 
 <LayoutWindow>

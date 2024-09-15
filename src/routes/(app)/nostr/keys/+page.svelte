@@ -1,9 +1,12 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
     import { _cf } from "$lib/conf";
-    import { Nav, Trellis } from "@radroots/svelte-lib";
+    import {
+        LayoutTrellis,
+        LayoutView,
+        Nav,
+        Trellis,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let nostr_public_key = ``;

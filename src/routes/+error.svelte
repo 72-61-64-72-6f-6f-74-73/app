@@ -1,6 +1,6 @@
 <script lang="ts">
     import { page } from "$app/stores";
-    import LayoutView from "$lib/components/layout-view.svelte";
+    import { LayoutView } from "@radroots/svelte-lib";
 </script>
 
 {#if $page}

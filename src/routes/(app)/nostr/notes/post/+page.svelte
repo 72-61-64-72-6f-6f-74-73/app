@@ -2,10 +2,15 @@
     import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import ButtonSubmit from "$lib/components/button-submit.svelte";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
     import { NDKKind } from "@nostr-dev-kit/ndk";
-    import { Nav, ndk, ndk_event, ndk_user } from "@radroots/svelte-lib";
+    import {
+        LayoutTrellis,
+        LayoutView,
+        Nav,
+        ndk,
+        ndk_event,
+        ndk_user,
+    } from "@radroots/svelte-lib";
 
     let loading = false;
     let value_note_content = ``;

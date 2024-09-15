@@ -1,16 +1,14 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import LayoutView from "$lib/components/layout-view.svelte";
-    import {
-        app_nostr_key,
-        app_tab_active,
-        app_tabs_visible,
-    } from "$lib/stores";
+    import { app_nostr_key } from "$lib/stores";
     import {
         Envelope,
         Glyph,
         type GlyphKey,
         type GlyphWeight,
+        LayoutView,
+        app_tab_active,
+        app_tabs_visible,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 

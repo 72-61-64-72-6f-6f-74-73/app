@@ -1,11 +1,16 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
-    import { app_tabs_visible } from "$lib/stores";
     import { type TradeProduct } from "@radroots/client";
-    import { locale, Nav, time_fmt_iso, Trellis } from "@radroots/svelte-lib";
+    import {
+        app_tabs_visible,
+        LayoutTrellis,
+        LayoutView,
+        locale,
+        Nav,
+        time_fmt_iso,
+        Trellis,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     let models_list: TradeProduct[] = [];
@@ -104,7 +109,7 @@
                                             ],
                                             right: [
                                                 {
-                                                    value: li.lot,
+                                                    value: li.lot || `@todo`,
                                                 },
                                             ],
                                         },
@@ -123,7 +128,8 @@
                                             ],
                                             right: [
                                                 {
-                                                    value: li.process,
+                                                    value:
+                                                        li.process || `(@todo)`,
                                                 },
                                             ],
                                         },

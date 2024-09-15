@@ -3,9 +3,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
-    import LayoutTrellisLine from "$lib/components/layout-trellis-line.svelte";
-    import LayoutTrellis from "$lib/components/layout-trellis.svelte";
-    import LayoutView from "$lib/components/layout-view.svelte";
     import { location_gcs_add } from "$lib/utils/location_gcs";
     import {
         trade_product_kv_init,
@@ -22,6 +19,9 @@
         InputForm,
         InputSelect,
         kv,
+        LayoutTrellis,
+        LayoutTrellisLine,
+        LayoutView,
         Nav,
         NotifyGlyph,
         t,

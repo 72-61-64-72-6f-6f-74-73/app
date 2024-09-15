@@ -1,7 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
-    import LayoutView from "$lib/components/layout-view.svelte";
     import { trade_product_kv_vals } from "$lib/utils/trade_product";
     import {
         type LocationGcs,
@@ -12,6 +11,7 @@
         Glyph,
         int_step,
         kv,
+        LayoutView,
         locale,
         Nav,
         t,
