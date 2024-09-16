@@ -26,10 +26,7 @@
         sleep,
         theme_set,
     } from "@radroots/svelte-lib";
-    import {
-        parse_color_mode,
-        parse_theme_key,
-    } from "@radroots/theme/src/utils";
+    import { parse_color_mode, parse_theme_key } from "@radroots/theme";
     import "../app.css";
 
     let render_pwa = browser && lc.platform === `web`;
