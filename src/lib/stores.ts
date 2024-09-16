@@ -1,5 +1,10 @@
+import type { ColorMode, ThemeKey } from "@radroots/theme";
 import { type NumberTuple } from "@radroots/utils";
 import { writable } from "svelte/store";
+
+export const app_tok = writable<string>('');
+export const app_thc = writable<ColorMode>(`light`);
+export const app_th = writable<ThemeKey>(`earth`);
 
 export const app_nostr_key = writable<string>(``);
 export const app_pwa_polyfills = writable<boolean>(false);

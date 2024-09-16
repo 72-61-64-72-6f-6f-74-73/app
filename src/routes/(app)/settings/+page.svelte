@@ -1,10 +1,10 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { _cf } from "$lib/conf";
+    import { app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
     import {
         app_tabs_visible,
-        app_thc,
         LayoutTrellis,
         LayoutView,
         Nav,

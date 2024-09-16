@@ -4,16 +4,21 @@
 	"private": true,
 	"license": "GPLv3",
 	"scripts": {
-		"build": "just build && vite build",
-		"build:native": "npm run build",
-		"build:web": "npm run build",
-		"build:sql:wasm": "rsync -u node_modules/sql.js/dist/sql-wasm.wasm static/",
+		"build:dev": "vite build --mode development",
+		"build:prod": "vite build --mode production",
+		"build:native": "npm run gen && npm run sql-wasm:rm && npm run build:prod",
+		"build:web": "npm run gen && npm run sql-wasm:cp && npm run build:prod",
 		"dev": "",
-		"dev:web": "vite dev --debug hmr",
-		"dev:native": "vite dev --debug hmr",
+		"dev:native": "npm run gen && npm run sql-wasm:rm && npm run serve:dev",
+		"dev:web": "npm run gen && npm run sql-wasm:cp && npm run serve:dev",
+		"serve:prod": "vite dev --mode production",
+		"serve:dev": "vite dev --mode development --debug hmr",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"sql-wasm:cp": "rsync -u node_modules/sql.js/dist/sql-wasm.wasm static/assets",
+		"sql-wasm:rm": "rm -rf static/assets/sql-wasm.wasm",
+		"gen": ""
 	},
 	"devDependencies": {
 		"@capacitor/cli": "^6.1.2",

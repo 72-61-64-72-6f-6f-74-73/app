@@ -4,3 +4,6 @@
 [submodule "static/phosphor-icons"]
 	path = static/phosphor-icons
 	url = git@github.com:72-61-64-72-6f-6f-74-73/phosphor-icons.git
+[submodule "static/stylesheets"]
+	path = static/stylesheets
+	url = git@github.com:72-61-64-72-6f-6f-74-73/stylesheets.git
