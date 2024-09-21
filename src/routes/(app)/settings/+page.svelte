@@ -158,7 +158,7 @@
                                             await lc.preferences.remove(
                                                 _cf.pref.key_active,
                                             );
-                                            await restart();
+                                            await restart(true);
                                         } else {
                                             await lc.dialog.alert(
                                                 `There is no public key preference saved.`,

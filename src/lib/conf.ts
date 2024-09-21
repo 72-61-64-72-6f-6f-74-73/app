@@ -4,6 +4,7 @@ import { type NumberTuple } from "@radroots/utils";
 type Conf = {
     app: Record<string, string>;
     pref: Record<string, string>;
+    cmd: Record<string, string>;
     map: {
         styles: {
             base: Record<ColorMode, string>;
@@ -24,6 +25,9 @@ export const _cf: Conf = {
     },
     pref: {
         key_active: `nostr:key:active`
+    },
+    cmd: {
+        root_alert: `*-alert`
     },
     map: {
         styles: {

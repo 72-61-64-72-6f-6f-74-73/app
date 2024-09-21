@@ -14,7 +14,7 @@ const heights = {
   tabs_lg: `86px`,
   nav_base: `71px`,
   nav_lg: `100px`,
-  "envTop": "56px",
+  envelope_top: "56px",
 };
 
 const widths = {
@@ -22,6 +22,7 @@ const widths = {
 };
 
 const dimensions = {
+  glyph_btn_sm: `28px`,
   map_circle: `16px`,
   map_circle_inner: `10px`,
   map_offset_top_base: `32px`,

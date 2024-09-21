@@ -3,7 +3,6 @@
     import {
         LayoutWindow,
         Tabs,
-        app_layout,
         app_tab_active,
         app_tabs_visible,
     } from "@radroots/svelte-lib";
@@ -15,8 +14,6 @@
 {#if $app_tabs_visible}
     <Tabs
         basis={{
-            tab_active: $app_tab_active,
-            app_layout: $app_layout,
             list: [
                 {
                     icon: `house-line`,

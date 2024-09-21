@@ -81,7 +81,7 @@
                 app_nostr_key.set(active_nostr_pk);
             else {
                 await lc.preferences.remove(_cf.pref.key_active);
-                await goto(`/conf/nostr`);
+                await goto(`/init`);
             }
         } catch (e) {
             console.log(`(app_config) error `, e);
