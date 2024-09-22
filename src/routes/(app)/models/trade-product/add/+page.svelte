@@ -435,6 +435,7 @@
                         id: fmt_id(`price_amt`),
                         layer: false,
                         sync: true,
+                        sync_init: false,
                         classes: `font-mono-display`,
                         placeholder: `Enter price`,
                         field: {

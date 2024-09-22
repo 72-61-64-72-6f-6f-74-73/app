@@ -46,6 +46,7 @@
 
     onMount(async () => {
         try {
+            await kv.set(`new key`, 20);
             qty_avail = await kv.get(`${kv_pref}-qty_avail`);
             const vals = await trade_product_kv_vals({
                 kv_pref,
@@ -84,14 +85,33 @@
                 kv_pref,
                 no_validation: [`year`, `price_qty_amt`],
             });
-            if (typeof vals === `string`) {
-                alert(`Error: ${vals}`);
-                return;
-            }
             console.log(JSON.stringify(vals, null, 4), `vals`);
 
+            if (typeof vals === `string`) {
+                lc.dialog.alert(`There was a problem adding the product`);
+                await goto(`/models/trade-product/add`);
+                return;
+            }
+
             const res = await lc.db.trade_product_add(vals);
-            console.log(`res `, res);
+            if (typeof res === `string`) {
+                lc.dialog.alert(res);
+                await goto(`/models/trade-product/add`);
+
+                return;
+            } else if (Array.isArray(res)) {
+                lc.dialog.alert(res.join(" "));
+                await goto(`/models/trade-product/add`);
+                return;
+            }
+
+            const kv_each = await kv.each(kv_pref);
+            const kv_keys = kv_each.filter(([i]: [string, string]) =>
+                i.startsWith(kv_pref),
+            );
+            for (const key of kv_keys) await kv.delete(key);
+
+            await goto(`/models/trade-product`);
         } catch (e) {
             console.log(`(error) submit `, e);
         }
