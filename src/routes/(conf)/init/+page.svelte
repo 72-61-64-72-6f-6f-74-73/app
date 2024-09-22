@@ -30,12 +30,15 @@
     let slide_index = 0;
 
     const get_slide_container = (view: View): Element | undefined => {
-        const el = document.querySelector(`[data-slide-container="${view}"]`);
+        const el = document.querySelector(
+            `[data-carousel-container="${view}"]`,
+        );
+        console.log(`el get_slide_container`, el);
         return el ? el : undefined;
     };
 
     const get_slide_item = (view: View): Element | undefined => {
-        const el = document.querySelector(`[data-carousel-li="${view}"]`);
+        const el = document.querySelector(`[data-carousel-item="${view}"]`);
         return el ? el : undefined;
     };
 
@@ -98,12 +101,150 @@
             class={`relative flex flex-col h-full w-full justify-start items-center`}
         >
             <ul
-                data-slide-container={`start`}
+                data-carousel-container={`start`}
                 class={`carousel-container flex flex-grow h-full w-full bg-layer-1-surface rounded-2xl scrollbar-hide`}
             >
                 <li
-                    data-carousel-li={`start`}
-                    class={`carousel-li flex flex-col flex-fill w-full gap-12 justify-center items-center`}
+                    data-carousel-item={`start`}
+                    class={`carousel-item flex flex-col flex-fluid w-full py-32 justify-between items-center`}
+                >
+                    <div
+                        class={`flex flex-col w-40 gap-2 justify-start items-center`}
+                    >
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`welcome`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`to`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`radroots`}
+                        </p>
+                    </div>
+                    <div class={`flex flex-col justify-start items-center`}>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-2xl`}
+                        >
+                            {`direct trade with`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-2xl`}
+                        >
+                            {`farmers`}
+                        </p>
+                    </div>
+                </li>
+                <li
+                    data-carousel-item={`start`}
+                    class={`carousel-item flex flex-col w-full justify-center items-center`}
+                >
+                    <div
+                        class={`flex flex-col gap-4 justify-start items-center`}
+                    >
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`radroots`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`is an`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`open`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`source`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`app`}
+                        </p>
+                    </div>
+                </li>
+                <li
+                    data-carousel-item={`start`}
+                    class={`carousel-item flex flex-col w-full justify-center items-center`}
+                >
+                    <div
+                        class={`flex flex-col w-54 gap-4 justify-start items-center`}
+                    >
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`... it's`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`running on`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`a`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`decentralized`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`network`}
+                        </p>
+                    </div>
+                </li>
+                <li
+                    data-carousel-item={`start`}
+                    class={`carousel-item flex flex-col w-full justify-center items-center`}
+                >
+                    <div
+                        class={`flex flex-col w-54 gap-4 justify-start items-center`}
+                    >
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`connecting`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`farmers`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`and buyers`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`around the`}
+                        </p>
+                        <p
+                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        >
+                            {`world.`}
+                        </p>
+                    </div>
+                </li>
+                <li
+                    data-carousel-item={`start`}
+                    class={`carousel-item flex flex-col flex-fluid w-full gap-12 justify-center items-center`}
                 >
                     <div
                         class={`flex flex-col w-54 gap-4 justify-start items-center`}
@@ -159,144 +300,6 @@
                         </p>
                     </button>
                 </li>
-                <li
-                    data-carousel-li={`start`}
-                    class={`carousel-li flex flex-col flex-fill w-full py-40 justify-between items-center`}
-                >
-                    <div
-                        class={`flex flex-col w-40 gap-2 justify-start items-center`}
-                    >
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`welcome`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`to`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`radroots`}
-                        </p>
-                    </div>
-                    <div class={`flex flex-col justify-start items-center`}>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-2xl`}
-                        >
-                            {`direct trade with`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-2xl`}
-                        >
-                            {`farmers`}
-                        </p>
-                    </div>
-                </li>
-                <li
-                    data-carousel-li={`start`}
-                    class={`carousel-li flex flex-col flex-fill w-full justify-center items-center`}
-                >
-                    <div
-                        class={`flex flex-col w-40 gap-4 justify-start items-center`}
-                    >
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`radroots`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`is an`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`open`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`source`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`app`}
-                        </p>
-                    </div>
-                </li>
-                <li
-                    data-carousel-li={`start`}
-                    class={`carousel-li flex flex-col flex-fill w-full justify-center items-center`}
-                >
-                    <div
-                        class={`flex flex-col w-54 gap-4 justify-start items-center`}
-                    >
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`... it's`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`running on`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`a`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`decentralized`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`network`}
-                        </p>
-                    </div>
-                </li>
-                <li
-                    data-carousel-li={`start`}
-                    class={`carousel-li flex flex-col flex-fill w-full justify-center items-center`}
-                >
-                    <div
-                        class={`flex flex-col w-54 gap-4 justify-start items-center`}
-                    >
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`connecting`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`farmers`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`and buyers`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`around the`}
-                        </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
-                        >
-                            {`world.`}
-                        </p>
-                    </div>
-                </li>
             </ul>
             <div
                 class={`absolute bottom-0 left-0 flex flex-row h-12 w-full justify-center items-center`}
@@ -343,12 +346,12 @@
             class={`relative flex flex-col h-full w-full justify-start items-center`}
         >
             <ul
-                data-slide-container={`configure`}
+                data-carousel-container={`configure`}
                 class={`carousel-container flex flex-grow h-full w-full scrollbar-hide`}
             >
                 <li
-                    data-carousel-li={`configure`}
-                    class={`carousel-li flex flex-col flex-fill w-full gap-12 justify-center items-center`}
+                    data-carousel-item={`configure`}
+                    class={`carousel-item flex flex-col flex-fluid w-full gap-12 justify-center items-center`}
                 >
                     <div
                         class={`flex flex-col w-54 gap-4 justify-start items-center`}
@@ -429,3 +432,18 @@
         </div>
     </div>
 </LayoutView>
+
+<style>
+    .carousel-container {
+        display: flex;
+        overflow-x: hidden;
+        scroll-snap-type: x mandatory;
+        list-style: none;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel-item {
+        scroll-snap-align: start;
+    }
+</style>

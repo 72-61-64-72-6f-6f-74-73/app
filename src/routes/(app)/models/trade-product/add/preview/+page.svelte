@@ -84,7 +84,14 @@
                 kv_pref,
                 no_validation: [`year`, `price_qty_amt`],
             });
+            if (typeof vals === `string`) {
+                alert(`Error: ${vals}`);
+                return;
+            }
             console.log(JSON.stringify(vals, null, 4), `vals`);
+
+            const res = await lc.db.trade_product_add(vals);
+            console.log(`res `, res);
         } catch (e) {
             console.log(`(error) submit `, e);
         }

@@ -25,12 +25,17 @@
         }
     });
 
+    $: {
+        console.log(`models_list `, models_list);
+    }
+
     const fetch_models = async (): Promise<void> => {
         try {
             loading_models = true;
             const res = await lc.db.trade_product_get({
                 list: [`all`],
             });
+            console.log(`res `, res);
             if (typeof res !== `string`) models_list = res;
         } catch (e) {
             console.log(`(error) fetch_models `, e);

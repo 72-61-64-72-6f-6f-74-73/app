@@ -2,13 +2,13 @@
     import { goto } from "$app/navigation";
     import { app_nostr_key } from "$lib/stores";
     import {
-        Envelope,
+        app_tab_active,
+        app_tabs_visible,
+        EnvelopeLower,
         Glyph,
         type GlyphKey,
         type GlyphWeight,
         LayoutView,
-        app_tab_active,
-        app_tabs_visible,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
@@ -117,18 +117,11 @@
         </div>
     </div>
 </LayoutView>
-<Envelope
+<EnvelopeLower
     basis={{
         visible: tmp_show_envelope,
         close: async () => {
             tmp_show_envelope = !tmp_show_envelope;
-        },
-        titled: {
-            previous: {
-                label: {
-                    value: `Go Back`,
-                },
-            },
         },
     }}
 >
@@ -137,4 +130,4 @@
             {`Your nostr key is ${$app_nostr_key}`}
         </p>
     </div>
-</Envelope>
+</EnvelopeLower>
