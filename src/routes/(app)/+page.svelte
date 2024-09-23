@@ -40,6 +40,12 @@
             key: `handbag-simple`,
             weight: `fill`,
         },
+        {
+            route: `/nostr/keys`,
+            label: `Keys`,
+            key: `key`,
+            weight: `fill`,
+        },
     ];
 </script>
 
@@ -73,7 +79,7 @@
             </p>
         </button>
         <div
-            class={`grid grid-cols-12 flex flex-row w-full gap-4 justify-start items-center`}
+            class={`grid grid-cols-12 flex flex-row w-full gap-4 gap-y-5 justify-start items-center`}
         >
             {#each buttons as btn}
                 <button
