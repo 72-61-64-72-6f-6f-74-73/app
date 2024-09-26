@@ -35,6 +35,7 @@ export const location_gcs_add = async (): Promise<boolean> => {
                 await lc.db.location_gcs_add(
                     fields,
                 );
+            console.log(`exe_res `, exe_res)
             if (
                 typeof exe_res !== `string` &&
                 `id` in exe_res

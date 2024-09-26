@@ -1,6 +1,6 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { _cf } from "$lib/conf";
+    import { _conf } from "$lib/conf";
     import { app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
     import {
@@ -78,7 +78,7 @@
                                 },
                                 callback: async () => {
                                     const public_key = await lc.preferences.get(
-                                        _cf.pref.key_active,
+                                        _conf.kv.nostr_key_active,
                                     );
                                     await lc.dialog.alert(
                                         `Hi! This is your nostr public key ${public_key}`,
@@ -103,7 +103,7 @@
                                 },
                                 callback: async () => {
                                     const public_key = await lc.preferences.get(
-                                        _cf.pref.key_active,
+                                        _conf.kv.nostr_key_active,
                                     );
                                     console.log(`public_key `, public_key);
                                     const secret_key = await lc.keystore.get(
@@ -149,14 +149,14 @@
                                     if (confirm) {
                                         const nostr_public_key =
                                             await lc.preferences.get(
-                                                _cf.pref.key_active,
+                                                _conf.kv.nostr_key_active,
                                             );
                                         if (nostr_public_key) {
                                             await lc.keystore.remove(
                                                 `nostr:key:${nostr_public_key}`,
                                             );
                                             await lc.preferences.remove(
-                                                _cf.pref.key_active,
+                                                _conf.kv.nostr_key_active,
                                             );
                                             await restart(true);
                                         } else {
@@ -253,7 +253,7 @@
                                 },
                                 callback: async () => {
                                     const public_key = await lc.preferences.get(
-                                        _cf.pref.key_active,
+                                        _conf.kv.nostr_key_active,
                                     );
                                     const npub = lc.nostr.lib.npub(public_key);
                                     const url = `https://primal.net/p/${npub}`;

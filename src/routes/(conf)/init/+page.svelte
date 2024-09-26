@@ -1,8 +1,10 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { _cf } from "$lib/conf";
+    import { _conf } from "$lib/conf";
     import { restart } from "$lib/utils";
+    import { keystore_reset } from "$lib/utils/keystore";
     import { Glyph, LayoutView, sleep } from "@radroots/svelte-lib";
+    import { onMount } from "svelte";
 
     const SLIDE_DURATION = 600;
 
@@ -14,6 +16,14 @@
             max: 1,
         },
     };
+
+    onMount(async () => {
+        try {
+            await keystore_reset();
+        } catch (e) {
+        } finally {
+        }
+    });
 
     type View = `start` | `configure`;
     let view: View = `start`;
@@ -33,7 +43,6 @@
         const el = document.querySelector(
             `[data-carousel-container="${view}"]`,
         );
-        console.log(`el get_slide_container`, el);
         return el ? el : undefined;
     };
 
@@ -70,24 +79,39 @@
         slide_active = false;
     };
 
-    const create_new_key = async (): Promise<void> => {
+    const configure_device = async (): Promise<void> => {
         try {
-            const sk_hex = lc.nostr.lib.generate_key();
-            const pk_hex = lc.nostr.lib.public_key(sk_hex);
-            const new_key_added = await lc.keystore.set(
-                `nostr:key:${pk_hex}`,
-                sk_hex,
+            const secret_key = lc.nostr.lib.generate_key();
+            const public_key = lc.nostr.lib.public_key(secret_key);
+
+            const key_added = await lc.keystore.set(
+                _conf.kv.nostr_key(public_key),
+                secret_key,
             );
-            if (new_key_added) {
-                await lc.preferences.set(_cf.pref.key_active, pk_hex);
-                await sleep(500);
-                await restart(
-                    true,
-                    `Welcome! To view your device configuration go to Settings > Keypairs.`,
-                );
+            if (key_added) {
+                await lc.preferences.set(_conf.kv.nostr_key_active, public_key);
+
+                const key_profile_added = await lc.db.nostr_profile_add({
+                    public_key,
+                });
+
+                if (typeof key_profile_added === `string`) {
+                    // @todo
+                    alert(key_profile_added);
+                } else if (Array.isArray(key_profile_added)) {
+                    //@todo
+                    alert(key_profile_added.join(` `));
+                } else {
+                    await sleep(_conf.const.load_delay);
+                    await restart(
+                        true,
+                        `Welcome! Your device was configured. To view or change your configuration go to Settings > Configuration.`,
+                    );
+                    return;
+                }
             }
         } catch (e) {
-            console.log(`(error) create_new_key `, e);
+            console.log(`(error) configure_device `, e);
         }
     };
 </script>
@@ -389,7 +413,7 @@
                             <button
                                 class={`flex flex-row gap-3 justify-center items-center active:opacity-80`}
                                 on:click={async () => {
-                                    await create_new_key();
+                                    await configure_device();
                                 }}
                             >
                                 <p

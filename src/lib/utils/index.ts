@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { _cf } from "$lib/conf";
+import { _conf } from "$lib/conf";
 import { kv } from "@radroots/svelte-lib";
 import { lc } from "../client";
 
@@ -8,7 +8,7 @@ export const restart = async (route_to: true | string, alert_message?: string): 
         await lc.window.splash_show();
         if (alert_message) {
             await kv.set(
-                _cf.cmd.root_alert,
+                _conf.cmd.root_alert,
                 alert_message
             );
         }

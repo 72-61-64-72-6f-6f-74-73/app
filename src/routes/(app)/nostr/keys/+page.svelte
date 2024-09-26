@@ -1,6 +1,6 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { _cf } from "$lib/conf";
+    import { _conf } from "$lib/conf";
     import {
         LayoutTrellis,
         LayoutView,
@@ -14,7 +14,9 @@
 
     onMount(async () => {
         try {
-            const public_key = await lc.preferences.get(_cf.pref.key_active);
+            const public_key = await lc.preferences.get(
+                _conf.kv.nostr_key_active,
+            );
             if (public_key) nostr_public_key = public_key;
             const secret_key = await lc.keystore.get(`nostr:key:${public_key}`);
             if (secret_key) nostr_secret_key = secret_key;

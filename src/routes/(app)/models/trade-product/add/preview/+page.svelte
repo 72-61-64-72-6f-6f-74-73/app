@@ -5,7 +5,7 @@
     import {
         type LocationGcs,
         type TradeProductFormFields,
-    } from "@radroots/client";
+    } from "@radroots/models";
     import {
         Fill,
         Glyph,

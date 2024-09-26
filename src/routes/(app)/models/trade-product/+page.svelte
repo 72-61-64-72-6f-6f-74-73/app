@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
-    import { type TradeProduct } from "@radroots/client";
+    import { type TradeProduct } from "@radroots/models";
     import {
         app_tabs_visible,
         LayoutTrellis,

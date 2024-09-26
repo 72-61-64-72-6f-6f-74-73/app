@@ -12,7 +12,7 @@
         mass_units,
         trade_product_form_fields,
         type LocationGcs,
-    } from "@radroots/client";
+    } from "@radroots/models";
     import {
         el_id,
         fmt_id,

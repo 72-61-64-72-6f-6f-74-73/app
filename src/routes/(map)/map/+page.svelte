@@ -1,7 +1,7 @@
 <script lang="ts">
   import { lc } from "$lib/client";
   import MapControlFull from "$lib/components/map_control_full.svelte";
-  import { _cf } from "$lib/conf";
+  import { _conf } from "$lib/conf";
   import { app_thc } from "$lib/stores";
   import { Fill, LoadingView, sleep } from "@radroots/svelte-lib";
   import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
@@ -17,7 +17,7 @@
       if (loc && typeof loc !== `string`) {
         map_coords = [loc.lng, loc.lat];
       }
-      await sleep(321);
+      await sleep(_conf.const.load_delay);
     } catch (e) {
       console.log(`e `, e);
     } finally {
@@ -31,7 +31,7 @@
     center={map_coords}
     zoom={10}
     class={`map-full ${loading_layout ? `hidden` : ``}`}
-    style={_cf.map.styles.base[$app_thc]}
+    style={_conf.map.styles.base[$app_thc]}
   >
     <Marker lngLat={map_coords}>
       <div class="flex flex-row p-1">
@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <Popup offset={_cf.map.popup.dot.offset}>
+      <Popup offset={_conf.map.popup.dot.offset}>
         <button
           class={`flex flex-row justify-center items-center transition-all`}
           on:click={async () => {}}

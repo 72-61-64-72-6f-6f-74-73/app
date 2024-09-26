@@ -1,17 +1,23 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { location_gcs_add } from "$lib/utils/location_gcs";
-    import { type LocationGcs } from "@radroots/models";
+    import {
+        nostr_profile_form_vals,
+        parse_nostr_profile_form_keys,
+        type NostrProfile,
+    } from "@radroots/models";
     import {
         app_tabs_visible,
+        as_glyph_key,
         LayoutTrellis,
         LayoutView,
         Nav,
+        t,
         Trellis,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: LocationGcs[] = [];
+    let models_list: NostrProfile[] = [];
     let loading_models = false;
 
     onMount(async () => {
@@ -26,7 +32,7 @@
     const fetch_models = async (): Promise<void> => {
         try {
             loading_models = true;
-            const res = await lc.db.location_gcs_get({
+            const res = await lc.db.nostr_profile_get({
                 list: [`all`],
             });
             if (typeof res !== `string`) models_list = res;
@@ -47,48 +53,69 @@
                         args: {
                             layer: 1,
                             title: {
-                                value: `Your Locations`,
+                                value: `Your Profiles`,
                             },
                             list: [
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Location:`,
-                                                    classes: `capitalize`,
+                                ...Object.keys(nostr_profile_form_vals).map(
+                                    (k) => ({
+                                        hide_active: true,
+                                        touch: {
+                                            label: {
+                                                left: [
+                                                    {
+                                                        classes: `capitalize`,
+                                                        value: `${$t(`model_fields.${k}`, { default: k.replaceAll(`_`, ` `) })}`,
+                                                    },
+                                                ],
+                                                right: [
+                                                    {
+                                                        classes: `font-[300] text-layer-1-glyph-shade`,
+                                                        value:
+                                                            Object.assign(li)[
+                                                                parse_nostr_profile_form_keys(
+                                                                    k,
+                                                                )
+                                                            ] || "(none)",
+                                                    },
+                                                ],
+                                            },
+                                            end: {
+                                                icon: {
+                                                    key: as_glyph_key(
+                                                        `caret-right`,
+                                                    ),
                                                 },
-                                            ],
-                                            right: [
-                                                {
-                                                    value: li.label,
-                                                },
-                                            ],
+                                            },
+                                            callback: async () => {},
                                         },
-                                        callback: async () => {},
-                                    },
-                                },
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Coordinates:`,
-                                                    classes: `capitalize`,
-                                                },
-                                            ],
-                                            right: [
-                                                {
-                                                    value: `${li.lat.toFixed(3)} ${li.lng.toFixed(3)}`,
-                                                },
-                                            ],
-                                        },
-                                        callback: async () => {},
-                                    },
-                                },
+                                    }),
+                                ),
                             ],
+
+                            /*[
+                                {
+                                    hide_active: true,
+                                    touch: {
+                                        label: {
+                                            left: [
+                                                {
+                                                    value: `Public Key:`,
+                                                    classes: `capitalize pr-2`,
+                                                },
+                                            ],
+                                            right: [
+                                                {
+                                                    classes: `truncate`,
+                                                    value: li.public_key,
+                                                },
+                                            ],
+                                        },
+                                        callback: async () => {},
+                                    },
+                                },
+                               
+                            ],
+                            */
                         },
                     }}
                 />
@@ -121,11 +148,11 @@
 <Nav
     basis={{
         prev: {
-            label: `Home`,
+            label: `Back`,
             route: `/`,
         },
         title: {
-            label: `Locations`,
+            label: `Profiles`,
         },
         option: models_list.length
             ? {
@@ -134,8 +161,13 @@
                       classes: `tap-color`,
                   },
                   callback: async () => {
-                      const res = await location_gcs_add();
-                      if (res === true) await fetch_models();
+                      //const res = await location_gcs_add();
+                      //if (res === true) await fetch_models();
+                      const ks_keys = await lc.keystore.keys();
+                      console.log(JSON.stringify(ks_keys, null, 4), `ks_keys`);
+                      for (const ks_key of ks_keys || []) {
+                          console.log(`ks_key `, ks_key);
+                      }
                   },
               }
             : undefined,

@@ -6,7 +6,7 @@
         PUBLIC_NOSTR_RELAY_DEFAULTS,
     } from "$env/static/public";
     import { lc } from "$lib/client";
-    import { _cf } from "$lib/conf";
+    import { _conf } from "$lib/conf";
     import {
         app_nostr_key,
         app_pwa_polyfills,
@@ -64,25 +64,27 @@
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
-            app_sqlite.set(!!(await lc.db.connect(PUBLIC_DATABASE_NAME)));
-            const active_nostr_pk = await lc.preferences.get(
-                _cf.pref.key_active,
-            );
-            console.log(`active_nostr_pk `, active_nostr_pk);
-            const active_nostr_sk = await lc.keystore.get(
-                `nostr:key:${active_nostr_pk}`,
-            );
-            console.log(`active_nostr_sk `, active_nostr_sk);
-            if (
-                typeof active_nostr_sk === `string` &&
-                active_nostr_sk &&
-                active_nostr_pk
-            )
-                app_nostr_key.set(active_nostr_pk);
-            else {
-                await lc.preferences.remove(_cf.pref.key_active);
-                await goto(`/init`);
+            const db_connected = await lc.db.connect(PUBLIC_DATABASE_NAME);
+            if (!db_connected) {
+                // @todo
             }
+            app_sqlite.set(!!db_connected);
+
+            const active_key_public = await lc.preferences.get(
+                _conf.kv.nostr_key_active,
+            );
+            if (active_key_public) {
+                const active_key_secret = await lc.keystore.get(
+                    _conf.kv.nostr_key(active_key_public),
+                );
+                if (active_key_secret) {
+                    app_nostr_key.set(active_key_public);
+                    return;
+                }
+            }
+
+            await lc.preferences.remove(_conf.kv.nostr_key_active);
+            await goto(`/init`);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
@@ -103,7 +105,7 @@
             }
             console.log(`init_route `, init_route);
             await goto(init_route);
-            await sleep(321);
+            await sleep(_conf.const.load_delay);
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
@@ -140,9 +142,9 @@
 </script>
 
 <svelte:head>
-    <meta name="description" content={_cf.app.description} />
-    <meta property="og:title" content={_cf.app.title} />
-    <meta property="og:description" content={_cf.app.description} />
+    <meta name="description" content={_conf.app.description} />
+    <meta property="og:title" content={_conf.app.title} />
+    <meta property="og:description" content={_conf.app.description} />
 </svelte:head>
 {#if $app_render}
     <slot />

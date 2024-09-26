@@ -1,4 +1,4 @@
-import { parse_trade_product_form_keys, trade_product_form_fields, trade_product_form_vals, type TradeProductFormFields } from "@radroots/client";
+import { parse_trade_product_form_keys, trade_product_form_fields, trade_product_form_vals, type TradeProductFormFields } from "@radroots/models";
 import { kv } from "@radroots/svelte-lib";
 
 export const trade_product_kv_vals = async (opts: {

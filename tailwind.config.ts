@@ -18,7 +18,8 @@ const heights = {
 };
 
 const widths = {
-  line: `320px`
+  line: `320px`,
+  trellis_value: `180px`
 };
 
 const dimensions = {

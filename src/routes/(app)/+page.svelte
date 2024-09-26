@@ -41,6 +41,12 @@
             weight: `fill`,
         },
         {
+            route: `/models/nostr-profile`,
+            label: `Profiles`,
+            key: `address-book-tabs`,
+            weight: `fill`,
+        },
+        {
             route: `/nostr/keys`,
             label: `Keys`,
             key: `key`,
