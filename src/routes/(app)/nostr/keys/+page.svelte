@@ -132,7 +132,7 @@
 
 <LayoutView basis={{ fade: true }}>
     <LayoutTrellis>
-        <div class={`flex flex-col w-full gap-1 justify-start items-center`}>
+        <div class={`flex flex-col w-full justify-start items-center`}>
             <TrellisTitle
                 layer={0}
                 basis={{
@@ -142,7 +142,7 @@
             {#if ls_nostr_keys.length}
                 {#each ls_nostr_keys as ks_key (ks_key.public_key)}
                     <div
-                        class={`relative flex flex-col pt-3 pb-4 px-[9px] bg-layer-1-surface rounded-xl overflow-hidden active:ring-4 active:ring-layer-2-surface/80 transition-all tap-rise-1 active:opacity-60`}
+                        class={`relative flex flex-col pt-4 pb-5 px-[9px] bg-layer-1-surface rounded-xl overflow-hidden active:ring-4 active:ring-layer-2-surface/80 transition-all tap-rise-1 active:opacity-60`}
                     >
                         <button
                             class={`flex flex-col h-full w-full pt-[2px] pl-1 gap-1 items-start`}

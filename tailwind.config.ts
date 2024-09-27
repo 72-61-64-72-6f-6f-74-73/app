@@ -15,6 +15,7 @@ const heights = {
   nav_base: `71px`,
   nav_lg: `100px`,
   envelope_top: "56px",
+  toast_min: `56px`
 };
 
 const widths = {

@@ -14,4 +14,10 @@
     .tap-rise-1 {
         @apply active:scale-[101%] group-active:scale-[101%] delay-75 duration-700 ease-in-out transition-all;
     }
+
+
+    .tap-scale {
+        @apply active:scale-[97%] group-active:scale-[97%] delay-75 duration-700 ease-in-out transition-all;
+    }
+
 }

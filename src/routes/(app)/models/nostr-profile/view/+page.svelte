@@ -26,7 +26,6 @@
     };
     let ld: LoadData | undefined = undefined;
 
-    let el_edit: HTMLLabelElement | null;
     let show_public_key_hex = false;
     let show_secret_key_hex = false;
     let vl_secret_key_unlock = false;
@@ -34,13 +33,13 @@
     onMount(async () => {
         try {
             if (!$qp_nostr_pk) app_notify.set(`Error loading page`);
-            ld = await load_page();
+            ld = await load_data();
         } catch (e) {
         } finally {
         }
     });
 
-    const load_page = async (): Promise<LoadData | undefined> => {
+    const load_data = async (): Promise<LoadData | undefined> => {
         try {
             const nostr_profiles = await lc.db.nostr_profile_get({
                 public_key: $qp_nostr_pk,
@@ -66,7 +65,7 @@
             };
             return data;
         } catch (e) {
-            console.log(`(error) load_page `, e);
+            console.log(`(error) load_data `, e);
         }
     };
 
@@ -409,10 +408,12 @@
                     toggle: vl_secret_key_unlock,
                 },
             },
-            callback: async ([visible, el]) => {
-                vl_secret_key_unlock = visible;
-                //show_secret_key_hex = visible;
-                el_edit = el;
+            callback: async (el) => {
+                if (el) {
+                    vl_secret_key_unlock =
+                        !el.classList.contains(`swap-active`);
+                }
+                if (vl_secret_key_unlock) show_secret_key_hex = false;
             },
         },
     }}

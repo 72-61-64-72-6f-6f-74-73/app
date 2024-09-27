@@ -63,6 +63,12 @@
                 ]);
             },
         },
+        {
+            route: `/models/nostr-relay`,
+            label: `Relays`,
+            key: `network`,
+            weight: `fill`,
+        },
     ];
 </script>
 
