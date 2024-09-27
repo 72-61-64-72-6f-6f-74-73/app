@@ -8,7 +8,6 @@
         Nav,
         route,
         t,
-        tabs_visible,
         time_fmt_iso,
         Trellis,
     } from "@radroots/svelte-lib";
@@ -19,7 +18,6 @@
 
     onMount(async () => {
         try {
-            tabs_visible.set(false);
             await fetch_models();
         } catch (e) {
         } finally {

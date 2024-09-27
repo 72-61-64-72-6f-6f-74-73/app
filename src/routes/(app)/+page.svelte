@@ -1,7 +1,6 @@
 <script lang="ts">
     import { app_nostr_key } from "$lib/stores";
     import {
-        app_tab_active,
         type CallbackPromise,
         EnvelopeLower,
         Glyph,
@@ -11,7 +10,7 @@
         nav_prev,
         type NavigationRoute,
         route,
-        tabs_visible,
+        Tabs,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
@@ -19,8 +18,6 @@
 
     onMount(async () => {
         try {
-            tabs_visible.set(true);
-            app_tab_active.set(0);
             nav_prev.set([]);
         } catch (e) {
         } finally {
@@ -144,6 +141,36 @@
         </div>
     </div>
 </LayoutView>
+<Tabs
+    basis={{
+        list: [
+            {
+                icon: `house-line`,
+                callback: async (tab_i) => {
+                    await route(`/`);
+                },
+            },
+            {
+                icon: `compass`,
+                callback: async (tab_i) => {
+                    await route(`/models/trade-product/add`);
+                },
+            },
+            {
+                icon: `network`,
+                callback: async (tab_i) => {
+                    await route(`/models/nostr-profile`);
+                },
+            },
+            {
+                icon: `bell-simple`,
+                callback: async (tab_i) => {
+                    await route(`/models/nostr-relay`);
+                },
+            },
+        ],
+    }}
+/>
 <EnvelopeLower
     basis={{
         visible: tmp_show_envelope,

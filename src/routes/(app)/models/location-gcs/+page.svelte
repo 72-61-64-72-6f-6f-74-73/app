@@ -7,7 +7,6 @@
         LayoutView,
         Nav,
         t,
-        tabs_visible,
         Trellis,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
@@ -17,7 +16,6 @@
 
     onMount(async () => {
         try {
-            tabs_visible.set(false);
             await fetch_models();
         } catch (e) {
         } finally {

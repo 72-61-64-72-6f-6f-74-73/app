@@ -8,19 +8,9 @@
         LayoutView,
         Nav,
         t,
-        tabs_visible,
         toggle_color_mode,
         Trellis,
     } from "@radroots/svelte-lib";
-    import { onMount } from "svelte";
-
-    onMount(async () => {
-        try {
-            tabs_visible.set(false);
-        } catch (e) {
-        } finally {
-        }
-    });
 </script>
 
 <LayoutView>
