@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { PUBLIC_NOSTR_RELAY_DEFAULTS } from "$env/static/public";
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import { restart } from "$lib/utils";
@@ -84,32 +85,62 @@
             const secret_key = lc.nostr.lib.generate_key();
             const public_key = lc.nostr.lib.public_key(secret_key);
 
-            const key_added = await lc.keystore.set(
+            const ks_key_add = await lc.keystore.set(
                 _conf.kv.nostr_key(public_key),
                 secret_key,
             );
-            if (key_added) {
-                await lc.preferences.set(_conf.kv.nostr_key_active, public_key);
+            if (!ks_key_add) {
+                //@todo reset
+                alert(`!ks_key_add`);
+                return;
+            }
 
-                const key_profile_added = await lc.db.nostr_profile_add({
-                    public_key,
-                });
+            const pref_key_add = await lc.preferences.set(
+                _conf.kv.nostr_key_active,
+                public_key,
+            );
+            if (!pref_key_add) {
+                //@todo reset
+                alert(`!pref_key_add`);
+                return;
+            }
 
-                if (typeof key_profile_added === `string`) {
-                    // @todo
-                    alert(key_profile_added);
-                } else if (Array.isArray(key_profile_added)) {
-                    //@todo
-                    alert(key_profile_added.join(` `));
-                } else {
-                    await sleep(_conf.delay.load);
-                    await restart(
-                        true,
-                        `Welcome! Your device was configured. To view or change your configuration go to Settings > Configuration.`,
-                    );
+            const nostr_profile_add = await lc.db.nostr_profile_add({
+                public_key,
+            });
+
+            if (typeof nostr_profile_add === `string`) {
+                // @todo reset
+                alert(nostr_profile_add);
+                return;
+            } else if (Array.isArray(nostr_profile_add)) {
+                //@todo reset
+                alert(nostr_profile_add.join(` `));
+                return;
+            }
+
+            for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(",") || []) {
+                const nostr_relay_add = await lc.db.nostr_relay_add({ url });
+                if (typeof nostr_relay_add === `string`) {
+                    // @todo reset
+                    alert(nostr_relay_add);
+                    return;
+                } else if (Array.isArray(nostr_relay_add)) {
+                    //@todo reset
+                    alert(nostr_relay_add.join(` `));
                     return;
                 }
+                await lc.db.set_nostr_profile_relay({
+                    nostr_profile_id: nostr_profile_add.id,
+                    nostr_relay_id: nostr_relay_add.id,
+                });
             }
+
+            await sleep(_conf.delay.load);
+            await restart(
+                true,
+                `Welcome! Your device was configured. To view or change your configuration go to Settings > Configuration.`,
+            );
         } catch (e) {
             console.log(`(error) configure_device `, e);
         }

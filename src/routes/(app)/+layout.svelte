@@ -37,7 +37,6 @@
                 {
                     icon: `bell-simple`,
                     callback: async (tab_i) => {
-                        app_tab_active.set(tab_i);
                         await route(`/settings`);
                     },
                 },

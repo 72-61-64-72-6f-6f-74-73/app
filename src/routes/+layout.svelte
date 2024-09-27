@@ -1,9 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import {
-        PUBLIC_DATABASE_NAME,
-        PUBLIC_NOSTR_RELAY_DEFAULTS,
-    } from "$env/static/public";
+    import { PUBLIC_DATABASE_NAME } from "$env/static/public";
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import {
@@ -14,19 +11,24 @@
         app_thc,
     } from "$lib/stores";
     import {
+        parse_nostr_relay_form_keys,
+        type NostrRelayFormFields,
+    } from "@radroots/models";
+    import {
         app_config,
         app_notify,
         app_render,
         AppConfig,
         CssStatic,
         ndk,
-        ndk_setup_privkey,
+        ndk_init,
         ndk_user,
         route,
         sleep,
         theme_set,
     } from "@radroots/svelte-lib";
     import { parse_color_mode, parse_theme_key } from "@radroots/theme";
+    import { parse_nostr_relay_information_document_fields } from "@radroots/utils";
     import "../app.css";
 
     let render_pwa = browser && lc.platform === `web`;
@@ -114,28 +116,76 @@
         }
     });
 
-    app_nostr_key.subscribe(async (app_nostr_key) => {
+    app_nostr_key.subscribe(async (_app_nostr_key) => {
         try {
-            if (!app_nostr_key) return;
-            const private_key = await lc.keystore.get(
-                `nostr:key:${app_nostr_key}`,
+            if (!_app_nostr_key) return;
+
+            const secret_key = await lc.keystore.get(
+                _conf.kv.nostr_key(_app_nostr_key),
             );
-            if (private_key) {
-                for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(","))
-                    $ndk.addExplicitRelay(url);
-                await $ndk.connect().then(() => {
-                    console.log(`(ndk) connected`);
+            if (!secret_key) {
+                alert(`!secret_key`); //@todo
+                return;
+            }
+
+            const nostr_relays = await lc.db.nostr_relay_get({
+                list: ["all"],
+            });
+            if (typeof nostr_relays === `string`) {
+                alert(nostr_relays); //@todo
+                return;
+            }
+
+            for (const { url } of nostr_relays) {
+                $ndk.addExplicitRelay(url);
+                const response = await lc.http.fetch({
+                    url: url.replace(`ws://`, `http://`),
+                    headers: {
+                        Accept: "application/nostr+json",
+                    },
                 });
-                const setup_user = await ndk_setup_privkey({
-                    $ndk,
-                    private_key,
-                });
-                if (setup_user) {
-                    $ndk_user = setup_user;
-                    $ndk_user.ndk = $ndk;
-                    console.log(`(ndk_user) connected`);
+                if (typeof response === `string`) {
+                    console.log(`response `, response);
+                    return;
+                }
+
+                if (response.status === 200 && response.data) {
+                    const info_doc =
+                        parse_nostr_relay_information_document_fields(
+                            response.data,
+                        );
+                    if (!info_doc) return;
+                    const fields: Partial<NostrRelayFormFields> = {};
+                    for (const [k, v] of Object.entries(info_doc)) {
+                        const field_k = parse_nostr_relay_form_keys(k);
+                        if (field_k) fields[field_k] = v;
+                    }
+                    if (Object.keys(fields).length < 1) return;
+                    await lc.db.nostr_relay_update({
+                        on: {
+                            url,
+                        },
+                        fields,
+                    });
                 }
             }
+
+            await $ndk.connect().then(() => {
+                console.log(`(ndk) connected`);
+            });
+
+            const ndk_user = await ndk_init({
+                $ndk,
+                secret_key,
+            });
+            if (!ndk_user) {
+                alert(`!ndk_user`); //@todo
+                return;
+            }
+
+            $ndk_user = ndk_user;
+            $ndk_user.ndk = $ndk;
+            console.log(`(ndk) initialized`);
         } catch (e) {
             console.log(`(app_nostr_key) error `, e);
         }
