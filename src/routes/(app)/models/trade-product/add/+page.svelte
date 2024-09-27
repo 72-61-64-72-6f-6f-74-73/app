@@ -1,7 +1,6 @@
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import { location_gcs_add } from "$lib/utils/location_gcs";
     import {
@@ -24,6 +23,7 @@
         LayoutView,
         Nav,
         NotifyGlyph,
+        route,
         t,
     } from "@radroots/svelte-lib";
     import {
@@ -207,7 +207,7 @@
             if (!vals.price_qty_amt) await kv.set(fmt_id(`price_qty_amt`), `1`);
             if (!vals.qty_avail) await kv.set(fmt_id(`qty_avail`), `1`);
 
-            await goto(`/models/trade-product/add/preview`);
+            await route(`/models/trade-product/add/preview`);
         } catch (e) {
             console.log(`(error) submit `, e);
         } finally {
@@ -520,14 +520,16 @@
 <Nav
     basis={{
         prev: {
-            label: `Back`,
+            label: `${$t(`common.back`)}`,
             route: `/models/trade-product`,
             callback: async () => {
                 await trade_product_kv_init(fmt_id());
             },
         },
         title: {
-            label: `Add Product`,
+            label: {
+                value: `${$t(`icu.add_*`, { value: `${$t(`common.product`)}` })}`,
+            },
             callback: async () => {
                 const el = el_id(fmt_id(`key_wrap`));
                 el?.focus();

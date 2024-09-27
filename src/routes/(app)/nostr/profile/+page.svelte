@@ -177,7 +177,9 @@
             route: `/nostr`,
         },
         title: {
-            label: `Profile`,
+            label: {
+                value: `${$t(`common.profile`)}`,
+            },
         },
         option: $events_store.length
             ? {

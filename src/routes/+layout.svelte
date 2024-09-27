@@ -1,6 +1,5 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import { goto } from "$app/navigation";
     import {
         PUBLIC_DATABASE_NAME,
         PUBLIC_NOSTR_RELAY_DEFAULTS,
@@ -16,13 +15,14 @@
     } from "$lib/stores";
     import {
         app_config,
+        app_notify,
         app_render,
         AppConfig,
         CssStatic,
-        kv,
         ndk,
         ndk_setup_privkey,
         ndk_user,
+        route,
         sleep,
         theme_set,
     } from "@radroots/svelte-lib";
@@ -84,7 +84,7 @@
             }
 
             await lc.preferences.remove(_conf.kv.nostr_key_active);
-            await goto(`/init`);
+            await route(`/init`);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {
@@ -96,16 +96,17 @@
         try {
             console.log(`app_render `, app_render);
             if (!app_render) return;
+            /*
             let init_route = `/`;
             //init_route = `/models/trade-product/add`;
-            const app_init_route = await kv.get(`*-init-route`);
+            const app_init_route = await kv.get(_conf.cmd.layout_route);
             if (app_init_route) {
                 init_route = app_init_route;
-                await kv.delete(`*-init-route`);
+                await kv.delete(_conf.cmd.layout_route);
             }
             console.log(`init_route `, init_route);
-            await goto(init_route);
-            await sleep(_conf.const.load_delay);
+            */
+            await sleep(_conf.delay.load);
         } catch (e) {
             console.log(`(app_render) error `, e);
         } finally {
@@ -138,6 +139,14 @@
         } catch (e) {
             console.log(`(app_nostr_key) error `, e);
         }
+    });
+
+    app_notify.subscribe(async (_app_notify) => {
+        if (!_app_notify) return;
+        route(`/`);
+        await sleep(_conf.delay.notify);
+        lc.dialog.alert(_app_notify);
+        app_notify.set(``);
     });
 </script>
 

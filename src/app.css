@@ -9,3 +9,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .tap-rise-1 {
+        @apply active:scale-[101%] group-active:scale-[101%] delay-75 duration-700 ease-in-out transition-all;
+    }
+}

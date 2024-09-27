@@ -3,10 +3,11 @@
     import { location_gcs_add } from "$lib/utils/location_gcs";
     import { type LocationGcs } from "@radroots/models";
     import {
-        app_tabs_visible,
         LayoutTrellis,
         LayoutView,
         Nav,
+        t,
+        tabs_visible,
         Trellis,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
@@ -16,7 +17,7 @@
 
     onMount(async () => {
         try {
-            app_tabs_visible.set(false);
+            tabs_visible.set(false);
             await fetch_models();
         } catch (e) {
         } finally {
@@ -47,7 +48,7 @@
                         args: {
                             layer: 1,
                             title: {
-                                value: `Your Locations`,
+                                value: `${$t(`icu.your_*`, { value: `${$t(`common.locations`)}` })}`,
                             },
                             list: [
                                 {
@@ -125,12 +126,14 @@
             route: `/`,
         },
         title: {
-            label: `Locations`,
+            label: {
+                value: `${$t(`common.locations`)}`,
+            },
         },
         option: models_list.length
             ? {
                   label: {
-                      value: `Add`,
+                      value: `${$t(`common.add`)}`,
                       classes: `tap-color`,
                   },
                   callback: async () => {

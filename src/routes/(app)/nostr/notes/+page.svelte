@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { app_nostr_key } from "$lib/stores";
     import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
     import type {
@@ -12,6 +11,7 @@
         locale,
         Nav,
         ndk,
+        route,
         time_fmt_epoch_s,
         Trellis,
         type ITrellisKindTouch,
@@ -64,7 +64,7 @@
                     ],
                 },
                 callback: async () => {
-                    await goto(`/nostr/notes/post`);
+                    await route(`/nostr/notes/post`);
                 },
             },
         });
@@ -137,7 +137,7 @@
                                         },
                                     },
                                     callback: async () => {
-                                        await goto(`/nostr/notes/post`);
+                                        await route(`/nostr/notes/post`);
                                     },
                                 },
                             },
@@ -155,7 +155,9 @@
             route: `/nostr`,
         },
         title: {
-            label: `Notes`,
+            label: {
+                value: `Notes`,
+            },
         },
         option: $events_store.length
             ? {
@@ -163,7 +165,7 @@
                       value: `Post`,
                   },
                   callback: async () => {
-                      await goto(`/nostr/notes/post`);
+                      await route(`/nostr/notes/post`);
                   },
               }
             : undefined,

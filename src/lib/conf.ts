@@ -23,15 +23,18 @@ export const _conf = {
         title: `Radroots`,
         description: `Creating networks between farmers, communities and small businesses that give customers greater access to natural foods and grow circular economies where profits are more fairly distributed. Radroots is built on the Nostr protocol and released under a copyleft open source license to provide transparency and give users the option to offer feedback and add or request new features.`
     },
-    const: {
-        load_delay: 321
+    delay: {
+        load: 321,
+        notify: 123,
+        mount_el: 500
     },
     kv: {
         nostr_key: (public_key: string) => `nostr:key:${public_key}`,
         nostr_key_active: `nostr:key:active`,
     },
     cmd: {
-        root_alert: `*-alert`
+        //root_alert: `*-alert`,
+        layout_route: `*-route`
     },
     map: {
         styles: {

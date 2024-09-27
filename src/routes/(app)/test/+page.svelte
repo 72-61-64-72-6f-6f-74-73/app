@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Nav,LayoutView } from "@radroots/svelte-lib";
+    import { LayoutView, Nav } from "@radroots/svelte-lib";
 </script>
 
 <LayoutView basis={{ classes: `px-4 gap-8` }}>test</LayoutView>
@@ -10,7 +10,9 @@
             route: `/`,
         },
         title: {
-            label: `Test`,
+            label: {
+                value: `Test`,
+            },
         },
     }}
 />

@@ -19,7 +19,8 @@ const heights = {
 
 const widths = {
   line: `320px`,
-  trellis_value: `180px`
+  trellis_value: `180px`,
+  trellis_display: `290px`
 };
 
 const dimensions = {
@@ -50,6 +51,7 @@ const config: Config = {
       fontSize: {
         line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
         trellisTitle: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
+        trellisTitleNote: ["0.76rem", { lineHeight: "1rem", fontWeight: 200 }],
         trellisLine: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
         trellisLabel: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
         navPrevious: ["1.09rem", { lineHeight: "1.33rem", fontWeight: 400 }],

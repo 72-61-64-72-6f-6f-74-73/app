@@ -7,7 +7,6 @@
         type NostrProfile,
     } from "@radroots/models";
     import {
-        app_tabs_visible,
         as_glyph_key,
         LayoutTrellis,
         LayoutView,
@@ -18,28 +17,28 @@
     import { onMount } from "svelte";
 
     let models_list: NostrProfile[] = [];
-    let loading_models = false;
+    //let loading_models = false;
 
     onMount(async () => {
         try {
-            app_tabs_visible.set(false);
-            await fetch_models();
+            await load_models();
         } catch (e) {
         } finally {
         }
     });
 
-    const fetch_models = async (): Promise<void> => {
+    const load_models = async (): Promise<void> => {
         try {
-            loading_models = true;
+            //loading_models = true;
             const res = await lc.db.nostr_profile_get({
                 list: [`all`],
             });
+            console.log(JSON.stringify(res, null, 4), `res`);
             if (typeof res !== `string`) models_list = res;
         } catch (e) {
-            console.log(`(error) fetch_models `, e);
+            console.log(`(error) load_models `, e);
         } finally {
-            loading_models = false;
+            //loading_models = false;
         }
     };
 </script>
@@ -53,7 +52,7 @@
                         args: {
                             layer: 1,
                             title: {
-                                value: `Your Profiles`,
+                                value: `${$t(`icu.your_*`, { value: `${$t(`common.profiles`)}` })}`,
                             },
                             list: [
                                 ...Object.keys(nostr_profile_form_vals).map(
@@ -91,36 +90,11 @@
                                     }),
                                 ),
                             ],
-
-                            /*[
-                                {
-                                    hide_active: true,
-                                    touch: {
-                                        label: {
-                                            left: [
-                                                {
-                                                    value: `Public Key:`,
-                                                    classes: `capitalize pr-2`,
-                                                },
-                                            ],
-                                            right: [
-                                                {
-                                                    classes: `truncate`,
-                                                    value: li.public_key,
-                                                },
-                                            ],
-                                        },
-                                        callback: async () => {},
-                                    },
-                                },
-                               
-                            ],
-                            */
                         },
                     }}
                 />
             {/each}
-        {:else if !loading_models}
+        {:else}
             <div
                 class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
             >
@@ -132,7 +106,7 @@
                     class={`flex flex-row justify-center items-center`}
                     on:click={async () => {
                         const res = await location_gcs_add();
-                        if (res === true) await fetch_models();
+                        if (res === true) await load_models();
                     }}
                 >
                     <p
@@ -148,21 +122,23 @@
 <Nav
     basis={{
         prev: {
-            label: `Back`,
+            label: `${$t(`common.back`)}`,
             route: `/`,
         },
         title: {
-            label: `Profiles`,
+            label: {
+                value: `${$t(`common.profiles`)}`,
+            },
         },
         option: models_list.length
             ? {
                   label: {
-                      value: `Add`,
+                      value: `${$t(`common.add`)}`,
                       classes: `tap-color`,
                   },
                   callback: async () => {
                       //const res = await location_gcs_add();
-                      //if (res === true) await fetch_models();
+                      //if (res === true) await load_models();
                       const ks_keys = await lc.keystore.keys();
                       console.log(JSON.stringify(ks_keys, null, 4), `ks_keys`);
                       for (const ks_key of ks_keys || []) {

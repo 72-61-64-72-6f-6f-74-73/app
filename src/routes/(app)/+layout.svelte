@@ -1,17 +1,17 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import {
         LayoutWindow,
         Tabs,
         app_tab_active,
-        app_tabs_visible,
+        route,
+        tabs_visible,
     } from "@radroots/svelte-lib";
 </script>
 
 <LayoutWindow>
     <slot />
 </LayoutWindow>
-{#if $app_tabs_visible}
+{#if $tabs_visible}
     <Tabs
         basis={{
             list: [
@@ -19,27 +19,26 @@
                     icon: `house-line`,
                     callback: async (tab_i) => {
                         app_tab_active.set(tab_i);
-                        await goto("/");
+                        await route(`/`);
                     },
                 },
                 {
                     icon: `compass`,
                     callback: async (tab_i) => {
-                        await goto(`/models/trade-product/add`);
+                        await route(`/models/trade-product/add`);
                     },
                 },
                 {
                     icon: `network`,
                     callback: async (tab_i) => {
-                        app_tab_active.set(tab_i);
-                        await goto("/test");
+                        await route(`/models/nostr-profile`);
                     },
                 },
                 {
                     icon: `bell-simple`,
                     callback: async (tab_i) => {
                         app_tab_active.set(tab_i);
-                        await goto("/settings");
+                        await route(`/settings`);
                     },
                 },
             ],

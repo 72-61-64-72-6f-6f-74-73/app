@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import ButtonSubmit from "$lib/components/button-submit.svelte";
     import { NDKKind } from "@nostr-dev-kit/ndk";
@@ -10,6 +9,8 @@
         ndk,
         ndk_event,
         ndk_user,
+        route,
+        t,
     } from "@radroots/svelte-lib";
 
     let loading = false;
@@ -34,7 +35,7 @@
             });
             if (ev) {
                 await ev.publish();
-                await goto(`/nostr/notes`);
+                await route(`/nostr/notes`);
             }
         } catch (e) {
             console.log(`(error) nostr_note_publish `, e);
@@ -72,7 +73,9 @@
             route: `/nostr/notes`,
         },
         title: {
-            label: `Post Note`,
+            label: {
+                value: `${$t(`icu.post_*`, { value: `Note` })}`,
+            },
         },
     }}
 />

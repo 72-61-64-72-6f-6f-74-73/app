@@ -4,10 +4,11 @@
     import { app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
     import {
-        app_tabs_visible,
         LayoutTrellis,
         LayoutView,
         Nav,
+        t,
+        tabs_visible,
         toggle_color_mode,
         Trellis,
     } from "@radroots/svelte-lib";
@@ -15,7 +16,7 @@
 
     onMount(async () => {
         try {
-            app_tabs_visible.set(false);
+            tabs_visible.set(false);
         } catch (e) {
         } finally {
         }
@@ -388,7 +389,9 @@
             route: `/`,
         },
         title: {
-            label: `Settings`,
+            label: {
+                value: `${$t(`common.settings`)}`,
+            },
         },
     }}
 />

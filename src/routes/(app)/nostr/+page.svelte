@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import {
         LayoutTrellis,
         LayoutView,
         Nav,
+        route,
         Trellis,
     } from "@radroots/svelte-lib";
 </script>
@@ -29,7 +29,7 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    await goto(`/nostr/keys`);
+                                    await route(`/nostr/keys`);
                                 },
                                 end: {
                                     icon: {
@@ -48,7 +48,7 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    await goto(`/nostr/profile`);
+                                    await route(`/nostr/profile`);
                                 },
                                 end: {
                                     icon: {
@@ -67,7 +67,7 @@
                                     ],
                                 },
                                 callback: async () => {
-                                    await goto(`/nostr/notes`);
+                                    await route(`/nostr/notes`);
                                 },
                                 end: {
                                     icon: {
@@ -89,7 +89,9 @@
             route: `/`,
         },
         title: {
-            label: `Nostr`,
+            label: {
+                value: `Nostr`,
+            },
         },
     }}
 />

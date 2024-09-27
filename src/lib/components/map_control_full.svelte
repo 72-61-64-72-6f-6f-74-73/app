@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
-    import { Glyph, app_layout } from "@radroots/svelte-lib";
+    import { Glyph, app_layout, route } from "@radroots/svelte-lib";
 
     let el_zoom: HTMLElement | null;
 </script>
@@ -12,7 +11,7 @@
     <button
         class={`flex flex-row h-8 w-8 justify-center items-center rounded-2xl bg-layer-1-surface`}
         on:click={async () => {
-            await goto(`/`);
+            await route(`/`);
         }}
     >
         <Glyph

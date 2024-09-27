@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import { trade_product_kv_vals } from "$lib/utils/trade_product";
     import {
@@ -14,6 +13,7 @@
         LayoutView,
         locale,
         Nav,
+        route,
         t,
     } from "@radroots/svelte-lib";
     import { fmt_currency_tuple } from "@radroots/utils";
@@ -53,7 +53,7 @@
             });
             if (typeof vals === `string`) {
                 await lc.dialog.alert(`Invalid value ${vals}.`);
-                await goto(`/models/trade-product/add`);
+                await route(`/models/trade-product/add`);
                 return;
             }
 
@@ -67,7 +67,7 @@
 
             if (typeof location_gcs_res === `string`) {
                 await lc.dialog.alert(`The product location is missing.`);
-                await goto(`/models/trade-product/add`);
+                await route(`/models/trade-product/add`);
                 //@todo add focus
                 return;
             }
@@ -89,19 +89,19 @@
 
             if (typeof vals === `string`) {
                 lc.dialog.alert(`There was a problem adding the product`);
-                await goto(`/models/trade-product/add`);
+                await route(`/models/trade-product/add`);
                 return;
             }
 
             const res = await lc.db.trade_product_add(vals);
             if (typeof res === `string`) {
                 lc.dialog.alert(res);
-                await goto(`/models/trade-product/add`);
+                await route(`/models/trade-product/add`);
 
                 return;
             } else if (Array.isArray(res)) {
                 lc.dialog.alert(res.join(" "));
-                await goto(`/models/trade-product/add`);
+                await route(`/models/trade-product/add`);
                 return;
             }
 
@@ -111,7 +111,7 @@
             );
             for (const key of kv_keys) await kv.delete(key);
 
-            await goto(`/models/trade-product`);
+            await route(`/models/trade-product`);
         } catch (e) {
             console.log(`(error) submit `, e);
         }
@@ -169,7 +169,9 @@
                                             `*-el-focus`,
                                             `${kv_pref}-key_wrap`,
                                         );
-                                        await goto(`/models/trade-product/add`);
+                                        await route(
+                                            `/models/trade-product/add`,
+                                        );
                                     }}
                                 >
                                     <p
@@ -231,7 +233,9 @@
                                             `*-el-focus`,
                                             `${kv_pref}-price_wrap`,
                                         );
-                                        await goto(`/models/trade-product/add`);
+                                        await route(
+                                            `/models/trade-product/add`,
+                                        );
                                     }}
                                 >
                                     <p
@@ -286,7 +290,9 @@
                                             `*-el-focus`,
                                             `${kv_pref}-qty_wrap`,
                                         );
-                                        await goto(`/models/trade-product/add`);
+                                        await route(
+                                            `/models/trade-product/add`,
+                                        );
                                     }}
                                 >
                                     <p
@@ -402,7 +408,9 @@
                                             `*-el-focus`,
                                             `${kv_pref}-location_gcs_id_wrap`,
                                         );
-                                        await goto(`/models/trade-product/add`);
+                                        await route(
+                                            `/models/trade-product/add`,
+                                        );
                                     }}
                                 >
                                     <p
@@ -445,7 +453,9 @@
             route: `/models/trade-product/add`,
         },
         title: {
-            label: `Preview`,
+            label: {
+                value: `Preview`,
+            },
         },
         option: {
             label: {

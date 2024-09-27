@@ -102,7 +102,7 @@
                     //@todo
                     alert(key_profile_added.join(` `));
                 } else {
-                    await sleep(_conf.const.load_delay);
+                    await sleep(_conf.delay.load);
                     await restart(
                         true,
                         `Welcome! Your device was configured. To view or change your configuration go to Settings > Configuration.`,
@@ -145,11 +145,19 @@
                         >
                             {`to`}
                         </p>
-                        <p
-                            class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                        <button
+                            class={`flex flex-row justify-center items-center`}
+                            on:click={async () => {
+                                //@todo remove
+                                await configure_device();
+                            }}
                         >
-                            {`radroots`}
-                        </p>
+                            <p
+                                class={`font-mono font-[400] text-layer-0-glyph text-3xl`}
+                            >
+                                {`radroots`}
+                            </p>
+                        </button>
                     </div>
                     <div class={`flex flex-col justify-start items-center`}>
                         <p

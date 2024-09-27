@@ -1,13 +1,14 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import { type TradeProduct } from "@radroots/models";
     import {
-        app_tabs_visible,
         LayoutTrellis,
         LayoutView,
         locale,
         Nav,
+        route,
+        t,
+        tabs_visible,
         time_fmt_iso,
         Trellis,
     } from "@radroots/svelte-lib";
@@ -18,7 +19,7 @@
 
     onMount(async () => {
         try {
-            app_tabs_visible.set(false);
+            tabs_visible.set(false);
             await fetch_models();
         } catch (e) {
         } finally {
@@ -166,16 +167,18 @@
             route: `/`,
         },
         title: {
-            label: `Products`,
+            label: {
+                value: `${$t(`common.products`)}`,
+            },
         },
         option: models_list.length
             ? {
                   label: {
-                      value: `Add`,
+                      value: `${$t(`common.add`)}`,
                       classes: `tap-color`,
                   },
                   callback: async () => {
-                      await goto(`/models/trade-product/add`);
+                      await route(`/models/trade-product/add`);
                   },
               }
             : undefined,

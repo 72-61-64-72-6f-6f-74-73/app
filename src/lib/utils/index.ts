@@ -1,22 +1,14 @@
-import { goto } from "$app/navigation";
-import { _conf } from "$lib/conf";
-import { kv } from "@radroots/svelte-lib";
+import { route, type NavigationRoute } from "@radroots/svelte-lib";
 import { lc } from "../client";
 
-export const restart = async (route_to: true | string, alert_message?: string): Promise<void> => {
+export const restart = async (route_to: true | NavigationRoute, notify_message?: string): Promise<void> => {
     try {
         await lc.window.splash_show();
-        if (alert_message) {
-            await kv.set(
-                _conf.cmd.root_alert,
-                alert_message
-            );
+        if (notify_message) {
+            console.log(`todo! notify_message `, notify_message)
+            //app_notify.set(notify_message);
         }
-        if (route_to) {
-            if (route_to === true) await goto(`/`);
-            else await goto(route_to)
-        }
-
+        await route(typeof route_to === `string` ? route_to : `/`)
         location.reload();
     } catch (e) {
         console.log(`(error) restart `, e);

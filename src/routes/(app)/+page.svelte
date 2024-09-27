@@ -1,14 +1,17 @@
 <script lang="ts">
-    import { goto } from "$app/navigation";
     import { app_nostr_key } from "$lib/stores";
     import {
         app_tab_active,
-        app_tabs_visible,
+        type CallbackPromise,
         EnvelopeLower,
         Glyph,
         type GlyphKey,
         type GlyphWeight,
         LayoutView,
+        nav_prev,
+        type NavigationRoute,
+        route,
+        tabs_visible,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
@@ -16,18 +19,20 @@
 
     onMount(async () => {
         try {
-            app_tabs_visible.set(true);
+            tabs_visible.set(true);
             app_tab_active.set(0);
+            nav_prev.set([]);
         } catch (e) {
         } finally {
         }
     });
 
     let buttons: {
-        route: string;
+        route: NavigationRoute;
         label: string;
         key: GlyphKey;
         weight?: GlyphWeight;
+        callback?: CallbackPromise;
     }[] = [
         {
             route: `/models/location-gcs`,
@@ -51,6 +56,15 @@
             label: `Keys`,
             key: `key`,
             weight: `fill`,
+            callback: async () => {
+                nav_prev.set([
+                    ...$nav_prev,
+                    {
+                        route: `/`,
+                        label: `Home`,
+                    },
+                ]);
+            },
         },
     ];
 </script>
@@ -91,7 +105,8 @@
                 <button
                     class={`col-span-6 flex flex-col h-20 py-2 px-3 justify-between rounded-2xl bg-layer-1-surface text-layer-2-glyph font-[500] text-lg font-mono tap-rise active-ring-gray transition-all`}
                     on:click={async () => {
-                        await goto(btn.route);
+                        if (btn.callback) await btn.callback();
+                        await route(btn.route);
                     }}
                 >
                     <div

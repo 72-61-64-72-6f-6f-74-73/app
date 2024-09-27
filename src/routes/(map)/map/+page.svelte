@@ -17,7 +17,7 @@
       if (loc && typeof loc !== `string`) {
         map_coords = [loc.lng, loc.lat];
       }
-      await sleep(_conf.const.load_delay);
+      await sleep(_conf.delay.load);
     } catch (e) {
       console.log(`e `, e);
     } finally {
