@@ -61,8 +61,8 @@ const config: Config = {
         envelopeTitle: ["1.05rem", { lineHeight: "1.75rem", fontWeight: 600 }],
         envelopeTitlePrevious: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 400 }],
         envelopeTitleAction: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 500 }],
-        envelopeButtonCancel: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 600 }],
-        envelopeButtonLabel: ["1.02rem", { lineHeight: "1.75rem", fontWeight: 500 }],
+        envelopeButtonCancel: ["1.1rem", { lineHeight: "1.75rem", fontWeight: 600 }],
+        envelopeButtonLabel: ["1.1rem", { lineHeight: "1.75rem", fontWeight: 500 }],
       },
       height: {
         ...heights,

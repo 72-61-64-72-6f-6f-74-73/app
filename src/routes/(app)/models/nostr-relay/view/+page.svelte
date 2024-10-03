@@ -8,6 +8,7 @@
         LayoutTrellis,
         LayoutView,
         Nav,
+        nostr_relays_connected,
         qp_id,
         t,
         Trellis,
@@ -63,7 +64,7 @@
                     args: {
                         layer: 1,
                         title: {
-                            value: `${$t(`common.relay`)}`,
+                            value: `${$t(`common.url`)}`,
                         },
                         list: [
                             {
@@ -96,10 +97,17 @@
                                 touch: {
                                     label: {
                                         left: [
-                                            {
-                                                classes: `text-success`,
-                                                value: `${$t(`common.connected`)}`,
-                                            },
+                                            $nostr_relays_connected.includes(
+                                                ld.nostr_relay.id,
+                                            )
+                                                ? {
+                                                      classes: `text-success font-[500]`,
+                                                      value: `${$t(`common.connected`)}`,
+                                                  }
+                                                : {
+                                                      classes: `text-red-500 font-[500]`,
+                                                      value: `${$t(`common.not_connected`)}`,
+                                                  },
                                         ],
                                     },
                                 },
