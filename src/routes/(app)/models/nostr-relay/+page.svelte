@@ -3,10 +3,11 @@
     import { app_nostr_key } from "$lib/stores";
     import type { NostrRelay } from "@radroots/models";
     import {
+        GlyphCircle,
         LayoutTrellis,
         LayoutView,
         Nav,
-        sleep,
+        nostr_relays_connected,
         t,
         Trellis,
         type ITrellisKindTouch,
@@ -56,8 +57,8 @@
         }
     };
 
-    let tr_list_1: ITrellisKindTouch[] = [];
-    $: tr_list_1 = ld
+    let tr_list_relays: ITrellisKindTouch[] = [];
+    $: tr_list_relays = ld?.nostr_relays.length
         ? ld.nostr_relays.map((nostr_relay) => ({
               layer: 1,
               hide_active: show_edit,
@@ -77,11 +78,16 @@
               offset: show_edit
                   ? {
                         mod: {
-                            classes: `text-layer-2-glyph opacity-40 fade-in tap-scale`,
-                            key: `minus-circle`,
-                            weight: `fill`,
-                            dim: `sm`,
-                            loading: loading_edit_id === nostr_relay.id,
+                            glyph_circle: {
+                                classes_wrap: `bg-red-400/80`,
+                                glyph: {
+                                    classes: `text-white fade-in tap-scale`,
+                                    key: `minus`,
+                                    weight: `bold`,
+                                    dim: `xs-`,
+                                    loading: loading_edit_id === nostr_relay.id,
+                                },
+                            },
                         },
                         callback: async () => {
                             await handle_disconnect_relay(nostr_relay);
@@ -89,10 +95,27 @@
                     }
                   : {
                         mod: {
-                            classes: `text-layer-2-glyph-hl group-active:opacity-60 fade-in`,
-                            key: `check-circle`,
-                            weight: `fill`,
-                            dim: `sm`,
+                            glyph_circle: {
+                                classes_wrap: $nostr_relays_connected.includes(
+                                    nostr_relay.id,
+                                )
+                                    ? `bg-layer-1-glyph-hl/60 group-active:opacity-40`
+                                    : `bg-amber-700/80 group-active:opacity-40`,
+                                glyph: {
+                                    classes: $nostr_relays_connected.includes(
+                                        nostr_relay.id,
+                                    )
+                                        ? `text-white group-active:opacity-60 fade-in`
+                                        : `text-amber-200 group-active:opacity-60 fade-in`,
+                                    key: $nostr_relays_connected.includes(
+                                        nostr_relay.id,
+                                    )
+                                        ? `check`
+                                        : `x`,
+                                    weight: `bold`,
+                                    dim: `xs-`,
+                                },
+                            },
                         },
                         callback: async (ev) => {
                             ev.stopPropagation();
@@ -111,9 +134,7 @@
             );
             if (confirm === false) return;
 
-            console.log(`unset the relay`);
-            console.log(`relay_id `, nostr_relay.id);
-            await sleep(500);
+            alert(`@todo`);
         } catch (e) {
             console.log(`(error) handle_disconnect_relay `, e);
         } finally {
@@ -125,7 +146,17 @@
 
 <LayoutView>
     <LayoutTrellis>
-        {#if ld}
+        <GlyphCircle
+            basis={{
+                classes_wrap: `bg-red-400`,
+                glyph: {
+                    classes: `text-white`,
+                    key: `arrow-circle-up`,
+                    dim: `md`,
+                },
+            }}
+        />
+        {#if tr_list_relays.length}
             <Trellis
                 basis={{
                     args: {
@@ -133,7 +164,7 @@
                         title: {
                             value: `${$t(`icu.connected_*`, { value: `${$t(`common.relays`)}` })}`,
                         },
-                        list: [...tr_list_1],
+                        list: tr_list_relays,
                     },
                 }}
             />

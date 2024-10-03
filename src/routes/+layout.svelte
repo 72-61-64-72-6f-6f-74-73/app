@@ -1,6 +1,5 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import { PUBLIC_DATABASE_NAME } from "$env/static/public";
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import {
@@ -11,8 +10,8 @@
         app_thc,
     } from "$lib/stores";
     import {
-        parse_nostr_relay_form_keys,
         type NostrRelayFormFields,
+        parse_nostr_relay_form_keys,
     } from "@radroots/models";
     import {
         app_config,
@@ -20,9 +19,12 @@
         app_render,
         AppConfig,
         CssStatic,
+        CssStyles,
         ndk,
         ndk_init,
         ndk_user,
+        nostr_relays_connected,
+        nostr_relays_poll_documents,
         route,
         sleep,
         theme_set,
@@ -66,7 +68,7 @@
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
-            const db_connected = await lc.db.connect(PUBLIC_DATABASE_NAME);
+            const db_connected = await lc.db.connect();
             if (!db_connected) {
                 // @todo
             }
@@ -136,39 +138,7 @@
                 return;
             }
 
-            for (const { url } of nostr_relays) {
-                $ndk.addExplicitRelay(url);
-                const response = await lc.http.fetch({
-                    url: url.replace(`ws://`, `http://`),
-                    headers: {
-                        Accept: "application/nostr+json",
-                    },
-                });
-                if (typeof response === `string`) {
-                    console.log(`response `, response);
-                    return;
-                }
-
-                if (response.status === 200 && response.data) {
-                    const info_doc =
-                        parse_nostr_relay_information_document_fields(
-                            response.data,
-                        );
-                    if (!info_doc) return;
-                    const fields: Partial<NostrRelayFormFields> = {};
-                    for (const [k, v] of Object.entries(info_doc)) {
-                        const field_k = parse_nostr_relay_form_keys(k);
-                        if (field_k) fields[field_k] = v;
-                    }
-                    if (Object.keys(fields).length < 1) return;
-                    await lc.db.nostr_relay_update({
-                        on: {
-                            url,
-                        },
-                        fields,
-                    });
-                }
-            }
+            for (const { url } of nostr_relays) $ndk.addExplicitRelay(url);
 
             await $ndk.connect().then(() => {
                 console.log(`(ndk) connected`);
@@ -186,6 +156,7 @@
             $ndk_user = ndk_user;
             $ndk_user.ndk = $ndk;
             console.log(`(ndk) initialized`);
+            nostr_relays_poll_documents.set(true);
         } catch (e) {
             console.log(`(app_nostr_key) error `, e);
         }
@@ -198,6 +169,77 @@
         lc.dialog.alert(_app_notify);
         app_notify.set(``);
     });
+
+    nostr_relays_poll_documents.subscribe(
+        async (_nostr_relays_poll_documents) => {
+            try {
+                if (!_nostr_relays_poll_documents) return;
+                await fetch_relay_documents();
+            } catch (e) {
+                console.log(`(error) nostr_relays_poll_documents`, e);
+            }
+        },
+    );
+
+    const fetch_relay_documents = async (): Promise<void> => {
+        try {
+            const nostr_relays = await lc.db.nostr_relay_get({
+                list: ["on_key", { public_key: $app_nostr_key }],
+            });
+            if (typeof nostr_relays === `string`) throw new Error();
+
+            const unconnected_relays = nostr_relays.filter(
+                (i) => !$nostr_relays_connected.includes(i.id),
+            );
+            if (unconnected_relays.length === 0) {
+                nostr_relays_poll_documents.set(false);
+                return;
+            }
+
+            for (const nostr_relay of unconnected_relays) {
+                const res = await lc.http.fetch({
+                    url: nostr_relay.url.replace(`ws://`, `http://`),
+                    headers: {
+                        Accept: "application/nostr+json",
+                    },
+                });
+                if (typeof res === `string`) continue;
+                else if (res.status === 200 && res.data) {
+                    const doc = parse_nostr_relay_information_document_fields(
+                        res.data,
+                    );
+                    if (!doc) continue;
+                    const fields: Partial<NostrRelayFormFields> = {};
+                    for (const [k, v] of Object.entries(doc)) {
+                        const field_k = parse_nostr_relay_form_keys(k);
+                        if (field_k) fields[field_k] = v;
+                    }
+                    if (Object.keys(fields).length < 1) continue;
+                    await lc.db.nostr_relay_update({
+                        on: {
+                            url: nostr_relay.url,
+                        },
+                        fields,
+                    });
+                    nostr_relays_connected.set(
+                        Array.from(
+                            new Set([
+                                ...$nostr_relays_connected,
+                                nostr_relay.id,
+                            ]),
+                        ),
+                    );
+                }
+            }
+
+            setTimeout(
+                fetch_relay_documents,
+                _conf.delay.nostr_relay_poll_document,
+            );
+        } catch (e) {
+            console.log(`(error) fetch_relay_documents `, e);
+        }
+    };
 </script>
 
 <svelte:head>
@@ -210,6 +252,7 @@
 {/if}
 <AppConfig />
 <CssStatic />
+<CssStyles />
 <div
     class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg top-dim_map_offset_top_base top-dim_map_offset_top_lg"
 ></div>

@@ -131,8 +131,12 @@
                     return;
                 }
                 await lc.db.set_nostr_profile_relay({
-                    nostr_profile_id: nostr_profile_add.id,
-                    nostr_relay_id: nostr_relay_add.id,
+                    nostr_profile: {
+                        id: nostr_profile_add.id,
+                    },
+                    nostr_relay: {
+                        id: nostr_relay_add.id,
+                    },
                 });
             }
 

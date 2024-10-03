@@ -68,6 +68,15 @@
             label: `Relays`,
             key: `network`,
             weight: `fill`,
+            callback: async () => {
+                nav_prev.set([
+                    ...$nav_prev,
+                    {
+                        route: `/`,
+                        label: `Home`,
+                    },
+                ]);
+            },
         },
     ];
 </script>

@@ -26,7 +26,8 @@ export const _conf = {
     delay: {
         load: 321,
         notify: 123,
-        mount_el: 500
+        mount_el: 500,
+        nostr_relay_poll_document: 3000
     },
     kv: {
         nostr_key: (public_key: string) => `nostr:key:${public_key}`,
