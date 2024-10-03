@@ -25,16 +25,13 @@ export const location_gcs_add = async (): Promise<boolean> => {
                 lat,
                 lng,
             );
-            const fields = {
-                lat: lat.toString(),
-                lng: lng.toString(),
-                geohash,
-                label: loc_gcs_label,
-            };
             const exe_res =
-                await lc.db.location_gcs_add(
-                    fields,
-                );
+                await lc.db.location_gcs_add({
+                    lat: lat.toString(),
+                    lng: lng.toString(),
+                    geohash,
+                    label: loc_gcs_label,
+                });
             console.log(`exe_res `, exe_res)
             if (
                 typeof exe_res !== `string` &&

@@ -1,6 +1,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { lc } from "$lib/client";
     import { location_gcs_add } from "$lib/utils/location_gcs";
     import {
@@ -306,6 +307,10 @@
                                   value: `add-new`,
                                   label: `${$t(`common.add_current_location`)}`,
                               },
+                              {
+                                  value: `add-map`,
+                                  label: `${$t(`common.add_map_location`)}`,
+                              },
                           ]
                         : [
                               {
@@ -318,11 +323,19 @@
                                   value: `add-new`,
                                   label: `${$t(`common.add_current_location`)}`,
                               },
+                              {
+                                  value: `add-map`,
+                                  label: `${$t(`common.add_map_location`)}`,
+                              },
                           ],
                     callback: async (val) => {
                         if (val === `add-new`) {
                             sel_location_gcs_id = ``;
                             await add_model_location_gcs();
+                        } else if (val === `add-map`) {
+                            sel_location_gcs_id = ``;
+                            console.log(`add map location`);
+                            await goto(`/map/choose-location`);
                         }
                     },
                 }}

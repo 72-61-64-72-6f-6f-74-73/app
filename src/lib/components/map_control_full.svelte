@@ -1,7 +1,15 @@
 <script lang="ts">
-    import { Glyph, app_layout, route } from "@radroots/svelte-lib";
+    import {
+        Glyph,
+        app_layout,
+        type CallbackPromise,
+    } from "@radroots/svelte-lib";
 
     let el_zoom: HTMLElement | null;
+
+    export let basis: {
+        callback: CallbackPromise;
+    };
 </script>
 
 <div
@@ -11,7 +19,7 @@
     <button
         class={`flex flex-row h-8 w-8 justify-center items-center rounded-2xl bg-layer-1-surface`}
         on:click={async () => {
-            await route(`/`);
+            await basis.callback();
         }}
     >
         <Glyph

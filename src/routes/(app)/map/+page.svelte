@@ -3,7 +3,7 @@
   import MapControlFull from "$lib/components/map_control_full.svelte";
   import { _conf } from "$lib/conf";
   import { app_thc } from "$lib/stores";
-  import { Fill, LoadingView, sleep } from "@radroots/svelte-lib";
+  import { Fill, LoadingView, route, sleep } from "@radroots/svelte-lib";
   import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
   import { type NumberTuple } from "@radroots/utils";
   import { onMount } from "svelte";
@@ -77,7 +77,13 @@
 {#if loading_layout}
   <LoadingView />
 {:else}
-  <MapControlFull />
+  <MapControlFull
+    basis={{
+      callback: async () => {
+        await route(`/`);
+      },
+    }}
+  />
 {/if}
 
 <style>
