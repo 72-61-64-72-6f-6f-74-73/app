@@ -7,7 +7,9 @@
         LayoutTrellis,
         LayoutView,
         Nav,
+        nav_prev,
         nostr_relays_connected,
+        route,
         t,
         Trellis,
         type ITrellisKindTouch,
@@ -72,7 +74,16 @@
                   },
                   callback: async () => {
                       if (show_edit) return;
-                      // @todo go to view
+                      nav_prev.set([
+                          ...$nav_prev,
+                          {
+                              route: `/models/nostr-relay`,
+                              label: `Relays`,
+                          },
+                      ]);
+                      await route(`/models/nostr-relay/view`, [
+                          [`id`, nostr_relay.id],
+                      ]);
                   },
               },
               offset: show_edit
