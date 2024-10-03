@@ -54,6 +54,20 @@
     $: {
         app_blur.set(show_edit);
     }
+
+    const relay_connect = async (): Promise<void> => {
+        try {
+        } catch (e) {
+            console.log(`(error) relay_connect `, e);
+        }
+    };
+
+    const relay_disconnect = async (): Promise<void> => {
+        try {
+        } catch (e) {
+            console.log(`(error) relay_disconnect `, e);
+        }
+    };
 </script>
 
 <LayoutView>
@@ -96,19 +110,33 @@
                                 hide_active: true,
                                 touch: {
                                     label: {
-                                        left: [
-                                            $nostr_relays_connected.includes(
-                                                ld.nostr_relay.id,
-                                            )
-                                                ? {
+                                        left: $nostr_relays_connected.includes(
+                                            ld.nostr_relay.id,
+                                        )
+                                            ? [
+                                                  {
+                                                      glyph: {
+                                                          classes: `text-success`,
+                                                          key: `globe`,
+                                                      },
+                                                  },
+                                                  {
                                                       classes: `text-success font-[500]`,
                                                       value: `${$t(`common.connected`)}`,
-                                                  }
-                                                : {
-                                                      classes: `text-red-500 font-[500]`,
+                                                  },
+                                              ]
+                                            : [
+                                                  {
+                                                      glyph: {
+                                                          classes: `text-yellow-700/80`,
+                                                          key: `globe-x`,
+                                                      },
+                                                  },
+                                                  {
+                                                      classes: `text-yellow-700/80 font-[500] capitalize`,
                                                       value: `${$t(`common.not_connected`)}`,
                                                   },
-                                        ],
+                                              ],
                                     },
                                 },
                             },
@@ -289,25 +317,34 @@
         },
     }}
 />
-<EnvelopeButtons
-    basis={{
-        visible: show_edit,
-        buttons: [
-            {
-                classes: `text-envelopeButtonCancel text-layer-1-glyph-hl`,
-                label: `${$t(`common.cancel`)}`,
-                callback: async () => {
-                    show_edit = false;
+{#if ld}
+    <EnvelopeButtons
+        basis={{
+            visible: show_edit,
+            buttons: [
+                {
+                    classes: `text-envelopeButtonCancel text-layer-1-glyph-hl`,
+                    label: `${$t(`common.cancel`)}`,
+                    callback: async () => {
+                        show_edit = false;
+                    },
                 },
-            },
-            {
-                classes: `text-envelopeButtonLabel text-red-400`,
-                label: `${$t(`common.disconnect`)}`,
-                callback: async () => {
-                    alert(`@todo!`);
-                    show_edit = false;
+                {
+                    classes: $nostr_relays_connected.includes(ld.nostr_relay.id)
+                        ? `text-envelopeButtonLabel text-red-400`
+                        : `text-envelopeButtonLabel text-success`,
+                    label: $nostr_relays_connected.includes(ld.nostr_relay.id)
+                        ? `${$t(`icu.disconnect_*`, { value: `${$t(`common.relay`)}` })}`
+                        : `${$t(`icu.connect_*`, { value: `${$t(`common.relay`)}` })}`,
+                    callback: async () => {
+                        if (!ld) return;
+                        if ($nostr_relays_connected.includes(ld.nostr_relay.id))
+                            await relay_disconnect();
+                        else await relay_connect();
+                        show_edit = false;
+                    },
                 },
-            },
-        ],
-    }}
-/>
+            ],
+        }}
+    />
+{/if}

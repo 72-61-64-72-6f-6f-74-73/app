@@ -25,6 +25,7 @@
         ndk_user,
         nostr_relays_connected,
         nostr_relays_poll_documents,
+        nostr_relays_poll_documents_count,
         route,
         sleep,
         theme_set,
@@ -183,6 +184,14 @@
 
     const fetch_relay_documents = async (): Promise<void> => {
         try {
+            if (
+                $nostr_relays_poll_documents_count >=
+                _conf.nostr.relay_polling_count_max
+            )
+                return;
+            nostr_relays_poll_documents_count.set(
+                $nostr_relays_poll_documents_count + 1,
+            );
             const nostr_relays = await lc.db.nostr_relay_get({
                 list: ["on_key", { public_key: $app_nostr_key }],
             });

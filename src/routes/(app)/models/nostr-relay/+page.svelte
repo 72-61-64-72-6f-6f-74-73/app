@@ -111,18 +111,18 @@
                                     nostr_relay.id,
                                 )
                                     ? `bg-layer-1-glyph-hl/60 group-active:opacity-40`
-                                    : `bg-amber-700/80 group-active:opacity-40`,
+                                    : `bg-yellow-600/90 group-active:opacity-40`,
                                 glyph: {
                                     classes: $nostr_relays_connected.includes(
                                         nostr_relay.id,
                                     )
-                                        ? `text-white group-active:opacity-60 fade-in`
-                                        : `text-amber-200 group-active:opacity-60 fade-in`,
+                                        ? `text-white/80 group-active:opacity-60 fade-in`
+                                        : `text-yellow-100/80 group-active:opacity-60 fade-in`,
                                     key: $nostr_relays_connected.includes(
                                         nostr_relay.id,
                                     )
                                         ? `check`
-                                        : `x`,
+                                        : `exclamation-mark`,
                                     weight: `bold`,
                                     dim: `xs-`,
                                 },
@@ -173,7 +173,7 @@
                     args: {
                         layer: 1,
                         title: {
-                            value: `${$t(`icu.connected_*`, { value: `${$t(`common.relays`)}` })}`,
+                            value: `${$t(`icu.nostr_*`, { value: `${$t(`common.relays`)}` })}`,
                         },
                         list: tr_list_relays,
                     },
