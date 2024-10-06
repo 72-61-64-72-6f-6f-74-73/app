@@ -2,7 +2,7 @@
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import { app_nostr_key } from "$lib/stores";
-    import type { NostrProfile } from "@radroots/models";
+    import type { NostrProfile, NostrRelay } from "@radroots/models";
     import {
         app_notify,
         app_submit_route,
@@ -12,16 +12,20 @@
         LayoutView,
         Nav,
         nav_prev,
+        nostr_relays_connected,
         qp_nostr_pk,
         route,
         show_toast,
         t,
         Trellis,
+        type ITrellisKindTouch,
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     type LoadData = {
         nostr_profile: NostrProfile;
+        nostr_relays: NostrRelay[];
+        nostr_relays_unconnected: NostrRelay[];
         secret_key: string;
     };
     let ld: LoadData | undefined = undefined;
@@ -59,15 +63,96 @@
                 return;
             }
 
+            const nostr_relays = await lc.db.nostr_relay_get({
+                list: [`on_profile`, { public_key: $qp_nostr_pk }],
+                sort: `oldest`,
+            });
+
+            const nostr_relays_unconnected = await lc.db.nostr_relay_get({
+                list: [`off_profile`, { public_key: $qp_nostr_pk }],
+                sort: `oldest`,
+            });
+
             const data: LoadData = {
                 nostr_profile,
                 secret_key,
+                nostr_relays:
+                    typeof nostr_relays !== `string` ? nostr_relays : [],
+                nostr_relays_unconnected:
+                    typeof nostr_relays_unconnected !== `string`
+                        ? nostr_relays_unconnected
+                        : [],
             };
             return data;
         } catch (e) {
             console.log(`(error) load_data `, e);
         }
     };
+
+    $: {
+        console.log(JSON.stringify(ld, null, 4), `ld`);
+    }
+
+    let tr_nostr_relays: ITrellisKindTouch[] = [];
+    $: tr_nostr_relays =
+        ld?.nostr_profile && ld?.nostr_relays.length
+            ? ld.nostr_relays.map((nostr_relay) => ({
+                  layer: 1,
+                  touch: {
+                      label: {
+                          left: [
+                              {
+                                  value: nostr_relay.url,
+                              },
+                          ],
+                      },
+                      callback: async () => {
+                          if (!ld) return;
+                          nav_prev.set([
+                              ...$nav_prev,
+                              {
+                                  route: `/models/nostr-profile/view`,
+                                  label: `Profile`,
+                                  params: [
+                                      [`nostr_pk`, ld.nostr_profile.public_key],
+                                  ],
+                              },
+                          ]);
+                          await route(`/models/nostr-relay/view`, [
+                              [`id`, nostr_relay.id],
+                          ]);
+                      },
+                  },
+                  offset: {
+                      mod: {
+                          glyph_circle: {
+                              classes_wrap: $nostr_relays_connected.includes(
+                                  nostr_relay.id,
+                              )
+                                  ? `bg-layer-1-glyph-hl/60 group-active:opacity-40`
+                                  : `bg-yellow-600/90 group-active:opacity-40`,
+                              glyph: {
+                                  classes: $nostr_relays_connected.includes(
+                                      nostr_relay.id,
+                                  )
+                                      ? `text-white/80 group-active:opacity-60 fade-in`
+                                      : `text-yellow-100/80 group-active:opacity-60 fade-in`,
+                                  key: $nostr_relays_connected.includes(
+                                      nostr_relay.id,
+                                  )
+                                      ? `check`
+                                      : `exclamation-mark`,
+                                  weight: `bold`,
+                                  dim: `xs-`,
+                              },
+                          },
+                      },
+                      callback: async (ev) => {
+                          ev.stopPropagation();
+                      },
+                  },
+              }))
+            : [];
 
     const toggle_hex_pk = (): void => {
         show_public_key_hex = !show_public_key_hex;
@@ -291,7 +376,41 @@
                     args: {
                         layer: 1,
                         title: {
-                            value: `${$t(`common.profile`)}`,
+                            value: `${$t(`icu.connected_*`, { value: `${$t(`common.relays`)}` })}`,
+                        },
+                        list: tr_nostr_relays.length
+                            ? tr_nostr_relays
+                            : [
+                                  {
+                                      hide_active: vl_secret_key_unlock,
+                                      touch: {
+                                          label: {
+                                              left: [
+                                                  {
+                                                      classes: ld.nostr_profile
+                                                          .name
+                                                          ? ``
+                                                          : `text-layer-1-glyph-shade`,
+                                                      value:
+                                                          ld.nostr_profile
+                                                              .name ||
+                                                          `${$t(`icu.no_*_published`, { value: `${$t(`common.relays`)}`.toLowerCase() })}`,
+                                                  },
+                                              ],
+                                          },
+                                      },
+                                  },
+                              ],
+                    },
+                }}
+            />
+
+            <Trellis
+                basis={{
+                    args: {
+                        layer: 1,
+                        title: {
+                            value: `${$t(`common.profile_name`)}`,
                         },
                         list: [
                             {
@@ -345,35 +464,6 @@
                                                 [`rkey`, `name`],
                                             ],
                                         );
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                }}
-            />
-            <Trellis
-                basis={{
-                    args: {
-                        layer: 1,
-                        title: {
-                            value: `${$t(`icu.connected_*`, { value: `${$t(`common.relays`)}` })}`,
-                        },
-                        list: [
-                            {
-                                hide_active: vl_secret_key_unlock,
-                                touch: {
-                                    label: {
-                                        left: [
-                                            {
-                                                classes: ld.nostr_profile.name
-                                                    ? ``
-                                                    : `text-layer-1-glyph-shade`,
-                                                value:
-                                                    ld.nostr_profile.name ||
-                                                    `${$t(`icu.no_*_published`, { value: `${$t(`common.relays`)}`.toLowerCase() })}`,
-                                            },
-                                        ],
                                     },
                                 },
                             },

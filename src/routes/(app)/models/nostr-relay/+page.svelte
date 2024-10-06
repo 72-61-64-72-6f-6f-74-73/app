@@ -36,12 +36,12 @@
     const load_data = async (): Promise<LoadData | undefined> => {
         try {
             const nostr_relays = await lc.db.nostr_relay_get({
-                list: [`on_key`, { public_key: $app_nostr_key }],
+                list: [`on_profile`, { public_key: $app_nostr_key }],
                 sort: `oldest`,
             });
 
             const nostr_relays_other = await lc.db.nostr_relay_get({
-                list: [`off_key`, { public_key: $app_nostr_key }],
+                list: [`off_profile`, { public_key: $app_nostr_key }],
                 sort: `oldest`,
             });
 

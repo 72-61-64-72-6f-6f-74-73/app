@@ -21,6 +21,7 @@ const heights = {
 
 const widths = {
   line: `320px`,
+  trellis_line: `349px`,
   trellis_value: `180px`,
   trellis_display: `290px`
 };
@@ -51,7 +52,9 @@ const config: Config = {
         magda: [`Magda Text`],
       },
       fontSize: {
-        line: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],
+        lg_: ["1.0875rem", { lineHeight: "1.625", fontWeight: 400 }],
+        //      font-size: 1.125rem; /* 18px */
+        //line-height: 1.75rem;
         trellisTitle: ["0.8rem", { lineHeight: "1rem", fontWeight: 200 }],
         trellisTitleNote: ["0.76rem", { lineHeight: "1rem", fontWeight: 200 }],
         trellisLine: ["1.05rem", { lineHeight: "1.33rem", fontWeight: 300 }],

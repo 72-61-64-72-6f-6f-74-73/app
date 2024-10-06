@@ -7,11 +7,11 @@
         LayoutView,
         Nav,
         ndk,
-        ndk_event,
         ndk_user,
         route,
         t,
     } from "@radroots/svelte-lib";
+    import { ndk_event } from "@radroots/utils";
 
     let loading = false;
     let value_note_content = ``;

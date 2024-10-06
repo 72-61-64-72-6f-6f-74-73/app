@@ -9,11 +9,12 @@
         app_th,
         app_thc,
     } from "$lib/stores";
+    import { defineCustomElements as pwaElements } from "@ionic/pwa-elements/loader";
     import {
         app_config,
         app_notify,
         app_render,
-        AppConfig,
+        AppControls,
         CssStatic,
         CssStyles,
         route,
@@ -21,21 +22,32 @@
         theme_set,
     } from "@radroots/svelte-lib";
     import { parse_color_mode, parse_theme_key } from "@radroots/theme";
+    import {
+        applyPolyfills,
+        defineCustomElements as jeepSqlite,
+    } from "jeep-sqlite/loader";
     import "../app.css";
 
-    let render_pwa = browser && lc.platform === `web`;
-    if (render_pwa) {
-        const el = document.createElement(`jeep-sqlite`);
-        document.body.appendChild(el);
-        customElements
-            .whenDefined(`jeep-sqlite`)
-            .then(() => {
-                app_pwa_polyfills.set(true);
-            })
-            .catch((e) => {
-                console.log(`(pwa polyfills) error `, e);
-                app_pwa_polyfills.set(false);
+    $: {
+        if (browser && lc.platform === `web`) {
+            applyPolyfills().then(() => {
+                pwaElements(window);
+                jeepSqlite(window);
             });
+            const el = document.createElement(`jeep-sqlite`);
+            document.body.appendChild(el);
+            customElements
+                .whenDefined(`jeep-sqlite`)
+                .then(() => {
+                    app_config.set(true);
+                })
+                .catch((e) => {
+                    console.log(`(pwa polyfills) error `, e);
+                    app_pwa_polyfills.set(false);
+                });
+        } else if (browser) {
+            app_config.set(true);
+        }
     }
 
     app_thc.subscribe((app_thc) => {
@@ -52,12 +64,13 @@
 
     app_sqlite.subscribe((app_sqlite) => {
         if (!app_sqlite) return;
-        console.log(`(app_sqlite) connected`);
+        console.log(`(app_sqlite) success`);
     });
 
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
+            console.log(`app_config!`);
             const db_connected = await lc.db.connect();
             if (!db_connected) {
                 // @todo
@@ -125,7 +138,7 @@
 {#if $app_render}
     <slot />
 {/if}
-<AppConfig />
+<AppControls />
 <CssStatic />
 <CssStyles />
 <div

@@ -142,7 +142,7 @@
             {/each}
         {:else if !loading_models}
             <div
-                class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
+                class={`flex flex-col w-full justify-center items-center px-4 gap-2`}
             >
                 <p class={`font-sans font-[400] text-layer-2-glyph`}>
                     {`No items to display.`}

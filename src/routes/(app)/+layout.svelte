@@ -2,6 +2,7 @@
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import { app_nostr_key } from "$lib/stores";
+    import { nostr_sync_models_trade_product } from "$lib/utils/nostr";
     import {
         type NostrRelayFormFields,
         parse_nostr_relay_form_keys,
@@ -9,14 +10,17 @@
     import {
         LayoutWindow,
         ndk,
-        ndk_init,
         ndk_user,
         nostr_ndk_configured,
         nostr_relays_connected,
         nostr_relays_poll_documents,
         nostr_relays_poll_documents_count,
+        nostr_sync_prevent,
     } from "@radroots/svelte-lib";
-    import { parse_nostr_relay_information_document_fields } from "@radroots/utils";
+    import {
+        ndk_init,
+        parse_nostr_relay_information_document_fields,
+    } from "@radroots/utils";
 
     app_nostr_key.subscribe(async (_app_nostr_key) => {
         try {
@@ -25,14 +29,14 @@
                 _conf.kv.nostr_key(_app_nostr_key),
             );
             if (!secret_key) {
-                alert(`!secret_key`); //@todo
+                alert(`!secret_key - go to recovery (todo)`); //@todo
                 return;
             }
             const nostr_relays = await lc.db.nostr_relay_get({
                 list: ["all"],
             });
             if (typeof nostr_relays === `string`) {
-                alert(nostr_relays); //@todo
+                alert(`${nostr_relays} - go to recovery (todo)`); //@todo
                 return;
             }
             for (const { url } of nostr_relays) $ndk.addExplicitRelay(url);
@@ -58,6 +62,7 @@
             if (!_nostr_ndk_configured) return;
             console.log(`(nostr_ndk_configured) success`);
             nostr_relays_poll_documents.set(true);
+            await sync_nostr();
         } catch (e) {
             console.log(`(error) nostr_ndk_configured`, e);
         }
@@ -74,29 +79,47 @@
         },
     );
 
-    nostr_relays_connected.subscribe(async (_nostr_relays_connected) => {
+    const sync_nostr = async (): Promise<void> => {
         try {
-            if (!_nostr_relays_connected.length) return;
-            else if ($nostr_ndk_configured) {
-                console.log(`nostr sync...`);
+            console.log(`!!! SYNC NOSTR`);
+            if (!$nostr_ndk_configured) {
+                console.log(`!!! SYNC NOSTR ndk not configured`);
+                return;
             }
+            if ($nostr_sync_prevent) {
+                const confirm = await lc.dialog.confirm({
+                    message: `Sync to nostr network is disabled. Do you want to turn it on?`,
+                    cancel_label: `No`,
+                    ok_label: `Yes`,
+                });
+                if (confirm === true) {
+                    nostr_sync_prevent.set(false);
+                    await sync_nostr();
+                    return;
+                }
+                return;
+            }
+
+            await nostr_sync_models_trade_product({ $ndk, $ndk_user });
         } catch (e) {
-            console.log(`(error) nostr_relays_connected `, e);
+            console.log(`(error) sync_nostr `, e);
         }
-    });
+    };
 
     const fetch_relay_documents = async (): Promise<void> => {
         try {
             if (
                 $nostr_relays_poll_documents_count >=
                 _conf.nostr.relay_polling_count_max
-            )
+            ) {
+                nostr_relays_poll_documents.set(false);
                 return;
+            }
             nostr_relays_poll_documents_count.set(
                 $nostr_relays_poll_documents_count + 1,
             );
             const nostr_relays = await lc.db.nostr_relay_get({
-                list: ["on_key", { public_key: $app_nostr_key }],
+                list: [`on_profile`, { public_key: $app_nostr_key }],
             });
             if (typeof nostr_relays === `string`) throw new Error();
 

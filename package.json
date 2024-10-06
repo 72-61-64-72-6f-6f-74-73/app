@@ -6,14 +6,14 @@
 	"scripts": {
 		"build:dev": "vite build --mode development",
 		"build:prod": "vite build --mode production",
-		"prepare:native": "npm run gen && npm run sql:rm",
-		"prepare:web": "npm run gen && npm run sql:cp",
+		"prepare:native": "npm run gen",
+		"prepare:web": "npm run gen",
 		"serve:dev": "vite dev --mode development --debug hmr",
 		"serve:prod": "vite dev --mode production",
 		"dev": "",
 		"gen": "",
-		"sql:cp": "rsync -u node_modules/sql.js/dist/sql-wasm.wasm static/assets",
-		"sql:rm": "rm -rf static/assets/sql-wasm.wasm",
+		"sql:cp": "rsync -u node_modules/sql.js/dist/sql-wasm.wasm static",
+		"sql:rm": "rm -rf static/sql-wasm.wasm",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
@@ -23,9 +23,7 @@
 		"@sveltejs/adapter-static": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
-		"@types/better-sqlite3": "^7.6.11",
 		"@types/node": "^20.12.7",
-		"@types/sql.js": "^1.4.9",
 		"autoprefixer": "^10.4.19",
 		"daisyui": "^4.10.0",
 		"postcss": "^8.4.38",
@@ -51,7 +49,7 @@
 		"@capacitor/share": "^6.0.0",
 		"@capacitor/splash-screen": "^6.0.0",
 		"@capacitor/status-bar": "^6.0.0",
-		"@ionic/pwa-elements": "^3.3.0",
+		"@ionic/pwa-elements": "^3.2.2",
 		"@nostr-dev-kit/ndk": "^2.10.0",
 		"@nostr-dev-kit/ndk-cache-dexie": "^2.5.1",
 		"@nostr-dev-kit/ndk-svelte": "^2.2.18",
@@ -65,9 +63,10 @@
 		"@radroots/svelte-maplibre": "workspace:*",
 		"@radroots/theme": "workspace:*",
 		"@radroots/utils": "workspace:*",
+		"jeep-sqlite": "2.7.1",
+		"loader": "link:@ionic/pwa-elements/loader",
 		"maplibre-gl": "^4.0.0",
 		"pmtiles": "^3.0.3",
-		"protomaps-themes-base": "^3.1.0",
-		"sql.js": "^1.11.0"
+		"protomaps-themes-base": "^3.1.0"
 	}
 }

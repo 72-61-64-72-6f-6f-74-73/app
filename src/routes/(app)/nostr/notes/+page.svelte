@@ -32,24 +32,20 @@
         });
     }
 
-    async function fetch_events(filter: NDKFilter) {
+    const fetch_events = async (filter: NDKFilter): Promise<void> => {
         try {
             events_store = $ndk.storeSubscribe(filter, {
                 closeOnEose: true,
                 groupable: false,
                 autoStart: false,
             });
-            if (events_store) {
-                events_store.onEose(() => {});
-            }
-        } catch (error) {
-            console.error(error);
+            if (events_store) events_store.onEose(() => {});
+        } catch (e) {
+            console.log(`(error) fetch_events `, e);
         }
-    }
+    };
 
-    onDestroy(() => {
-        events_store?.unsubscribe();
-    });
+    onDestroy(() => events_store?.unsubscribe());
 
     const parse_nostr_text_note = (ev: NDKEvent): ITrellisKindTouch[] => {
         const trellis_list: ITrellisKindTouch[] = [];

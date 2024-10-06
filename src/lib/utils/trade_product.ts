@@ -1,9 +1,9 @@
 import { parse_trade_product_form_keys, trade_product_form_fields, trade_product_form_vals, type TradeProductFormFields } from "@radroots/models";
 import { kv } from "@radroots/svelte-lib";
 
-export const trade_product_kv_vals = async (opts: {
+export const validate_trade_product_vals = async (opts: {
     kv_pref: string;
-    no_validation?: string[];
+    no_validation?: string[] | true;
 }): Promise<TradeProductFormFields | string> => {
     try {
         let no_validation = opts.no_validation || [];
@@ -19,7 +19,8 @@ export const trade_product_kv_vals = async (opts: {
             const field_id = `${opts.kv_pref}-${field_k}`;
             const field_val = await kv.get(field_id);
             if (field_val) vals[field_k] = field_val;
-            if (
+            if (no_validation === true) continue;
+            else if (
                 (!field.optional && !field.validation.test(field_val)) ||
                 (field.optional &&
                     field_val &&

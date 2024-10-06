@@ -167,9 +167,7 @@
             },
             {
                 icon: `compass`,
-                callback: async (tab_i) => {
-                    await route(`/models/trade-product/add`);
-                },
+                callback: async (tab_i) => {},
             },
             {
                 icon: `network`,
@@ -180,7 +178,7 @@
             {
                 icon: `bell-simple`,
                 callback: async (tab_i) => {
-                    await route(`/models/nostr-relay`);
+                    await route(`/test`);
                 },
             },
         ],

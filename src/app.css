@@ -1,3 +1,4 @@
+@import "/static/stylesheets/tailwindcss-app-carousel.css";
 @import "/static/stylesheets/tailwindcss-app-form.css";
 @import "/static/stylesheets/tailwindcss-app-styles.css";
 @import "/static/stylesheets/tailwindcss-app.css";
@@ -19,6 +20,5 @@
 
     .tap-scale {
         @apply active:scale-[97%] group-active:scale-[97%] delay-75 duration-700 ease-in-out transition-all;
-    }
-
+    } 
 }

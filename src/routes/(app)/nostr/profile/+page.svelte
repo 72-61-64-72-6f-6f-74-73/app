@@ -11,11 +11,11 @@
         LayoutView,
         Nav,
         ndk,
-        ndk_event,
         ndk_user,
         t,
         Trellis,
     } from "@radroots/svelte-lib";
+    import { ndk_event } from "@radroots/utils";
     import { onDestroy } from "svelte";
 
     let events_store: NDKEventStore<ExtendedBaseType<NDKEvent>>;

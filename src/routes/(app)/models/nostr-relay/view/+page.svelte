@@ -1,6 +1,6 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import type { NostrRelay } from "@radroots/models";
+    import type { NostrProfile, NostrRelay } from "@radroots/models";
     import {
         app_blur,
         app_notify,
@@ -17,6 +17,8 @@
 
     type LoadData = {
         nostr_relay: NostrRelay;
+        nostr_profiles: NostrProfile[];
+        nostr_profiles_unconnected: NostrProfile[];
     };
     let ld: LoadData | undefined = undefined;
     let show_edit = false;
@@ -42,8 +44,22 @@
 
             const nostr_relay = nostr_relays[0];
 
+            const nostr_profiles = await lc.db.nostr_profile_get({
+                list: [`on_relay`, { id: nostr_relay.id }],
+            });
+
+            const nostr_profiles_unconnected = await lc.db.nostr_profile_get({
+                list: [`off_relay`, { id: nostr_relay.id }],
+            });
+
             const data: LoadData = {
                 nostr_relay,
+                nostr_profiles:
+                    typeof nostr_profiles !== `string` ? nostr_profiles : [],
+                nostr_profiles_unconnected:
+                    typeof nostr_profiles_unconnected !== `string`
+                        ? nostr_profiles_unconnected
+                        : [],
             };
             return data;
         } catch (e) {
@@ -55,6 +71,9 @@
         app_blur.set(show_edit);
     }
 
+    $: {
+        console.log(JSON.stringify(ld, null, 4), `ld`);
+    }
     const relay_connect = async (): Promise<void> => {
         try {
         } catch (e) {

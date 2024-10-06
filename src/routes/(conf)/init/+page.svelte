@@ -4,7 +4,12 @@
     import { _conf } from "$lib/conf";
     import { restart } from "$lib/utils";
     import { keystore_reset } from "$lib/utils/keystore";
-    import { Glyph, LayoutView, sleep } from "@radroots/svelte-lib";
+    import {
+        Glyph,
+        LayoutView,
+        sleep,
+        view_effect,
+    } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
     const SLIDE_DURATION = 600;
@@ -30,11 +35,7 @@
     let view: View = `start`;
 
     $: {
-        for (const el of document.querySelectorAll(`[data-view]`))
-            el.classList.toggle(
-                `hidden`,
-                el.getAttribute(`data-view`) !== view,
-            );
+        view_effect<View>(view);
     }
 
     let slide_active = false;
@@ -165,7 +166,7 @@
             >
                 <li
                     data-carousel-item={`start`}
-                    class={`carousel-item flex flex-col flex-fluid w-full py-32 justify-between items-center`}
+                    class={`carousel-item flex flex-col w-full py-32 justify-between items-center`}
                 >
                     <div
                         class={`flex flex-col w-40 gap-2 justify-start items-center`}
@@ -311,7 +312,7 @@
                 </li>
                 <li
                     data-carousel-item={`start`}
-                    class={`carousel-item flex flex-col flex-fluid w-full gap-12 justify-center items-center`}
+                    class={`carousel-item flex flex-col w-full gap-12 justify-center items-center`}
                 >
                     <div
                         class={`flex flex-col w-54 gap-4 justify-start items-center`}
@@ -418,7 +419,7 @@
             >
                 <li
                     data-carousel-item={`configure`}
-                    class={`carousel-item flex flex-col flex-fluid w-full gap-12 justify-center items-center`}
+                    class={`carousel-item flex flex-col w-full gap-12 justify-center items-center`}
                 >
                     <div
                         class={`flex flex-col w-54 gap-4 justify-start items-center`}
@@ -499,18 +500,3 @@
         </div>
     </div>
 </LayoutView>
-
-<style>
-    .carousel-container {
-        display: flex;
-        overflow-x: hidden;
-        scroll-snap-type: x mandatory;
-        list-style: none;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .carousel-item {
-        scroll-snap-align: start;
-    }
-</style>
