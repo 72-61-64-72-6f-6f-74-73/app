@@ -24,6 +24,7 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/node": "^20.12.7",
+		"@types/sql.js": "^1.4.9",
 		"autoprefixer": "^10.4.19",
 		"daisyui": "^4.10.0",
 		"postcss": "^8.4.38",
@@ -58,6 +59,7 @@
 		"@radroots/capacitor-sqlite": "workspace:*",
 		"@radroots/capacitor-wifi": "workspace:*",
 		"@radroots/client": "workspace:*",
+		"@radroots/geocoder": "workspace:*",
 		"@radroots/models": "workspace:*",
 		"@radroots/svelte-lib": "workspace:*",
 		"@radroots/svelte-maplibre": "workspace:*",
@@ -67,6 +69,7 @@
 		"loader": "link:@ionic/pwa-elements/loader",
 		"maplibre-gl": "^4.0.0",
 		"pmtiles": "^3.0.3",
-		"protomaps-themes-base": "^3.1.0"
+		"protomaps-themes-base": "^3.1.0",
+		"sql.js": "^1.11.0"
 	}
 }

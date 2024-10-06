@@ -13,12 +13,12 @@
     import { MapLibre, Marker } from "@radroots/svelte-maplibre";
     import {
         location_geohash,
-        type GeolocationCoordinates,
+        type GeolocationCoordinatesPoint,
     } from "@radroots/utils";
     import { onMount } from "svelte";
 
     let loading_layout = true;
-    let map_coords: GeolocationCoordinates | undefined = undefined;
+    let map_coords: GeolocationCoordinatesPoint | undefined = undefined;
 
     onMount(async () => {
         try {

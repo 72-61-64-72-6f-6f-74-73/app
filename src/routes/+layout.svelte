@@ -1,6 +1,6 @@
 <script lang="ts">
     import { browser } from "$app/environment";
-    import { lc } from "$lib/client";
+    import { geoc, lc } from "$lib/client";
     import { _conf } from "$lib/conf";
     import {
         app_nostr_key,
@@ -76,6 +76,10 @@
                 // @todo
             }
             app_sqlite.set(!!db_connected);
+
+            console.log(`connect geocoder!!`);
+            const geoc_connected = await geoc.connect();
+            console.log(`geoc_connected `, geoc_connected);
 
             const active_key_public = await lc.preferences.get(
                 _conf.kv.nostr_key_active,
