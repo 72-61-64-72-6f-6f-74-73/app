@@ -167,7 +167,9 @@
             },
             {
                 icon: `compass`,
-                callback: async (tab_i) => {},
+                callback: async (tab_i) => {
+                    await route(`/map/choose-location`);
+                },
             },
             {
                 icon: `network`,

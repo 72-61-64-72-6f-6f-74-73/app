@@ -12,9 +12,8 @@ export const nostr_sync_models_trade_product = async (opts: {
         const trade_products_all = await lc.db.trade_product_get({
             list: [`all`],
         });
-        if (typeof trade_products_all === `string`) return;
-
-        for (const trade_product of trade_products_all) {
+        if (`err` in trade_products_all) return;
+        for (const trade_product of trade_products_all.results) {
             const tags_basis = await fmt_tags_basis_nip99({
                 d_tag: trade_product.id,
                 title: trade_product.key,

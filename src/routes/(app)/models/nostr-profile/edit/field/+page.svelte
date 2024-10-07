@@ -64,7 +64,10 @@
             const nostr_profiles = await lc.db.nostr_profile_get({
                 public_key: $qp_nostr_pk,
             });
-            if (typeof nostr_profiles === `string`) {
+            if (`err` in nostr_profiles) {
+                app_notify.set(`Error loading profile`);
+                return;
+            } else if (nostr_profiles.results.length < 1) {
                 app_notify.set(`Error loading profile`);
                 return;
             }
@@ -74,14 +77,9 @@
                 app_notify.set(`Error loading page`);
                 return;
             }
-            const nostr_profile = nostr_profiles[0];
-
-            //const existing_field = nostr_profile[field_key];
-            //console.log(`existing_field `, existing_field);
-            //if (existing_field) await kv.set(fmt_id($qp_rkey), existing_field);
 
             const data: LoadData = {
-                nostr_profile,
+                nostr_profile: nostr_profiles.results[0],
                 field_key,
             };
             return data;

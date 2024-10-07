@@ -37,12 +37,15 @@
             const nostr_relays = await lc.db.nostr_relay_get({
                 id: $qp_id,
             });
-            if (typeof nostr_relays === `string`) {
-                app_notify.set(`Error loading relay`);
+            if (`err` in nostr_relays) {
+                app_notify.set(`Error loading page`);
+                return;
+            } else if (nostr_relays.results.length < 1) {
+                app_notify.set(`Error loading page`);
                 return;
             }
 
-            const nostr_relay = nostr_relays[0];
+            const nostr_relay = nostr_relays.results[0];
 
             const nostr_profiles = await lc.db.nostr_profile_get({
                 list: [`on_relay`, { id: nostr_relay.id }],
@@ -55,10 +58,10 @@
             const data: LoadData = {
                 nostr_relay,
                 nostr_profiles:
-                    typeof nostr_profiles !== `string` ? nostr_profiles : [],
+                    `results` in nostr_profiles ? nostr_profiles.results : [],
                 nostr_profiles_unconnected:
-                    typeof nostr_profiles_unconnected !== `string`
-                        ? nostr_profiles_unconnected
+                    `results` in nostr_profiles_unconnected
+                        ? nostr_profiles_unconnected.results
                         : [],
             };
             return data;

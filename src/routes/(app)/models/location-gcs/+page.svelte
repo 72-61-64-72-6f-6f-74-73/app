@@ -1,8 +1,9 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { location_gcs_add } from "$lib/utils/location_gcs";
+    import { location_gcs_add_current } from "$lib/utils/location_gcs";
     import { type LocationGcs } from "@radroots/models";
     import {
+        app_notify,
         LayoutTrellis,
         LayoutView,
         Nav,
@@ -11,36 +12,50 @@
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: LocationGcs[] = [];
-    let loading_models = false;
+    type LoadData = {
+        location_gcss: LocationGcs[];
+    };
+    let ld: LoadData | undefined = undefined;
 
     onMount(async () => {
         try {
-            await fetch_models();
+            ld = await load_data();
         } catch (e) {
         } finally {
         }
     });
 
-    const fetch_models = async (): Promise<void> => {
+    $: {
+        console.log(JSON.stringify(ld, null, 4), `ld`);
+    }
+
+    const load_data = async (): Promise<LoadData | undefined> => {
         try {
-            loading_models = true;
-            const res = await lc.db.location_gcs_get({
+            const location_gcss = await lc.db.location_gcs_get({
                 list: [`all`],
             });
-            if (typeof res !== `string`) models_list = res;
+            if (`err` in location_gcss) {
+                app_notify.set(`Error loading page`);
+                return;
+            } else if (location_gcss.results.length < 1) {
+                app_notify.set(`Error loading page`);
+                return;
+            }
+
+            const data: LoadData = {
+                location_gcss: location_gcss.results,
+            };
+            return data;
         } catch (e) {
-            console.log(`(error) fetch_models `, e);
-        } finally {
-            loading_models = false;
+            console.log(`(error) load_data `, e);
         }
     };
 </script>
 
 <LayoutView>
     <LayoutTrellis>
-        {#if models_list.length}
-            {#each models_list as li}
+        {#if ld && ld.location_gcss?.length > 0}
+            {#each ld.location_gcss as li}
                 <Trellis
                     basis={{
                         args: {
@@ -61,7 +76,7 @@
                                             ],
                                             right: [
                                                 {
-                                                    value: li.label,
+                                                    value: li.label || `test`,
                                                 },
                                             ],
                                         },
@@ -92,7 +107,7 @@
                     }}
                 />
             {/each}
-        {:else if !loading_models}
+        {:else if ld && ld?.location_gcss?.length === 0}
             <div
                 class={`flex flex-col w-full justify-center items-center px-4 gap-3`}
             >
@@ -103,8 +118,8 @@
                 <button
                     class={`flex flex-row justify-center items-center`}
                     on:click={async () => {
-                        const res = await location_gcs_add();
-                        if (res === true) await fetch_models();
+                        const res = await location_gcs_add_current();
+                        if (res) ld = await load_data();
                     }}
                 >
                     <p
@@ -128,18 +143,19 @@
                 value: `${$t(`common.locations`)}`,
             },
         },
-        option: models_list.length
-            ? {
-                  label: {
-                      value: `${$t(`common.add`)}`,
-                      classes: `tap-color`,
-                  },
-                  callback: async () => {
-                      const res = await location_gcs_add();
-                      if (res === true) await fetch_models();
-                  },
-              }
-            : undefined,
+        option:
+            ld && ld?.location_gcss?.length > 0
+                ? {
+                      label: {
+                          value: `${$t(`common.add`)}`,
+                          classes: `tap-color`,
+                      },
+                      callback: async () => {
+                          const res = await location_gcs_add_current();
+                          if (res) await load_data();
+                      },
+                  }
+                : undefined,
     }}
 />
 

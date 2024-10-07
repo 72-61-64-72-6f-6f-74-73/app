@@ -20,5 +20,10 @@
 
     .tap-scale {
         @apply active:scale-[97%] group-active:scale-[97%] delay-75 duration-700 ease-in-out transition-all;
-    } 
+    }
+
+    .map-trellis-1 {
+        height: 400px;
+        width: 100%;
+    }
 }

@@ -35,11 +35,9 @@
             const nostr_relays = await lc.db.nostr_relay_get({
                 list: ["all"],
             });
-            if (typeof nostr_relays === `string`) {
-                alert(`${nostr_relays} - go to recovery (todo)`); //@todo
-                return;
-            }
-            for (const { url } of nostr_relays) $ndk.addExplicitRelay(url);
+            if (`err` in nostr_relays) throw new Error(nostr_relays.err);
+            for (const { url } of nostr_relays.results)
+                $ndk.addExplicitRelay(url);
             await $ndk.connect();
             const ndk_user = await ndk_init({
                 $ndk,
@@ -121,9 +119,9 @@
             const nostr_relays = await lc.db.nostr_relay_get({
                 list: [`on_profile`, { public_key: $app_nostr_key }],
             });
-            if (typeof nostr_relays === `string`) throw new Error();
+            if (`err` in nostr_relays) throw new Error(nostr_relays.err);
 
-            const unconnected_relays = nostr_relays.filter(
+            const unconnected_relays = nostr_relays.results.filter(
                 (i) => !$nostr_relays_connected.includes(i.id),
             );
             if (unconnected_relays.length === 0) {
@@ -138,7 +136,7 @@
                         Accept: "application/nostr+json",
                     },
                 });
-                if (typeof res === `string`) continue;
+                if (`err` in res) continue;
                 else if (res.status === 200 && res.data) {
                     const doc = parse_nostr_relay_information_document_fields(
                         res.data,

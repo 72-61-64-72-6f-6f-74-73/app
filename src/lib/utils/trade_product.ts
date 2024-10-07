@@ -1,10 +1,11 @@
 import { parse_trade_product_form_keys, trade_product_form_fields, trade_product_form_vals, type TradeProductFormFields } from "@radroots/models";
 import { kv } from "@radroots/svelte-lib";
+import { err_msg, type ErrorMessage } from "@radroots/utils";
 
 export const validate_trade_product_vals = async (opts: {
     kv_pref: string;
     no_validation?: string[] | true;
-}): Promise<TradeProductFormFields | string> => {
+}): Promise<TradeProductFormFields | ErrorMessage<string>> => {
     try {
         let no_validation = opts.no_validation || [];
         const vals = {
@@ -27,13 +28,13 @@ export const validate_trade_product_vals = async (opts: {
                     !field.validation.test(field_val))
             ) {
                 if (no_validation.includes(field_k)) continue;
-                else return field_k;
+                else return err_msg(field_k);
             }
         }
         return vals;
     } catch (e) {
         console.log(`(error) trade_product_submit_preview `, e);
-        return ``
+        return err_msg(String(e))
     }
 };
 

@@ -3,6 +3,7 @@
     import { app_nostr_key } from "$lib/stores";
     import type { NostrRelay } from "@radroots/models";
     import {
+        app_notify,
         GlyphCircle,
         LayoutTrellis,
         LayoutView,
@@ -39,19 +40,23 @@
                 list: [`on_profile`, { public_key: $app_nostr_key }],
                 sort: `oldest`,
             });
+            if (`err` in nostr_relays) {
+                app_notify.set(`Error loading page`);
+                return;
+            }
 
             const nostr_relays_other = await lc.db.nostr_relay_get({
                 list: [`off_profile`, { public_key: $app_nostr_key }],
                 sort: `oldest`,
             });
+            if (`err` in nostr_relays_other) {
+                app_notify.set(`Error loading page`);
+                return;
+            }
 
             const data: LoadData = {
-                nostr_relays:
-                    typeof nostr_relays !== `string` ? nostr_relays : [],
-                nostr_relays_other:
-                    typeof nostr_relays_other !== `string`
-                        ? nostr_relays_other
-                        : [],
+                nostr_relays: nostr_relays.results,
+                nostr_relays_other: nostr_relays_other.results,
             };
             return data;
         } catch (e) {

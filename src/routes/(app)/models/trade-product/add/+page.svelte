@@ -1,11 +1,14 @@
 <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { location_gcs_add } from "$lib/utils/location_gcs";
+    import MapChooseLocation from "$lib/components/map_choose_location.svelte";
+    import { _conf } from "$lib/conf";
+    import { location_gcs_add_current } from "$lib/utils/location_gcs";
     import {
         trade_product_kv_init,
         validate_trade_product_vals,
     } from "$lib/utils/trade_product";
+    import type { GeocoderReverseResult } from "@radroots/geocoder";
     import {
         mass_units,
         trade_product_form_fields,
@@ -31,7 +34,7 @@
         locale,
         Nav,
         NotifyGlyph,
-        route,
+        sleep,
         t,
         TextareaElement,
         view_effect,
@@ -45,6 +48,7 @@
         trade_keys,
         trade_quantities,
         type CurrencyPrice,
+        type GeolocationCoordinatesPoint,
         type TradeKey,
     } from "@radroots/utils";
     import { onMount } from "svelte";
@@ -90,11 +94,23 @@
 
     let el_trellis_wrap_price: HTMLElement | null;
 
-    type View = `form_1` | `load`;
+    type View = `load` | `form_1` | `map`;
     let view: View = `load`;
 
     $: {
         view_effect<View>(view);
+    }
+
+    $: {
+        if (view === `map`) {
+            (async () => {
+                try {
+                    loading_map = true;
+                    await sleep(500);
+                    loading_map = false;
+                } catch (e) {}
+            })();
+        }
     }
 
     let show_sel_trade_product_key_other = false;
@@ -106,6 +122,12 @@
 
     let sel_location_gcs_id = ``;
     let ls_models_location_gcs: LocationGcs[] = [];
+    let map_point_location_gcs: GeolocationCoordinatesPoint =
+        _conf.map.coords.default;
+    let map_point_location_gcs_select: GeolocationCoordinatesPoint =
+        _conf.map.coords.default;
+    let map_point_location_gcs_select_geoc: GeocoderReverseResult | undefined =
+        undefined;
 
     let show_sel_trade_product_qty_tup_other = false;
     let sel_trade_product_qty_tup = ``;
@@ -123,6 +145,7 @@
     let review_location_gcs: LocationGcs | undefined = undefined;
 
     let loading_submit = false;
+    let loading_map = false;
     let loading_location_gcs = false;
 
     $: num_trade_product_qty_amt = preview_trade_product
@@ -273,9 +296,9 @@
                                 `title`,
                             ],
                         });
-                        if (typeof vals_init === `string`) {
+                        if (`err` in vals_init) {
                             await lc.dialog.alert(
-                                `${$t(`trade.product.fields.${vals_init}.err_invalid`, { default: `${$t(`icu.invalid_*`, { value: vals_init })}` })}`,
+                                `${$t(`trade.product.fields.${vals_init}.err_invalid`, { default: `${$t(`icu.invalid_*`, { value: vals_init.err })}` })}`,
                             );
                             return;
                         }
@@ -294,7 +317,7 @@
                             kv_pref: fmt_id(),
                             no_validation: [`summary`, `title`],
                         });
-                        if (typeof vals === `string`) {
+                        if (`err` in vals) {
                             await lc.dialog.alert(`The entry is incomplete`);
                             return;
                         }
@@ -312,12 +335,10 @@
                         const vals = await validate_trade_product_vals({
                             kv_pref: fmt_id(),
                         });
-                        console.log(JSON.stringify(vals, null, 4), `vals`);
-                        if (typeof vals === `string`) {
+                        if (`err` in vals) {
                             await lc.dialog.alert(`Enter the listing details`);
                             return;
                         }
-                        console.log(JSON.stringify(vals, null, 4), `vals`);
                         await carousel_next(`form_1`);
                     }
                     break;
@@ -331,30 +352,36 @@
                                 `The product location is missing`,
                             );
                             return;
+                            //@todo
                         }
                         const location_gcs_get = await lc.db.location_gcs_get({
                             id: location_gcs_kv_id,
                         });
-                        if (typeof location_gcs_get === `string`) {
-                            //@todo
+                        if (`err` in location_gcs_get) {
                             await lc.dialog.alert(
                                 `The product location is missing`,
                             );
                             preview_trade_product = undefined;
                             return;
+                            //@todo
+                        } else if (location_gcs_get.results.length < 1) {
+                            await lc.dialog.alert(
+                                `The product location is missing`,
+                            );
+                            preview_trade_product = undefined;
+                            return;
+                            //@todo
                         }
-                        review_location_gcs = location_gcs_get[0];
-
+                        review_location_gcs = location_gcs_get.results[0];
                         const vals = await validate_trade_product_vals({
                             kv_pref: fmt_id(),
                         });
-                        if (typeof vals === `string`) {
+                        if (`err` in vals) {
                             await lc.dialog.alert(`The entry is incomplete`);
-                            //@todo
                             return;
+                            //@todo
                         }
                         review_trade_product = vals;
-
                         await carousel_next(`form_1`);
                     }
                     break;
@@ -407,7 +434,7 @@
             const res = await lc.db.location_gcs_get({
                 list: [`all`],
             });
-            if (typeof res !== `string`) ls_models_location_gcs = res;
+            if (`results` in res) ls_models_location_gcs = res.results;
         } catch (e) {
             console.log(`(error) fetch_models_models_location_gcs `, e);
         }
@@ -416,7 +443,7 @@
     const add_model_location_gcs = async (): Promise<void> => {
         try {
             loading_location_gcs = true;
-            await location_gcs_add();
+            await location_gcs_add_current();
             await fetch_models_models_location_gcs();
         } catch (e) {
             console.log(`(error) add_model_location_gcs `, e);
@@ -428,7 +455,6 @@
     const submit = async (): Promise<void> => {
         try {
             loading_submit = true;
-            // await route(`/models/trade-product/add/preview`);
         } catch (e) {
             console.log(`(error) submit `, e);
         } finally {
@@ -448,7 +474,7 @@
         <div
             data-view={`form_1`}
             data-carousel-container={`form_1`}
-            class={`carousel-container carousel-container-trellis hidden`}
+            class={`hidden carousel-container carousel-container-trellis`}
         >
             <div
                 data-carousel-item={`form_1`}
@@ -1227,7 +1253,8 @@
                                     await add_model_location_gcs();
                                 } else if (val === `add-map`) {
                                     sel_location_gcs_id = ``;
-                                    await route(`/map/choose-location`);
+                                    view = `map`;
+                                    //await route(`/map/choose-location`);
                                 }
                             },
                         }}
@@ -1274,6 +1301,23 @@
                 </div>
             </div>
         </div>
+        <div
+            data-view={`map`}
+            class={`hidden flex flex-col h-full w-full justify-start items-start`}
+        >
+            <MapChooseLocation
+                basis={{
+                    classes_map: `map-trellis-1`,
+                    loading: loading_map,
+                    reset: async () => {
+                        map_point_location_gcs_select = map_point_location_gcs;
+                    },
+                }}
+                bind:map_point_center={map_point_location_gcs}
+                bind:map_point_select={map_point_location_gcs_select}
+                bind:map_point_select_geoc={map_point_location_gcs_select_geoc}
+            />
+        </div>
     </LayoutTrellis>
 </LayoutView>
 <Nav
@@ -1298,14 +1342,26 @@
                 value: `${$t(`icu.add_*`, { value: `${$t(`common.product`)}` })}`,
             },
             callback: async () => {
-                const el = el_id(fmt_id(`key_wrap`));
-                el?.focus();
+                if (view === `map`) {
+                    view = `form_1`;
+                } else {
+                    const geoloc = await lc.geo.current();
+                    if (`err` in geoloc) return;
+                    else {
+                        map_point_location_gcs = geoloc;
+                        map_point_location_gcs_select = geoloc;
+                    }
+                    view = `map`;
+                }
             },
         },
         option: {
             loading: loading_submit,
             label: {
-                value: carousel_conf.get($carousel_index)?.label_next || ``,
+                value:
+                    view === `map`
+                        ? `Use Location`
+                        : carousel_conf.get($carousel_index)?.label_next || ``,
                 classes: `text-layer-1-glyph-hl`,
                 glyph:
                     $carousel_index > 0 && $carousel_index < $carousel_index_max
@@ -1316,7 +1372,17 @@
                         : undefined,
             },
             callback: async () => {
-                if ($carousel_index === $carousel_index_max) await submit();
+                if (view === `map`) {
+                    console.log(
+                        JSON.stringify(
+                            map_point_location_gcs_select_geoc,
+                            null,
+                            4,
+                        ),
+                        `map_point_location_gcs_select_geoc`,
+                    );
+                } else if ($carousel_index === $carousel_index_max)
+                    await submit();
                 else await handle_carousel_next();
             },
         },

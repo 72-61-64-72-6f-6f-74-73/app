@@ -1,35 +1,31 @@
 <script lang="ts">
-    import { lc } from "$lib/client";
+    import { geoc, lc } from "$lib/client";
     import MapControlFull from "$lib/components/map_control_full.svelte";
+    import MapMarkerDot from "$lib/components/map_marker_dot.svelte";
+    import MapPopupLocationInfo from "$lib/components/map_popup_location_info.svelte";
     import { _conf } from "$lib/conf";
     import { app_thc } from "$lib/stores";
-    import {
-        Fill,
-        Glyph,
-        LoadingView,
-        route,
-        sleep,
-    } from "@radroots/svelte-lib";
-    import { MapLibre, Marker } from "@radroots/svelte-maplibre";
-    import {
-        location_geohash,
-        type GeolocationCoordinatesPoint,
-    } from "@radroots/utils";
+    import { location_gcs_add_current } from "$lib/utils/location_gcs";
+    import { LoadingView, route, sleep } from "@radroots/svelte-lib";
+    import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
+    import { type GeolocationCoordinatesPoint } from "@radroots/utils";
     import { onMount } from "svelte";
 
     let loading_layout = true;
+    let map_coords_inital: GeolocationCoordinatesPoint | undefined = undefined;
     let map_coords: GeolocationCoordinatesPoint | undefined = undefined;
 
     onMount(async () => {
         try {
-            const loc = await lc.geo.current();
-            if (loc && typeof loc !== `string`) {
-                map_coords = loc;
-            } else {
-                map_coords = {
+            const geoloc = await lc.geo.current();
+            if (`err` in geoloc)
+                map_coords_inital = {
                     lat: 0,
                     lng: 0,
                 };
+            else {
+                map_coords_inital = geoloc;
+                map_coords = geoloc;
             }
             await sleep(_conf.delay.load);
         } catch (e) {
@@ -38,35 +34,36 @@
             loading_layout = false;
         }
     });
-
-    $: {
-        console.log(`map_coords `, map_coords);
-    }
 </script>
 
 {#if map_coords}
     <MapLibre
-        center={map_coords}
+        center={map_coords_inital}
         zoom={10}
         class={`map-full ${loading_layout ? `hidden` : ``}`}
         style={_conf.map.styles.base[$app_thc]}
     >
-        <Marker bind:lngLat={map_coords} draggable>
-            <div class="relative flex flex-col w-4 items-center justify-center">
-                <div
-                    class={`absolute top-[3px] left-[3px] flex flex-row h-[10px] w-[10px] bg-red-100/30 rounded-full justify-start items-center`}
-                >
-                    <Fill />
-                </div>
-                <Glyph
-                    basis={{
-                        classes: `text-red-700`,
-                        key: `map-pin-simple`,
-                        weight: `fill`,
-                        dim: `xl`,
-                    }}
-                />
-            </div>
+        <Marker
+            bind:lngLat={map_coords}
+            draggable
+            on:dragend={async () => {
+                if (!map_coords) return;
+                const geoc_res = await geoc.reverse({
+                    point: map_coords,
+                    limit: 1,
+                });
+                if (`results` in geoc_res) {
+                    console.log(
+                        JSON.stringify(geoc_res.results, null, 4),
+                        `geoc_res.results`,
+                    );
+                }
+            }}
+        >
+            <MapMarkerDot />
+            <Popup offset={_conf.map.popup.dot.offset}>
+                <MapPopupLocationInfo basis={{ point: map_coords }} />
+            </Popup>
         </Marker>
     </MapLibre>
 {/if}
@@ -77,37 +74,9 @@
         basis={{
             callback: async () => {
                 if (!map_coords) return; //@todo
-
-                const location_gcs_label = await lc.dialog.prompt({
-                    title: `Geolocation Label`,
-                    message: `What is the name of the location.`,
-                    input_placeholder: `Enter location name`,
-                });
-                if (location_gcs_label === false) return;
-                else if (!location_gcs_label) {
-                    await lc.dialog.alert(`A location name is required.`);
-                    return;
-                }
-
-                const { lat, lng } = map_coords;
-                const new_location_gcs = await lc.db.location_gcs_add({
-                    label: location_gcs_label,
-                    geohash: location_geohash(lat, lng),
-                    lat: lat.toString(),
-                    lng: lng.toString(),
-                });
-
-                if (typeof new_location_gcs === `string`) {
-                    //@todo
-                    return;
-                } else if (Array.isArray(new_location_gcs)) {
-                    //@todo
-                    return;
-                }
-
-                await route(`/models/trade-product/add`, [
-                    [`id`, new_location_gcs.id],
-                ]);
+                const res = await location_gcs_add_current();
+                if (res)
+                    await route(`/models/trade-product/add`, [[`id`, res.id]]);
             },
         }}
     />

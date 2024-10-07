@@ -2,6 +2,7 @@
     import { lc } from "$lib/client";
     import { type TradeProduct } from "@radroots/models";
     import {
+        app_notify,
         LayoutTrellis,
         LayoutView,
         locale,
@@ -13,36 +14,44 @@
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: TradeProduct[] = [];
-    let loading_models = false;
+    type LoadData = {
+        trade_products: TradeProduct[];
+    };
+    let ld: LoadData | undefined = undefined;
 
     onMount(async () => {
         try {
-            await fetch_models();
+            ld = await load_data();
         } catch (e) {
         } finally {
         }
     });
 
-    const fetch_models = async (): Promise<void> => {
+    const load_data = async (): Promise<LoadData | undefined> => {
         try {
-            loading_models = true;
-            const res = await lc.db.trade_product_get({
+            const trade_products = await lc.db.trade_product_get({
                 list: [`all`],
             });
-            if (typeof res !== `string`) models_list = res;
+            console.log(`trade_products `, trade_products);
+            if (`err` in trade_products) {
+                app_notify.set(`Error loading page`);
+                return;
+            }
+
+            const data: LoadData = {
+                trade_products: trade_products.results,
+            };
+            return data;
         } catch (e) {
-            console.log(`(error) fetch_models `, e);
-        } finally {
-            loading_models = false;
+            console.log(`(error) load_data `, e);
         }
     };
 </script>
 
 <LayoutView>
     <LayoutTrellis>
-        {#if models_list.length}
-            {#each models_list as li, li_i}
+        {#if ld && ld.trade_products.length > 0}
+            {#each ld.trade_products as li, li_i}
                 <Trellis
                     basis={{
                         args: {
@@ -140,7 +149,7 @@
                     }}
                 />
             {/each}
-        {:else if !loading_models}
+        {:else}
             <div
                 class={`flex flex-col w-full justify-center items-center px-4 gap-2`}
             >
@@ -169,16 +178,17 @@
                 value: `${$t(`common.products`)}`,
             },
         },
-        option: models_list.length
-            ? {
-                  label: {
-                      value: `${$t(`common.add`)}`,
-                      classes: `tap-color`,
-                  },
-                  callback: async () => {
-                      await route(`/models/trade-product/add`);
-                  },
-              }
-            : undefined,
+        option:
+            ld && ld?.trade_products?.length > 0
+                ? {
+                      label: {
+                          value: `${$t(`common.add`)}`,
+                          classes: `tap-color`,
+                      },
+                      callback: async () => {
+                          await route(`/models/trade-product/add`);
+                      },
+                  }
+                : undefined,
     }}
 />

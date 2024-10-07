@@ -51,6 +51,12 @@ export const _conf = {
             dot: {
                 offset: [0, -10] as NumberTuple
             }
+        },
+        coords: {
+            default: {
+                lat: 0,
+                lng: 0,
+            }
         }
     }
 };

@@ -5,13 +5,14 @@
     import {
         app_nostr_key,
         app_pwa_polyfills,
-        app_sqlite,
         app_th,
         app_thc,
     } from "$lib/stores";
     import { defineCustomElements as pwaElements } from "@ionic/pwa-elements/loader";
     import {
         app_config,
+        app_db,
+        app_geoc,
         app_notify,
         app_render,
         AppControls,
@@ -62,24 +63,26 @@
         lc.window.status_style(color_mode);
     });
 
-    app_sqlite.subscribe((app_sqlite) => {
-        if (!app_sqlite) return;
-        console.log(`(app_sqlite) success`);
+    app_db.subscribe((_app_db) => {
+        if (!_app_db) return;
+        console.log(`(app_db) success`);
+    });
+
+    app_geoc.subscribe((_app_geoc) => {
+        if (!_app_geoc) return;
+        console.log(`(app_geoc) success`);
     });
 
     app_config.subscribe(async (app_config) => {
         try {
             if (!app_config) return;
             console.log(`app_config!`);
-            const db_connected = await lc.db.connect();
-            if (!db_connected) {
-                // @todo
-            }
-            app_sqlite.set(!!db_connected);
 
-            console.log(`connect geocoder!!`);
+            const db_connected = await lc.db.connect();
+            app_db.set(!!db_connected);
+
             const geoc_connected = await geoc.connect();
-            console.log(`geoc_connected `, geoc_connected);
+            app_geoc.set(!!geoc_connected);
 
             const active_key_public = await lc.preferences.get(
                 _conf.kv.nostr_key_active,
@@ -148,4 +151,4 @@
 <div
     class="hidden h-nav_base pt-h_nav_base pb-h_nav_base h-nav_lg pt-h_nav_lg pb-h_nav_lg h-tabs_base pt-h_tabs_base pb-h_tabs_base h-tabs_lg pt-h_tabs_lg pb-h_tabs_lg top-dim_map_offset_top_base top-dim_map_offset_top_lg"
 ></div>
-<div class="hidden border-layer-1-surface-edge/40"></div>
+<div class="hidden border-layer-1-surface-edge/40 text-blue-400"></div>

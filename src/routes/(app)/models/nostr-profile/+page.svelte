@@ -1,12 +1,13 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { location_gcs_add } from "$lib/utils/location_gcs";
+    import { location_gcs_add_current } from "$lib/utils/location_gcs";
     import {
         nostr_profile_form_vals,
         parse_nostr_profile_form_keys,
         type NostrProfile,
     } from "@radroots/models";
     import {
+        app_notify,
         as_glyph_key,
         LayoutTrellis,
         LayoutView,
@@ -16,37 +17,41 @@
     } from "@radroots/svelte-lib";
     import { onMount } from "svelte";
 
-    let models_list: NostrProfile[] = [];
-    //let loading_models = false;
+    type LoadData = {
+        nostr_profiles: NostrProfile[];
+    };
+    let ld: LoadData | undefined = undefined;
 
     onMount(async () => {
         try {
-            await load_models();
+            ld = await load_data();
         } catch (e) {
         } finally {
         }
     });
 
-    const load_models = async (): Promise<void> => {
+    const load_data = async (): Promise<LoadData | undefined> => {
         try {
-            //loading_models = true;
-            const res = await lc.db.nostr_profile_get({
+            const nostr_profiles = await lc.db.nostr_profile_get({
                 list: [`all`],
             });
-            console.log(JSON.stringify(res, null, 4), `res`);
-            if (typeof res !== `string`) models_list = res;
+            if (`err` in nostr_profiles) {
+                app_notify.set(`Error loading page`);
+                return;
+            } else if (nostr_profiles.results.length < 1) {
+                app_notify.set(`Error loading page`);
+                return;
+            }
         } catch (e) {
-            console.log(`(error) load_models `, e);
-        } finally {
-            //loading_models = false;
+            console.log(`(error) load_data `, e);
         }
     };
 </script>
 
 <LayoutView>
     <LayoutTrellis>
-        {#if models_list.length}
-            {#each models_list as li}
+        {#if ld}
+            {#each ld.nostr_profiles as li}
                 <Trellis
                     basis={{
                         args: {
@@ -105,8 +110,8 @@
                 <button
                     class={`flex flex-row justify-center items-center`}
                     on:click={async () => {
-                        const res = await location_gcs_add();
-                        if (res === true) await load_models();
+                        const res = await location_gcs_add_current();
+                        if (res) ld = await load_data();
                     }}
                 >
                     <p
@@ -130,15 +135,13 @@
                 value: `${$t(`common.profiles`)}`,
             },
         },
-        option: models_list.length
+        option: ld?.nostr_profiles?.length
             ? {
                   label: {
                       value: `${$t(`common.add`)}`,
                       classes: `tap-color`,
                   },
                   callback: async () => {
-                      //const res = await location_gcs_add();
-                      //if (res === true) await load_models();
                       const ks_keys = await lc.keystore.keys();
                       console.log(JSON.stringify(ks_keys, null, 4), `ks_keys`);
                       for (const ks_key of ks_keys || []) {

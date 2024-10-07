@@ -48,14 +48,16 @@
             const nostr_profiles = await lc.db.nostr_profile_get({
                 public_key: $qp_nostr_pk,
             });
-            if (typeof nostr_profiles === `string`) {
-                app_notify.set(`Error loading profile`);
+            if (`err` in nostr_profiles) {
+                app_notify.set(`Error loading page`);
+                return;
+            } else if (nostr_profiles.results.length < 1) {
+                app_notify.set(`Error loading page`);
                 return;
             }
 
-            const nostr_profile = nostr_profiles[0];
             const secret_key = await lc.keystore.get(
-                _conf.kv.nostr_key(nostr_profile.public_key),
+                _conf.kv.nostr_key($qp_nostr_pk),
             );
 
             if (!secret_key) {
@@ -74,13 +76,13 @@
             });
 
             const data: LoadData = {
-                nostr_profile,
+                nostr_profile: nostr_profiles.results[0],
                 secret_key,
                 nostr_relays:
-                    typeof nostr_relays !== `string` ? nostr_relays : [],
+                    `results` in nostr_relays ? nostr_relays.results : [],
                 nostr_relays_unconnected:
-                    typeof nostr_relays_unconnected !== `string`
-                        ? nostr_relays_unconnected
+                    `results` in nostr_relays_unconnected
+                        ? nostr_relays_unconnected.results
                         : [],
             };
             return data;

@@ -91,9 +91,9 @@
                 secret_key,
             );
             if (!ks_key_add) {
-                //@todo reset
                 alert(`!ks_key_add`);
                 return;
+                //@todo reset
             }
 
             const pref_key_add = await lc.preferences.set(
@@ -101,35 +101,35 @@
                 public_key,
             );
             if (!pref_key_add) {
-                //@todo reset
                 alert(`!pref_key_add`);
                 return;
+                //@todo reset
             }
 
             const nostr_profile_add = await lc.db.nostr_profile_add({
                 public_key,
             });
 
-            if (typeof nostr_profile_add === `string`) {
-                // @todo reset
-                alert(nostr_profile_add);
+            if (`err` in nostr_profile_add) {
+                await lc.dialog.alert(nostr_profile_add.err);
                 return;
-            } else if (Array.isArray(nostr_profile_add)) {
-                //@todo reset
-                alert(nostr_profile_add.join(` `));
+                //@todo
+            } else if (`err_s` in nostr_profile_add) {
+                await lc.dialog.alert(nostr_profile_add.err_s.join(` `));
                 return;
+                //@todo
             }
 
             for (const url of PUBLIC_NOSTR_RELAY_DEFAULTS.split(",") || []) {
                 const nostr_relay_add = await lc.db.nostr_relay_add({ url });
-                if (typeof nostr_relay_add === `string`) {
-                    // @todo reset
-                    alert(nostr_relay_add);
+                if (`err` in nostr_relay_add) {
+                    await lc.dialog.alert(nostr_relay_add.err);
                     return;
-                } else if (Array.isArray(nostr_relay_add)) {
-                    //@todo reset
-                    alert(nostr_relay_add.join(` `));
+                    // @todo
+                } else if (`err_s` in nostr_relay_add) {
+                    await lc.dialog.alert(nostr_relay_add.err_s.join(` `));
                     return;
+                    //@todo
                 }
                 await lc.db.set_nostr_profile_relay({
                     nostr_profile: {
