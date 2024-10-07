@@ -1,7 +1,6 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import { app_nostr_key } from "$lib/stores";
     import type { NostrProfile } from "@radroots/models";
     import {
         Glyph,
@@ -10,6 +9,7 @@
         Nav,
         SelectElement,
         TrellisTitle,
+        app_nostr_key,
         app_notify,
         nav_prev,
         route,

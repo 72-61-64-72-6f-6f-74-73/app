@@ -2,19 +2,17 @@
     import { browser } from "$app/environment";
     import { geoc, lc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import {
-        app_nostr_key,
-        app_pwa_polyfills,
-        app_th,
-        app_thc,
-    } from "$lib/stores";
     import { defineCustomElements as pwaElements } from "@ionic/pwa-elements/loader";
     import {
         app_config,
         app_db,
         app_geoc,
+        app_nostr_key,
         app_notify,
+        app_pwa_polyfills,
         app_render,
+        app_th,
+        app_thc,
         AppControls,
         CssStatic,
         CssStyles,

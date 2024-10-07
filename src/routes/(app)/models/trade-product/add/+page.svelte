@@ -3,7 +3,10 @@
     import { lc } from "$lib/client";
     import MapChooseLocation from "$lib/components/map_choose_location.svelte";
     import { _conf } from "$lib/conf";
-    import { location_gcs_add_current } from "$lib/utils/location_gcs";
+    import {
+        location_gcs_add_current,
+        location_gcs_add_geoc,
+    } from "$lib/utils/location_gcs";
     import {
         trade_product_kv_init,
         validate_trade_product_vals,
@@ -24,6 +27,7 @@
         Fill,
         fmt_id,
         Glyph,
+        InputElement,
         InputForm,
         InputSelect,
         int_step,
@@ -34,7 +38,6 @@
         locale,
         Nav,
         NotifyGlyph,
-        sleep,
         t,
         TextareaElement,
         view_effect,
@@ -101,16 +104,19 @@
         view_effect<View>(view);
     }
 
-    $: {
-        if (view === `map`) {
-            (async () => {
-                try {
-                    loading_map = true;
-                    await sleep(500);
-                    loading_map = false;
-                } catch (e) {}
-            })();
-        }
+    $: if (view === `map`) {
+        (async () => {
+            try {
+                loading_map = true;
+                const geoloc = await lc.geo.current();
+                if (`err` in geoloc) return;
+                else {
+                    map_point_location_gcs = geoloc;
+                    map_point_location_gcs_select = geoloc;
+                }
+                loading_map = false;
+            } catch (e) {}
+        })();
     }
 
     let show_sel_trade_product_key_other = false;
@@ -178,55 +184,44 @@
           )
         : fmt_trade_quantity_val(trade_quantities[trade_key_default][0]);
 
-    $: {
-        if (ls_models_location_gcs.length && !sel_location_gcs_id) {
-            sel_location_gcs_id = ls_models_location_gcs[0].id;
-        }
+    $: if (ls_models_location_gcs.length && !sel_location_gcs_id) {
+        sel_location_gcs_id = ls_models_location_gcs[0].id;
     }
 
-    $: {
-        if (sel_location_gcs_id) {
-            (async () => {
-                try {
-                    await kv.set(
-                        fmt_id(`location_gcs_id`),
-                        sel_location_gcs_id,
-                    );
-                } catch (e) {}
-            })();
-        }
+    $: if (sel_location_gcs_id) {
+        (async () => {
+            try {
+                await kv.set(fmt_id(`location_gcs_id`), sel_location_gcs_id);
+            } catch (e) {}
+        })();
     }
 
-    $: {
-        if (sel_trade_product_qty_tup) {
-            (async () => {
-                try {
-                    const mass_tup = parse_trade_mass_tuple(
-                        sel_trade_product_qty_tup,
-                    );
-                    if (mass_tup) {
-                        await kv.set(fmt_id(`qty_amt`), mass_tup[0].toString());
-                        await kv.set(fmt_id(`qty_unit`), mass_tup[1]);
-                        await kv.set(fmt_id(`qty_label`), mass_tup[2]);
-                        //@note
-                        await kv.set(fmt_id(`qty_avail`), `1`);
-                    }
-                } catch (e) {}
-            })();
-        }
+    $: if (sel_trade_product_qty_tup) {
+        (async () => {
+            try {
+                const mass_tup = parse_trade_mass_tuple(
+                    sel_trade_product_qty_tup,
+                );
+                if (mass_tup) {
+                    await kv.set(fmt_id(`qty_amt`), mass_tup[0].toString());
+                    await kv.set(fmt_id(`qty_unit`), mass_tup[1]);
+                    await kv.set(fmt_id(`qty_label`), mass_tup[2]);
+                    //@note
+                    await kv.set(fmt_id(`qty_avail`), `1`);
+                }
+            } catch (e) {}
+        })();
     }
 
-    $: {
-        if (sel_trade_product_price_currency) {
-            (async () => {
-                try {
-                    await kv.set(
-                        fmt_id(`price_currency`),
-                        sel_trade_product_price_currency,
-                    );
-                } catch (e) {}
-            })();
-        }
+    $: if (sel_trade_product_price_currency) {
+        (async () => {
+            try {
+                await kv.set(
+                    fmt_id(`price_currency`),
+                    sel_trade_product_price_currency,
+                );
+            } catch (e) {}
+        })();
     }
 
     onMount(async () => {
@@ -298,7 +293,7 @@
                         });
                         if (`err` in vals_init) {
                             await lc.dialog.alert(
-                                `${$t(`trade.product.fields.${vals_init}.err_invalid`, { default: `${$t(`icu.invalid_*`, { value: vals_init.err })}` })}`,
+                                `${$t(`trade.product.fields.${vals_init.err}.err_invalid`, { default: `${$t(`icu.invalid_*`, { value: vals_init.err })}` })}`,
                             );
                             return;
                         }
@@ -440,15 +435,36 @@
         }
     };
 
-    const add_model_location_gcs = async (): Promise<void> => {
+    const handle_add_current_location = async (): Promise<void> => {
         try {
             loading_location_gcs = true;
             await location_gcs_add_current();
             await fetch_models_models_location_gcs();
         } catch (e) {
-            console.log(`(error) add_model_location_gcs `, e);
+            console.log(`(error) handle_add_current_location `, e);
         } finally {
             loading_location_gcs = false;
+        }
+    };
+
+    const handle_add_map_location = async (): Promise<void> => {
+        try {
+            if (!map_point_location_gcs_select_geoc) {
+                await lc.dialog.alert(`No location selected`);
+                return;
+            }
+            const res = await location_gcs_add_geoc({
+                geoc: map_point_location_gcs_select_geoc,
+            });
+            if (`err` in res) {
+                await lc.dialog.alert(res.err || `There was an error`);
+                return;
+            }
+
+            sel_location_gcs_id = res.id;
+            await fetch_models_models_location_gcs();
+        } catch (e) {
+            console.log(`(error) handle_add_map_location `, e);
         }
     };
 
@@ -567,7 +583,7 @@
                                 sync: true,
                                 sync_init: false,
                                 classes: `font-mono-display`,
-                                placeholder: `Enter price`,
+                                placeholder: `${$t(`icu.enter_*`, { value: `${$t(`common.price`)}` })}`,
                                 field: {
                                     charset:
                                         trade_product_form_fields.price_amt
@@ -680,7 +696,7 @@
                                         id: fmt_id(`qty_amt`),
                                         layer: false,
                                         sync: true,
-                                        placeholder: `Enter number of ${$t(`measurement.mass.unit.${sel_trade_product_price_qty_unit}_ab`, { default: sel_trade_product_price_qty_unit })} per order`,
+                                        placeholder: `${$t(`icu.enter_number_of_*_per_order`, { value: `${$t(`measurement.mass.unit.${sel_trade_product_price_qty_unit}_ab`, { default: sel_trade_product_price_qty_unit })}` })}`,
                                         field: {
                                             charset:
                                                 trade_product_form_fields
@@ -1157,7 +1173,7 @@
                         },
                     }}
                 >
-                    <InputForm
+                    <InputElement
                         basis={{
                             id: fmt_id(`title`),
                             sync: true,
@@ -1223,7 +1239,7 @@
                                           label: `${i.label}`,
                                       })),
                                       {
-                                          value: `add-new`,
+                                          value: `add-current`,
                                           label: `${$t(`common.add_current_location`)}`,
                                       },
                                       {
@@ -1239,7 +1255,7 @@
                                           label: `${$t(`common.no_locations_saved`)}`,
                                       },
                                       {
-                                          value: `add-new`,
+                                          value: `add-current`,
                                           label: `${$t(`common.add_current_location`)}`,
                                       },
                                       {
@@ -1248,13 +1264,12 @@
                                       },
                                   ],
                             callback: async (val) => {
-                                if (val === `add-new`) {
+                                if (val === `add-current`) {
                                     sel_location_gcs_id = ``;
-                                    await add_model_location_gcs();
+                                    await handle_add_current_location();
                                 } else if (val === `add-map`) {
                                     sel_location_gcs_id = ``;
                                     view = `map`;
-                                    //await route(`/map/choose-location`);
                                 }
                             },
                         }}
@@ -1288,15 +1303,6 @@
                         <p class={`font-sans font-[400] text-layer-0-glyph`}>
                             {`Location`}
                         </p>
-                        <div
-                            class={`flex flex-row w-trellis_line justify-start items-start`}
-                        >
-                            <p
-                                class={`font-sans font-[400] text-layer-0-glyph`}
-                            >
-                                {JSON.stringify(review_location_gcs, null, 4)}
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1345,12 +1351,6 @@
                 if (view === `map`) {
                     view = `form_1`;
                 } else {
-                    const geoloc = await lc.geo.current();
-                    if (`err` in geoloc) return;
-                    else {
-                        map_point_location_gcs = geoloc;
-                        map_point_location_gcs_select = geoloc;
-                    }
                     view = `map`;
                 }
             },
@@ -1372,16 +1372,8 @@
                         : undefined,
             },
             callback: async () => {
-                if (view === `map`) {
-                    console.log(
-                        JSON.stringify(
-                            map_point_location_gcs_select_geoc,
-                            null,
-                            4,
-                        ),
-                        `map_point_location_gcs_select_geoc`,
-                    );
-                } else if ($carousel_index === $carousel_index_max)
+                if (view === `map`) await handle_add_map_location();
+                else if ($carousel_index === $carousel_index_max)
                     await submit();
                 else await handle_carousel_next();
             },

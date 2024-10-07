@@ -1,8 +1,8 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { app_nostr_key } from "$lib/stores";
     import type { NostrRelay } from "@radroots/models";
     import {
+        app_nostr_key,
         app_notify,
         GlyphCircle,
         LayoutTrellis,

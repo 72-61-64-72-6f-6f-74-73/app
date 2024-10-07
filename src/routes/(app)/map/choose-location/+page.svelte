@@ -4,9 +4,8 @@
     import MapMarkerDot from "$lib/components/map_marker_dot.svelte";
     import MapPopupLocationInfo from "$lib/components/map_popup_location_info.svelte";
     import { _conf } from "$lib/conf";
-    import { app_thc } from "$lib/stores";
     import { location_gcs_add_current } from "$lib/utils/location_gcs";
-    import { LoadingView, route, sleep } from "@radroots/svelte-lib";
+    import { app_thc, LoadingView, route, sleep } from "@radroots/svelte-lib";
     import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
     import { type GeolocationCoordinatesPoint } from "@radroots/utils";
     import { onMount } from "svelte";

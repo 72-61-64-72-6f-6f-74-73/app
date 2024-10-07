@@ -1,13 +1,13 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import { app_nostr_key } from "$lib/stores";
     import { nostr_sync_models_trade_product } from "$lib/utils/nostr";
     import {
         type NostrRelayFormFields,
         parse_nostr_relay_form_keys,
     } from "@radroots/models";
     import {
+        app_nostr_key,
         LayoutWindow,
         ndk,
         ndk_user,

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { app_nostr_key } from "$lib/stores";
     import {
+        app_nostr_key,
         type CallbackPromise,
         EnvelopeLower,
         Glyph,

@@ -1,12 +1,12 @@
 <script lang="ts">
     import { lc } from "$lib/client";
-    import { app_nostr_key } from "$lib/stores";
     import { NDKEvent, NDKKind, type NDKFilter } from "@nostr-dev-kit/ndk";
     import type {
         ExtendedBaseType,
         NDKEventStore,
     } from "@nostr-dev-kit/ndk-svelte";
     import {
+        app_nostr_key,
         LayoutTrellis,
         LayoutView,
         Nav,

@@ -1,9 +1,9 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import { app_nostr_key } from "$lib/stores";
     import type { NostrProfile, NostrRelay } from "@radroots/models";
     import {
+        app_nostr_key,
         app_notify,
         app_submit_route,
         as_glyph_key,

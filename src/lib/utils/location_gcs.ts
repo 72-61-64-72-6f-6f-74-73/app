@@ -1,12 +1,12 @@
 import { geoc, lc } from "$lib/client";
 import type { GeocoderReverseResult } from "@radroots/geocoder";
 import type { LocationGcsFormFields } from "@radroots/models";
-import { location_geohash } from "@radroots/utils";
+import { err_msg, location_geohash, type ErrorMessage, type ResultId } from "@radroots/utils";
 
 export const location_gcs_add_geoc = async (opts: {
     geoc: GeocoderReverseResult;
     label?: string;
-}): Promise<{ id: string } | undefined> => {
+}): Promise<ResultId | ErrorMessage<string>> => {
     try {
         const { geoc } = opts;
         const fields: LocationGcsFormFields = {
@@ -25,14 +25,13 @@ export const location_gcs_add_geoc = async (opts: {
         const res =
             await lc.db.location_gcs_add(fields);
         if (`id` in res) return res;
-        else if (`err` in res && res.err === `*-location-gcs-geohash-unique`
-        ) {
-            await lc.dialog.alert(
-                `This location has already been added.`,
-            );
-        }
+        if (`err` in res && res.err === `*-location-gcs-geohash-unique`)
+            return err_msg(`This location has already been added.`);
+
+        return err_msg(`There was an error`)
     } catch (e) {
         console.log(`(error) location_gcs_add_geoc `, e);
+        return err_msg(``)
     }
 };
 

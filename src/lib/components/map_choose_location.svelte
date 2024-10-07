@@ -1,9 +1,12 @@
 <script lang="ts">
     import { geoc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import { app_thc } from "$lib/stores";
     import type { GeocoderReverseResult } from "@radroots/geocoder";
-    import { Loading, type CallbackPromise } from "@radroots/svelte-lib";
+    import {
+        app_thc,
+        Loading,
+        type CallbackPromise,
+    } from "@radroots/svelte-lib";
     import { MapLibre, Marker, Popup } from "@radroots/svelte-maplibre";
     import type { GeolocationCoordinatesPoint } from "@radroots/utils";
     import MapMarkerDot from "./map_marker_dot.svelte";

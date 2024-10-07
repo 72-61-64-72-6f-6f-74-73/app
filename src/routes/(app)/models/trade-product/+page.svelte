@@ -32,7 +32,6 @@
             const trade_products = await lc.db.trade_product_get({
                 list: [`all`],
             });
-            console.log(`trade_products `, trade_products);
             if (`err` in trade_products) {
                 app_notify.set(`Error loading page`);
                 return;

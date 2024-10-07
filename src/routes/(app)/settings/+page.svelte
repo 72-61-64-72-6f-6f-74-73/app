@@ -1,9 +1,9 @@
 <script lang="ts">
     import { lc } from "$lib/client";
     import { _conf } from "$lib/conf";
-    import { app_thc } from "$lib/stores";
     import { restart } from "$lib/utils";
     import {
+        app_thc,
         LayoutTrellis,
         LayoutView,
         Nav,
