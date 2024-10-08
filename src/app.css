@@ -5,8 +5,9 @@
 @import "/static/stylesheets/tailwindcss-spinner.css";
 
 @import "/static/webfonts/apercu-mono-pro/styles.css";
-@import "/static/webfonts/sf-pro-display/styles.css";
+@import "/static/webfonts/lust/styles.css";
 @import "/static/webfonts/magda-text/styles.css";
+@import "/static/webfonts/sf-pro-display/styles.css";
 
 @tailwind base;
 @tailwind components;

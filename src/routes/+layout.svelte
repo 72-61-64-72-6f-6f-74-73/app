@@ -96,7 +96,7 @@
             }
 
             await lc.preferences.remove(_conf.kv.nostr_key_active);
-            await route(`/init`);
+            await route(`/conf/init`);
         } catch (e) {
             console.log(`(app_config) error `, e);
         } finally {

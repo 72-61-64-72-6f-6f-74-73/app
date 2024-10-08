@@ -50,6 +50,7 @@ const config: Config = {
         mono: [...tw_font.mono],
         apercu: ['Apercu Mono Pro'],
         magda: [`Magda Text`],
+        lust: [`Lust`],
       },
       fontSize: {
         lg_: ["1.0875rem", { lineHeight: "1.625", fontWeight: 400 }],
