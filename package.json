@@ -5,7 +5,7 @@
 	"license": "GPLv3",
 	"scripts": {
 		"build:dev": "vite build --mode development",
-		"build:prod": "vite build --mode production",
+		"build": "vite build --mode production",
 		"prepare:native": "npm run gen",
 		"prepare:web": "npm run gen",
 		"serve:dev": "vite dev --mode development --debug hmr",
